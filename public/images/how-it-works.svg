@@ -1,0 +1,97 @@
+<svg width="800" height="300" viewBox="0 0 800 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="step1Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="step2Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="step3Gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Step 1: Create Account -->
+  <g transform="translate(50, 50)">
+    <circle cx="75" cy="75" r="60" fill="url(#step1Gradient)" opacity="0.1"/>
+    <circle cx="75" cy="75" r="40" fill="url(#step1Gradient)"/>
+    <text x="75" y="85" text-anchor="middle" font-size="24" fill="white" font-weight="bold">1</text>
+    
+    <!-- User icon -->
+    <g transform="translate(75, 150)">
+      <circle cx="0" cy="-10" r="12" fill="#3B82F6"/>
+      <path d="M-15 10C-15 0 -8 -8 0 -8S15 0 15 10V20H-15V10Z" fill="#3B82F6"/>
+    </g>
+    
+    <!-- Form -->
+    <g transform="translate(45, 180)">
+      <rect x="0" y="0" width="60" height="40" rx="4" fill="white" stroke="#D1D5DB" stroke-width="1"/>
+      <rect x="5" y="8" width="50" height="3" fill="#E5E7EB"/>
+      <rect x="5" y="15" width="35" height="3" fill="#E5E7EB"/>
+      <rect x="5" y="22" width="45" height="3" fill="#E5E7EB"/>
+      <rect x="40" y="30" width="15" height="6" rx="3" fill="#3B82F6"/>
+    </g>
+  </g>
+  
+  <!-- Arrow 1 -->
+  <g transform="translate(220, 125)">
+    <path d="M0 0L60 0" stroke="#9CA3AF" stroke-width="3" marker-end="url(#arrow1)"/>
+    <defs>
+      <marker id="arrow1" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#9CA3AF"/>
+      </marker>
+    </defs>
+  </g>
+  
+  <!-- Step 2: Register Phone -->
+  <g transform="translate(300, 50)">
+    <circle cx="75" cy="75" r="60" fill="url(#step2Gradient)" opacity="0.1"/>
+    <circle cx="75" cy="75" r="40" fill="url(#step2Gradient)"/>
+    <text x="75" y="85" text-anchor="middle" font-size="24" fill="white" font-weight="bold">2</text>
+    
+    <!-- Phone -->
+    <g transform="translate(60, 150)">
+      <rect x="0" y="0" width="30" height="50" rx="6" fill="#10B981"/>
+      <rect x="3" y="8" width="24" height="34" rx="2" fill="white"/>
+      <text x="15" y="28" text-anchor="middle" font-size="6" fill="#10B981">IMEI</text>
+    </g>
+    
+    <!-- Plus icon -->
+    <g transform="translate(100, 170)">
+      <circle cx="0" cy="0" r="8" fill="#10B981"/>
+      <path d="M-4 0L4 0M0 -4L0 4" stroke="white" stroke-width="2"/>
+    </g>
+  </g>
+  
+  <!-- Arrow 2 -->
+  <g transform="translate(470, 125)">
+    <path d="M0 0L60 0" stroke="#9CA3AF" stroke-width="3" marker-end="url(#arrow2)"/>
+    <defs>
+      <marker id="arrow2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="#9CA3AF"/>
+      </marker>
+    </defs>
+  </g>
+  
+  <!-- Step 3: Verify/Report -->
+  <g transform="translate(550, 50)">
+    <circle cx="75" cy="75" r="60" fill="url(#step3Gradient)" opacity="0.1"/>
+    <circle cx="75" cy="75" r="40" fill="url(#step3Gradient)"/>
+    <text x="75" y="85" text-anchor="middle" font-size="24" fill="white" font-weight="bold">3</text>
+    
+    <!-- Shield with checkmark -->
+    <g transform="translate(60, 150)">
+      <path d="M15 5L5 10V20C5 28 15 30 15 30S25 28 25 20V10L15 5Z" fill="#8B5CF6"/>
+      <path d="M11 18L14 21L19 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    
+    <!-- Search/verify icon -->
+    <g transform="translate(90, 165)">
+      <circle cx="8" cy="8" r="6" stroke="#8B5CF6" stroke-width="2" fill="none"/>
+      <path d="M12 12L16 16" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </g>
+</svg>

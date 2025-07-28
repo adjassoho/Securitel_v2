@@ -1,0 +1,61 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="locationGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6"/>
+      <stop offset="100%" style="stop-color:#7C3AED"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Map background -->
+  <rect x="50" y="50" width="300" height="200" rx="12" fill="#F3F4F6" stroke="#D1D5DB" stroke-width="2"/>
+  
+  <!-- Map grid -->
+  <defs>
+    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E5E7EB" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect x="50" y="50" width="300" height="200" fill="url(#grid)"/>
+  
+  <!-- Location pin -->
+  <g transform="translate(180, 120)">
+    <path d="M20 5C25 5 30 10 30 15C30 25 20 35 20 35S10 25 10 15C10 10 15 5 20 5Z" fill="url(#locationGradient)"/>
+    <circle cx="20" cy="15" r="5" fill="white"/>
+  </g>
+  
+  <!-- Phone at location -->
+  <g transform="translate(190, 140)">
+    <rect x="0" y="0" width="20" height="35" rx="4" fill="#374151"/>
+    <rect x="2" y="5" width="16" height="25" rx="2" fill="#F8FAFC"/>
+  </g>
+  
+  <!-- GPS satellites -->
+  <g transform="translate(100, 80)">
+    <circle cx="0" cy="0" r="3" fill="#8B5CF6"/>
+    <path d="M-8 -8L8 8M8 -8L-8 8" stroke="#8B5CF6" stroke-width="1"/>
+  </g>
+  
+  <g transform="translate(280, 90)">
+    <circle cx="0" cy="0" r="3" fill="#8B5CF6"/>
+    <path d="M-8 -8L8 8M8 -8L-8 8" stroke="#8B5CF6" stroke-width="1"/>
+  </g>
+  
+  <g transform="translate(320, 160)">
+    <circle cx="0" cy="0" r="3" fill="#8B5CF6"/>
+    <path d="M-8 -8L8 8M8 -8L-8 8" stroke="#8B5CF6" stroke-width="1"/>
+  </g>
+  
+  <!-- Signal lines -->
+  <path d="M100 80L200 135" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <path d="M280 90L200 135" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  <path d="M320 160L200 135" stroke="#8B5CF6" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>
+  
+  <!-- Accuracy circle -->
+  <circle cx="200" cy="135" r="30" stroke="#8B5CF6" stroke-width="2" fill="none" opacity="0.3" stroke-dasharray="5,5"/>
+  
+  <!-- Coming soon badge -->
+  <g transform="translate(260, 180)">
+    <rect x="0" y="0" width="80" height="25" rx="12" fill="#F59E0B"/>
+    <text x="40" y="16" text-anchor="middle" font-size="10" fill="white" font-weight="bold">Bientôt</text>
+  </g>
+</svg>
