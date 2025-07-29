@@ -14,6 +14,7 @@ import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
 import VerifyRegistrationPage from '@/pages/auth/VerifyRegistrationPage';
 import Enter2FACodePage from '@/pages/auth/Enter2FACodePage';
+import ContactPage from '@/pages/public/ContactPage';
 
 // Pages protégées
 import DashboardPage from '@/pages/dashboard/DashboardPage';
@@ -56,6 +57,7 @@ function App() {
             <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
             <Route path="/verify-email" element={<VerifyRegistrationPage />} />
             <Route path="/verify-2fa" element={<Enter2FACodePage />} />
+            <Route path="/contact" element={<ContactPage />} />
           </Route>
 
           {/* Routes protégées */}

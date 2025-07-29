@@ -19,7 +19,8 @@ import {
   Linkedin,
   Sparkles,
   ShieldCheck,
-  Fingerprint
+  Fingerprint,
+  Send
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 
@@ -415,7 +416,7 @@ const HomePage = () => {
             <img 
               src="/images/fonctionnality.png" 
               alt="Fonctionnalités SecuriTel" 
-              className="mx-auto max-w-4xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
+              className="mx-auto max-w-2xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
             />
           </div>
           
@@ -485,7 +486,7 @@ const HomePage = () => {
             <img 
               src="/images/how_it_work.png" 
               alt="Comment ça marche - SecuriTel" 
-              className="mx-auto max-w-5xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
+              className="mx-auto max-w-3xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
             />
           </div>
           
@@ -889,6 +890,217 @@ const HomePage = () => {
                 Commencer maintenant
                 <ArrowRight className="ml-3 h-6 w-6" />
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-32 bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+          }} />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className={`text-center mb-20 transition-all duration-1000 ${
+            visibleSections.has('contact') ? 'animate-slideInUp opacity-100' : 'opacity-0 translate-y-10'
+          }`}>
+            <h2 className="text-5xl font-bold text-white sm:text-6xl lg:text-7xl mb-6">
+              Contactez <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">SecuriTel</span>
+            </h2>
+            <p className="mt-6 text-xl text-blue-100 max-w-4xl mx-auto">
+              Notre équipe est là pour vous aider. N'hésitez pas à nous contacter pour toute question ou assistance.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            {/* Contact Information */}
+            <div className={`space-y-8 transition-all duration-1000 ${
+              visibleSections.has('contact') ? 'animate-slideInLeft opacity-100' : 'opacity-0 -translate-x-10'
+            }`}>
+              <div>
+                <h3 className="text-3xl font-bold text-white mb-8">
+                  Informations de contact
+                </h3>
+                <div className="space-y-6">
+                  <div className="flex items-start space-x-4 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
+                        <Phone className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-white mb-1">
+                        Téléphone
+                      </h4>
+                      <p className="text-blue-100 font-medium">
+                        +229 99 99 99 99
+                      </p>
+                      <p className="text-sm text-blue-200 mt-1">
+                        Appelez-nous directement
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl flex items-center justify-center">
+                        <Mail className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-white mb-1">
+                        Email
+                      </h4>
+                      <p className="text-blue-100 font-medium">
+                        contact@securitel.bj
+                      </p>
+                      <p className="text-sm text-blue-200 mt-1">
+                        Envoyez-nous un email
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                        <MessageCircle className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-white mb-1">
+                        WhatsApp
+                      </h4>
+                      <p className="text-blue-100 font-medium">
+                        +229 99 99 99 99
+                      </p>
+                      <p className="text-sm text-blue-200 mt-1">
+                        Chat en direct
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-xl flex items-center justify-center">
+                        <MapPin className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-semibold text-white mb-1">
+                        Adresse
+                      </h4>
+                      <p className="text-blue-100 font-medium">
+                        Cotonou, Bénin
+                      </p>
+                      <p className="text-sm text-blue-200 mt-1">
+                        Notre localisation
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Contact CTA */}
+              <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-2xl p-8 border border-blue-500/30">
+                <h4 className="text-2xl font-bold text-white mb-4">
+                  Besoin d'aide rapide ?
+                </h4>
+                <p className="text-blue-100 mb-6">
+                  Consultez notre FAQ pour des réponses instantanées aux questions les plus courantes.
+                </p>
+                <a
+                  href="#faq"
+                  className="inline-flex items-center text-blue-200 hover:text-white transition-colors duration-300"
+                >
+                  Voir la FAQ
+                  <MessageCircle className="ml-2 h-5 w-5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Contact Form */}
+            <div className={`bg-white/10 backdrop-blur-sm rounded-3xl border border-white/20 p-8 lg:p-12 transition-all duration-1000 ${
+              visibleSections.has('contact') ? 'animate-slideInRight opacity-100' : 'opacity-0 translate-x-10'
+            }`}>
+              <h3 className="text-3xl font-bold text-white mb-8">
+                Envoyez-nous un message
+              </h3>
+              
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="contact-name" className="block text-sm font-medium text-blue-100 mb-2">
+                      Nom complet *
+                    </label>
+                    <input
+                      type="text"
+                      id="contact-name"
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      placeholder="Votre nom complet"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="contact-email" className="block text-sm font-medium text-blue-100 mb-2">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="contact-email"
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      placeholder="votre@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="contact-phone" className="block text-sm font-medium text-blue-100 mb-2">
+                    Téléphone
+                  </label>
+                  <input
+                    type="tel"
+                    id="contact-phone"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    placeholder="+229 XX XX XX XX"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="contact-subject" className="block text-sm font-medium text-blue-100 mb-2">
+                    Sujet *
+                  </label>
+                  <input
+                    type="text"
+                    id="contact-subject"
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    placeholder="Sujet de votre message"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="contact-message" className="block text-sm font-medium text-blue-100 mb-2">
+                    Message *
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    rows={5}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-blue-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"
+                    placeholder="Décrivez votre question ou votre problème..."
+                  />
+                </div>
+
+                <Link 
+                  to="/contact" 
+                  className="w-full inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-2xl shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500"
+                >
+                  <Send className="w-6 h-6 mr-3" />
+                  Envoyer le message
+                </Link>
+              </form>
             </div>
           </div>
         </div>
