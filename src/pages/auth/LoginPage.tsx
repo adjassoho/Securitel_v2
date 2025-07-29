@@ -13,7 +13,10 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate('/dashboard');
+      // Store email for 2FA verification
+      sessionStorage.setItem('pending_auth_email', email);
+      // Redirect to 2FA page
+      navigate('/verify-2fa');
     } catch {
       // Errors are handled by Zustand store
     }

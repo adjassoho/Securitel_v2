@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Plateforme SecuriTel - Protection des téléphones contre le vol, la perte et les arnaques",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

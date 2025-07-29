@@ -23,7 +23,10 @@ const RegisterPage = () => {
     try {
       const { confirm_password, ...registerData } = data;
       await registerUser(registerData);
-      navigate('/dashboard');
+      // Store email for verification
+      sessionStorage.setItem('pending_verification_email', registerData.email);
+      // Redirect to verification page
+      navigate('/verify-email');
     } catch {
       // Errors handled by store
     }

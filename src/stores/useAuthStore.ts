@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '@/types';
+import axios, { isTokenExpired } from '@/services/axiosInterceptor';
 import { authService } from '@/services/api';
 
 interface AuthState {
@@ -11,15 +12,17 @@ interface AuthState {
   error: string | null;
   
   login: (email: string, password: string) => Promise<void>;
+  validate2FA: (email: string, code: string) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (user: User) => void;
+  setAuthenticated: (user: User, token: string) => void;
   clearError: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isAuthenticated: false,
@@ -35,6 +38,13 @@ export const useAuthStore = create<AuthState>()(
           set({
             isLoading: false,
           });
+
+          // Vérifie l'expiration du token
+          const token = localStorage.getItem('auth_token');
+          if (token && isTokenExpired(token)) {
+            await get().logout();
+            // toast.error('Session expirée. Veuillez vous reconnecter.');
+          }
         } catch (error: any) {
           set({
             error: error.response?.data?.message || 'Erreur de connexion',
@@ -62,6 +72,9 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: async () => {
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
         try {
           await authService.logout();
         } catch (error) {
@@ -77,8 +90,36 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      validate2FA: async (email: string, code: string) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await authService.validate2FA(email, code);
+          localStorage.setItem('auth_token', response.token);
+          set({
+            user: response.user,
+            token: response.token,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } catch (error: any) {
+          set({
+            error: error.response?.data?.message || 'Code incorrect',
+            isLoading: false,
+          });
+          throw error;
+        }
+      },
+
       updateUser: (user: User) => {
         set({ user });
+      },
+
+      setAuthenticated: (user: User, token: string) => {
+        set({
+          user,
+          token,
+          isAuthenticated: true,
+        });
       },
 
       clearError: () => {
