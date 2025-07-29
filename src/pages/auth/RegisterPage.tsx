@@ -21,7 +21,12 @@ const RegisterPage = () => {
 
   const onSubmit = async (data: RegisterRequest & { confirm_password: string }) => {
     try {
-      const { confirm_password, ...registerData } = data;
+      // Rename confirm_password to password_confirmation for API
+      const { confirm_password, ...rest } = data;
+      const registerData = {
+        ...rest,
+        password_confirmation: confirm_password
+      };
       await registerUser(registerData);
       // Store email for verification
       sessionStorage.setItem('pending_verification_email', registerData.email);

@@ -9,6 +9,7 @@ export interface RegisterRequest {
   last_name: string;
   email: string;
   password: string;
+  password_confirmation: string;
   phone: string;
   address?: string;
   whatsapp?: string;

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '@/types';
-import axios, { isTokenExpired } from '@/services/axiosInterceptor';
+import { isTokenExpired } from '@/services/axiosInterceptor';
 import { authService } from '@/services/api';
 
 interface AuthState {
