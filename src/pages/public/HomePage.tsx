@@ -413,9 +413,9 @@ const HomePage = () => {
           {/* Features Illustration */}
           <div className="mt-20 text-center">
             <img 
-              src="/images/features-illustration.svg" 
+              src="/images/fonctionnality.png" 
               alt="Fonctionnalités SecuriTel" 
-              className="mx-auto max-w-4xl w-full h-auto opacity-80 hover:opacity-100 transition-opacity duration-500"
+              className="mx-auto max-w-4xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
             />
           </div>
           
@@ -483,9 +483,9 @@ const HomePage = () => {
           {/* How it works Illustration */}
           <div className="mt-20 text-center">
             <img 
-              src="/images/how-it-works-steps.svg" 
+              src="/images/how_it_work.png" 
               alt="Comment ça marche - SecuriTel" 
-              className="mx-auto max-w-5xl w-full h-auto opacity-80 hover:opacity-100 transition-opacity duration-500"
+              className="mx-auto max-w-5xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
             />
           </div>
           
