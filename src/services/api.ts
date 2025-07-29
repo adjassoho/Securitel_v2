@@ -158,6 +158,10 @@ export const phoneService = {
     const response = await api.get(`/phones/${id}`);
     return response.data;
   },
+
+  reportLoss: async (phoneId: string, data: any): Promise<void> => {
+    await api.post(`/phones/${phoneId}/report-loss`, data);
+  },
 };
 
 // Services pour les signalements

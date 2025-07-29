@@ -14,10 +14,8 @@ import {
   LogOut,
   ChevronDown,
   Plus,
-  FileText,
-  ShieldCheck,
 } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { cn } from '@/utils/cn';
 
 const DashboardLayout = () => {

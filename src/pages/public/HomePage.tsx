@@ -2,9 +2,6 @@ import { Link } from 'react-router-dom';
 import { 
   Shield, 
   CheckCircle, 
-  AlertTriangle, 
-  RefreshCw,
-  MapPin,
   Star,
   ArrowRight,
   Zap,

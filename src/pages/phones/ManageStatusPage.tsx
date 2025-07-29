@@ -1,15 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { phoneService } from '@/services/api';
 import toast from 'react-hot-toast';
 import { CheckCircle, AlertCircle, Mail } from 'lucide-react';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const ManageStatusPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [status, setStatus] = useState('recovered');
   const [note, setNote] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [codeSent, setCodeSent] = useState(false);

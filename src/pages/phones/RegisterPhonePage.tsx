@@ -30,7 +30,6 @@ const RegisterPhonePage = () => {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<FormData>();
 
   const registerPhoneMutation = useMutation({

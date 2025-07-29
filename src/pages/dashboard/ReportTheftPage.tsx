@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, Shield, FileText, MapPin, Calendar, Phone, CheckCircle } from 'lucide-react';
 import { phoneService, reportService } from '../../services/api';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
 
 interface TheftReportForm {
   phoneId: string;
@@ -33,12 +31,19 @@ export function ReportTheftPage() {
   // Récupérer la liste des téléphones de l'utilisateur
   const { data: phones, isLoading: phonesLoading } = useQuery({
     queryKey: ['userPhones'],
-    queryFn: phoneService.getUserPhones,
+    queryFn: phoneService.getMyPhones,
   });
 
   // Mutation pour soumettre le signalement
   const reportTheftMutation = useMutation({
-    mutationFn: (data: any) => reportService.reportTheft(data),
+    mutationFn: (data: any) => reportService.reportTheft({
+      phone_id: data.phone_id,
+      theft_date: data.incident_date,
+      theft_location: data.location,
+      description: data.description,
+      emergency_contact: '', // Add if needed
+      verification_code: '', // Add if needed
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userPhones'] });
       queryClient.invalidateQueries({ queryKey: ['reports'] });

@@ -21,7 +21,7 @@ const ResetPasswordPage = () => {
     setIsLoading(true);
 
     try {
-      await authService.resetPassword(token!, password);
+      await authService.resetPassword(token!, password, confirmPassword);
       toast.success('Mot de passe réinitialisé avec succès!');
       navigate('/login');
     } catch (error: any) {

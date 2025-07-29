@@ -18,7 +18,7 @@ import { useState } from 'react';
 const MyPhonesPage = () => {
   const [selectedPhone, setSelectedPhone] = useState<string | null>(null);
 
-  const { data: phones, isLoading, refetch } = useQuery({
+  const { data: phones, isLoading } = useQuery({
     queryKey: ['my-phones'],
     queryFn: phoneService.getMyPhones,
   });

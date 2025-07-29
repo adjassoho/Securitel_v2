@@ -29,12 +29,10 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await authService.login({ email, password });
-          localStorage.setItem('auth_token', response.token);
+          await authService.login({ email, password });
+          // La méthode login retourne seulement un message, pas de token
+          // Le token sera obtenu après validation 2FA
           set({
-            user: response.user,
-            token: response.token,
-            isAuthenticated: true,
             isLoading: false,
           });
         } catch (error: any) {
@@ -49,12 +47,9 @@ export const useAuthStore = create<AuthState>()(
       register: async (data: any) => {
         set({ isLoading: true, error: null });
         try {
-          const response = await authService.register(data);
-          localStorage.setItem('auth_token', response.token);
+          await authService.register(data);
+          // La méthode register retourne seulement un message
           set({
-            user: response.user,
-            token: response.token,
-            isAuthenticated: true,
             isLoading: false,
           });
         } catch (error: any) {
