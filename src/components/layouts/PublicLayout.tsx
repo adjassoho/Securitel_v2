@@ -117,6 +117,73 @@ const PublicLayout = () => {
         <Outlet />
       </main>
 
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+            {/* Company info */}
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-2 mb-4">
+                <Shield className="h-8 w-8 text-primary-400" />
+                <span className="text-xl font-bold">SecuriTel</span>
+              </div>
+              <p className="text-gray-400 mb-4">
+                La première plateforme au Bénin pour enregistrer et sécuriser vos téléphones contre le vol, la perte et les arnaques.
+              </p>
+              <p className="text-sm text-gray-500">
+                © 2025 SecuriTel. Tous droits réservés.
+              </p>
+            </div>
+
+            {/* Links */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">
+                Liens utiles
+              </h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/legal" className="text-gray-400 hover:text-white transition-colors">
+                    Mentions légales
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
+                    Politique de confidentialité
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">
+                    CGU
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/cookies" className="text-gray-400 hover:text-white transition-colors">
+                    Paramètres des cookies
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-4">
+                Contact
+              </h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>contact@securitel.bj</li>
+                <li>+229 99 99 99 99</li>
+                <li>WhatsApp: +229 99 99 99 99</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
+
       {/* Scroll to top button */}
       <ScrollToTopAdvanced 
         variant="progress" 
