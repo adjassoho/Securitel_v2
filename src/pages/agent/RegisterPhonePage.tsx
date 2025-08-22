@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useLocation } from 'react-router-dom';
 import { agentService } from '@/services/api';
-import { ArrowLeft, Upload, CheckCircle, Smartphone, Camera } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Smartphone, Camera } from 'lucide-react';
 import toast from 'react-hot-toast';
 import IMEIInput from '@/components/ui/IMEIInput';
 

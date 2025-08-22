@@ -75,7 +75,7 @@ const DashboardLayout = () => {
           {/* Logo */}
           <div className="flex h-16 items-center justify-between px-4 border-b">
             <Link to="/dashboard" className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-primary-600" />
+              <img src="/images/logo.png" alt="SecuriTel Logo" className="h-8 w-8" />
               <span className="text-xl font-bold text-gray-900">SecuriTel</span>
             </Link>
             <button

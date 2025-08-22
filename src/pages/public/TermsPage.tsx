@@ -23,7 +23,7 @@ const TermsPage = () => {
           {/* Préambule */}
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-              <Shield className="w-6 h-6 mr-2 text-primary-600" />
+              <img src="/images/logo.png" alt="SecuriTel Logo" className="w-6 h-6 mr-2" />
               Préambule
             </h2>
             <div className="bg-primary-50 rounded-lg p-6">

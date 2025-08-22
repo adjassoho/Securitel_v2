@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { phoneService, paymentService } from '@/services/api';
 import toast from 'react-hot-toast';
-import { Upload, Check, AlertCircle, Smartphone, ShieldCheck, CreditCard } from 'lucide-react';
+import { Upload, Check, AlertCircle } from 'lucide-react';
 import type { RegisterPhoneRequest } from '@/types';
 import IMEIInput from '@/components/ui/IMEIInput';
 

@@ -13,7 +13,6 @@ import {
   FileText,
   UserPlus,
   Search,
-  CreditCard,
   AlertCircle,
 } from 'lucide-react';
 import toast from 'react-hot-toast';

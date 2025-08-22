@@ -13,10 +13,6 @@ import {
   Phone,
   Mail,
   MessageCircle,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
   Sparkles,
   ShieldCheck,
   Fingerprint,
@@ -282,7 +278,7 @@ const HomePage = () => {
                   className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-2xl shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-2 transition-all duration-500 overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center">
-                    <Shield className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
+                    <img src="/images/logo.png" alt="SecuriTel Logo" className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
                     Commencer gratuitement
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-700 to-cyan-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -632,7 +628,7 @@ const HomePage = () => {
                 
                 <div className="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300">
                   <div className="flex-shrink-0 p-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
-                    <Shield className="h-6 w-6 text-white" />
+                    <img src="/images/logo.png" alt="SecuriTel Logo" className="h-6 w-6" />
                   </div>
                   <div>
                     <h4 className="text-lg font-semibold text-gray-900 mb-2">Base publique accessible</h4>
@@ -667,7 +663,7 @@ const HomePage = () => {
                   to="/register" 
                   className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-2xl shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500"
                 >
-                  <Shield className="w-6 h-6 mr-3" />
+                  <img src="/images/logo.png" alt="SecuriTel Logo" className="w-6 h-6 mr-3" />
                   Commencer avec SecuriTel
                   <ArrowRight className="ml-3 h-6 w-6" />
                 </Link>
@@ -848,7 +844,7 @@ const HomePage = () => {
               to="/register" 
               className="inline-flex items-center px-12 py-6 text-xl font-semibold text-white bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 rounded-2xl shadow-2xl hover:shadow-blue-500/25 transform hover:-translate-y-2 transition-all duration-500"
             >
-              <Shield className="w-6 h-6 mr-3" />
+              <img src="/images/logo.png" alt="SecuriTel Logo" className="w-6 h-6 mr-3" />
               Commencer gratuitement
             </Link>
             

@@ -1,4 +1,4 @@
-import { User, Settings, Shield, Bell, Lock, Smartphone, Construction, Sparkles } from 'lucide-react';
+import { User, Bell, Lock, Smartphone, Construction, Sparkles } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 const ProfilePage = () => {

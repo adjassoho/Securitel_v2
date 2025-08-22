@@ -25,7 +25,7 @@ const PublicLayout = () => {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <Shield className="h-8 w-8 text-primary-600" />
+              <img src="/images/logo.png" alt="SecuriTel Logo" className="h-8 w-8" />
               <span className="text-xl font-bold text-gray-900">SecuriTel</span>
             </Link>
 
@@ -124,7 +124,7 @@ const PublicLayout = () => {
             {/* Company info */}
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <Shield className="h-8 w-8 text-primary-400" />
+                <img src="/images/logo.png" alt="SecuriTel Logo" className="h-8 w-8" />
                 <span className="text-xl font-bold">SecuriTel</span>
               </div>
               <p className="text-gray-400 mb-4">

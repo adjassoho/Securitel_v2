@@ -127,7 +127,7 @@ const RegisterPage = () => {
               <div className="lg:hidden text-center mb-8">
                 <Link to="/" className="inline-flex items-center justify-center">
                   <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-3 border border-white/30">
-                    <Shield className="h-8 w-8 text-white" />
+                    <img src="/images/logo.png" alt="SecuriTel Logo" className="h-8 w-8" />
                   </div>
                   <span className="ml-3 text-2xl font-bold text-white">SecuriTel</span>
                 </Link>

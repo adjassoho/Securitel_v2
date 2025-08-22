@@ -7,7 +7,7 @@ const LegalPage = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center justify-center px-4 py-2 mb-4 text-sm font-medium text-primary-700 bg-primary-100 rounded-full">
-            <Shield className="w-4 h-4 mr-2" />
+            <img src="/images/logo.png" alt="SecuriTel Logo" className="w-4 h-4 mr-2" />
             Informations légales
           </div>
           <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">

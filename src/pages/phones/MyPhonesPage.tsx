@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { phoneService } from '@/services/api';
 import { 
   Smartphone, 
-  Plus, 
   Shield, 
   AlertTriangle, 
   CheckCircle,

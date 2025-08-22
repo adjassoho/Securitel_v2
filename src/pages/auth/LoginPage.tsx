@@ -50,7 +50,7 @@ const LoginPage = () => {
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
               <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-6 border border-white/20">
-                <Shield className="h-16 w-16 text-white mx-auto" />
+                <img src="/images/logo.png" alt="SecuriTel Logo" className="h-16 w-16 mx-auto" />
               </div>
             </div>
             
@@ -88,7 +88,7 @@ const LoginPage = () => {
               <div className="lg:hidden text-center mb-8">
                 <Link to="/" className="inline-flex items-center justify-center">
                   <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-3 border border-white/30">
-                    <Shield className="h-8 w-8 text-white" />
+                    <img src="/images/logo.png" alt="SecuriTel Logo" className="h-8 w-8" />
                   </div>
                   <span className="ml-3 text-2xl font-bold text-white">SecuriTel</span>
                 </Link>

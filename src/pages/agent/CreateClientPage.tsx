@@ -30,7 +30,6 @@ const CreateClientPage = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm<CreateClientForm>();
 
   const generatePassword = () => {

@@ -23,7 +23,7 @@ const PrivacyPage = () => {
           {/* Introduction */}
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-              <Shield className="w-6 h-6 mr-2 text-primary-600" />
+              <img src="/images/logo.png" alt="SecuriTel Logo" className="w-6 h-6 mr-2" />
               Notre engagement
             </h2>
             <div className="bg-primary-50 rounded-lg p-6">
@@ -153,7 +153,7 @@ const PrivacyPage = () => {
               
               <div className="text-center p-6 bg-green-50 rounded-lg">
                 <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-6 h-6 text-white" />
+                  <img src="/images/logo.png" alt="SecuriTel Logo" className="w-6 h-6" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Accès contrôlé</h3>
                 <p className="text-sm text-gray-600">Accès limité aux employés autorisés uniquement</p>

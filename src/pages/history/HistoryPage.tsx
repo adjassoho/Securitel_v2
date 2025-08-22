@@ -1,4 +1,4 @@
-import { Clock, Calendar, Activity, Smartphone, AlertTriangle, Shield, Construction } from 'lucide-react';
+import { Clock, Calendar, Activity, Shield, Construction } from 'lucide-react';
 
 const HistoryPage = () => {
   return (
