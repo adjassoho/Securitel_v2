@@ -67,14 +67,8 @@ const MyPhonesPage = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Mes téléphones</h1>
           <p className="mt-1 text-sm text-gray-600">
-            Gérez vos téléphones enregistrés
+            Gérez vos téléphones enregistrés. Pour enregistrer un nouveau téléphone, rendez-vous dans le tableau de bord.
           </p>
-        </div>
-        <div className="mt-4 sm:mt-0">
-          <Link to="/phones/register" className="btn-primary">
-            <Plus className="mr-2 h-4 w-4" />
-            Enregistrer un téléphone
-          </Link>
         </div>
       </div>
 
@@ -172,12 +166,11 @@ const MyPhonesPage = () => {
           <Smartphone className="mx-auto h-12 w-12 text-gray-400" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">Aucun téléphone</h3>
           <p className="mt-1 text-sm text-gray-500">
-            Commencez par enregistrer votre premier téléphone.
+            Commencez par enregistrer votre premier téléphone depuis le tableau de bord.
           </p>
           <div className="mt-6">
-            <Link to="/phones/register" className="btn-primary">
-              <Plus className="mr-2 h-4 w-4" />
-              Enregistrer un téléphone
+            <Link to="/dashboard" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+              Aller au tableau de bord →
             </Link>
           </div>
         </div>

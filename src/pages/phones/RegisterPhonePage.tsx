@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { phoneService, paymentService } from '@/services/api';
 import toast from 'react-hot-toast';
-import { Upload, Check, AlertCircle } from 'lucide-react';
+import { Upload, Check, AlertCircle, Smartphone, ShieldCheck, CreditCard } from 'lucide-react';
 import type { RegisterPhoneRequest } from '@/types';
+import IMEIInput from '@/components/ui/IMEIInput';
 
 interface FormData {
   imei1: string;
@@ -75,12 +76,17 @@ const RegisterPhonePage = () => {
   };
 
   const brands = [
-    'Apple', 'Samsung', 'Xiaomi', 'Oppo', 'Vivo', 'Realme', 
-    'OnePlus', 'Google', 'Nokia', 'Motorola', 'Tecno', 'Infinix'
+    'Acer', 'Alcatel', 'Apple', 'Archos', 'Asus', 'BlackBerry', 'Blu', 'Bontel', 'Cat', 'Cherry Mobile',
+    'Condor', 'Cubot', 'Demi', 'Doogee', 'Elephone', 'Energizer', 'Evertek', 'Fairphone', 'Fero', 'Gionee',
+    'Google (Pixel)', 'GTel', 'Hisense', 'Honor', 'HTC', 'Huawei', 'iQOO', 'Imose', 'Infinix', 'Innoson',
+    'iRulu', 'itel', 'Karbonn', 'Lava', 'LeEco', 'Lenovo', 'LG', 'Mara', 'Meizu', 'Microsoft (Lumia)',
+    'Mobicel', 'Motorola', 'Nokia', 'Nothing', 'Nubia', 'OnePlus', 'Oppo', 'Oukitel', 'Palm', 'Poco',
+    'Plum', 'Prestigio', 'Realme', 'Redmi', 'Samsung', 'Sharp', 'Sico', 'Sony', 'Stylo', 'Symphony',
+    'Tecno', 'TCL', 'Ulefone', 'Umidigi', 'Vivo', 'Wiko', 'X-Tigi', 'Xiaomi', 'Yota', 'ZTE', 'ZUK'
   ];
 
   const ramOptions = ['2GB', '3GB', '4GB', '6GB', '8GB', '12GB', '16GB'];
-  const storageOptions = ['16GB', '32GB', '64GB', '128GB', '256GB', '512GB', '1TB'];
+  const storageOptions = ['512MB', '1GB', '2GB', '16GB', '32GB', '64GB', '128GB', '256GB', '512GB', '1TB'];
 
   if (paymentProcessing) {
     return (
@@ -132,43 +138,33 @@ const RegisterPhonePage = () => {
               <h2 className="text-lg font-semibold mb-4">Informations du téléphone</h2>
               
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="label">IMEI 1 *</label>
-                  <input
-                    {...register('imei1', {
-                      required: 'IMEI 1 est obligatoire',
-                      pattern: {
-                        value: /^[0-9]{15}$/,
-                        message: 'IMEI doit contenir exactement 15 chiffres',
-                      },
-                    })}
-                    type="text"
-                    className="input"
-                    placeholder="15 chiffres"
-                  />
-                  {errors.imei1 && (
-                    <p className="mt-1 text-sm text-red-600">{errors.imei1.message}</p>
-                  )}
-                </div>
+                <IMEIInput
+                  label="IMEI 1"
+                  required
+                  register={register('imei1', {
+                    required: 'IMEI 1 est obligatoire',
+                    pattern: {
+                      value: /^[0-9]{15}$/,
+                      message: 'IMEI doit contenir exactement 15 chiffres',
+                    },
+                  })}
+                  error={errors.imei1?.message}
+                  placeholder="Premier IMEI (15 chiffres)"
+                />
 
-                <div>
-                  <label className="label">IMEI 2 *</label>
-                  <input
-                    {...register('imei2', {
-                      required: 'IMEI 2 est obligatoire',
-                      pattern: {
-                        value: /^[0-9]{15}$/,
-                        message: 'IMEI doit contenir exactement 15 chiffres',
-                      },
-                    })}
-                    type="text"
-                    className="input"
-                    placeholder="15 chiffres"
-                  />
-                  {errors.imei2 && (
-                    <p className="mt-1 text-sm text-red-600">{errors.imei2.message}</p>
-                  )}
-                </div>
+                <IMEIInput
+                  label="IMEI 2"
+                  required
+                  register={register('imei2', {
+                    required: 'IMEI 2 est obligatoire',
+                    pattern: {
+                      value: /^[0-9]{15}$/,
+                      message: 'IMEI doit contenir exactement 15 chiffres',
+                    },
+                  })}
+                  error={errors.imei2?.message}
+                  placeholder="Second IMEI (15 chiffres)"
+                />
 
                 <div>
                   <label className="label">Marque *</label>

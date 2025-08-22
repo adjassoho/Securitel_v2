@@ -6,14 +6,12 @@ import {
   X,
   Home,
   Smartphone,
-  Search,
   AlertTriangle,
   History,
   User,
   Settings,
   LogOut,
   ChevronDown,
-  Plus,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { cn } from '@/utils/cn';
@@ -39,21 +37,19 @@ const DashboardLayout = () => {
       icon: Smartphone,
       submenu: [
         { name: 'Voir mes téléphones', href: '/phones' },
-        { name: 'Enregistrer un téléphone', href: '/phones/register' },
       ],
     },
-    { name: 'Vérifier IMEI', href: '/verify', icon: Search },
     {
       name: 'Signalements',
       icon: AlertTriangle,
       submenu: [
-        { name: 'Téléphone suspect', href: '/report/suspicious' },
         { name: 'Signaler un vol', href: '/report/theft' },
         { name: 'Signaler une perte', href: '/report/loss' },
         { name: 'Appareil retrouvé', href: '/report/found' },
       ],
     },
     { name: 'Historique', href: '/history', icon: History },
+    { name: 'Devenir agent enregistreur', href: '/become-agent', icon: User },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -222,20 +218,7 @@ const DashboardLayout = () => {
 
             {/* Quick actions */}
             <div className="flex items-center space-x-4">
-              <Link
-                to="/phones/register"
-                className="btn-primary flex items-center"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Enregistrer téléphone
-              </Link>
-              <Link
-                to="/verify"
-                className="btn-outline flex items-center"
-              >
-                <Search className="mr-2 h-4 w-4" />
-                Vérifier IMEI
-              </Link>
+              {/* Actions rapides désormais uniquement dans le tableau de bord */}
             </div>
           </div>
         </header>

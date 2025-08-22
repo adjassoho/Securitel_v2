@@ -2,6 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Animations for modern UI */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Grid background pattern */
+.bg-grid-white\/\[0\.02\] {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+}
+
 @layer base {
   :root {
     --radius: 0.5rem;
@@ -55,6 +113,192 @@
 
   .card {
     @apply rounded-lg border border-gray-200 bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-md;
+  }
+
+  /* Enhanced Form Styles */
+  .form-container {
+    @apply max-w-4xl mx-auto p-6 space-y-8;
+  }
+
+  .form-section {
+    @apply bg-white rounded-2xl border border-gray-200 p-8 shadow-sm hover:shadow-md transition-all duration-300;
+  }
+
+  .form-header {
+    @apply text-2xl font-bold text-gray-900 mb-2;
+  }
+
+  .form-description {
+    @apply text-gray-600 mb-8;
+  }
+
+  .form-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+  }
+
+  .form-field {
+    @apply space-y-2;
+  }
+
+  .enhanced-input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 focus:outline-none transition-all duration-300 hover:border-gray-400;
+  }
+
+  .enhanced-input:focus {
+    @apply transform scale-[1.02];
+  }
+
+  .enhanced-label {
+    @apply flex items-center text-sm font-semibold text-gray-700 mb-2;
+  }
+
+  .enhanced-select {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 focus:outline-none transition-all duration-300 hover:border-gray-400 cursor-pointer;
+  }
+
+  .enhanced-textarea {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-900 placeholder:text-gray-500 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 focus:outline-none transition-all duration-300 hover:border-gray-400 resize-none;
+  }
+
+  .enhanced-file-input {
+    @apply w-full px-4 py-3 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50 transition-all duration-300 cursor-pointer;
+  }
+
+  .error-input {
+    @apply border-red-300 bg-red-50 focus:border-red-500 focus:ring-red-200;
+  }
+
+  .success-input {
+    @apply border-green-300 bg-green-50 focus:border-green-500 focus:ring-green-200;
+  }
+
+  .field-error {
+    @apply flex items-center text-sm text-red-600 mt-1;
+  }
+
+  .field-help {
+    @apply text-sm text-gray-500 mt-1;
+  }
+
+  .field-success {
+    @apply flex items-center text-sm text-green-600 mt-1;
+  }
+
+  /* IMEI Input specific styles */
+  .imei-input {
+    @apply font-mono text-lg tracking-widest text-center;
+  }
+
+  .imei-input::placeholder {
+    @apply font-sans text-base tracking-normal;
+  }
+
+  /* Progress indicator for multi-step forms */
+  .form-progress {
+    @apply flex items-center justify-between mb-8 px-4;
+  }
+
+  .progress-step {
+    @apply flex items-center space-x-3;
+  }
+
+  .progress-line {
+    @apply flex-1 h-1 mx-4 rounded-full;
+  }
+
+  .step-circle {
+    @apply w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-all duration-300;
+  }
+
+  .step-active {
+    @apply bg-blue-600 text-white shadow-lg;
+  }
+
+  .step-completed {
+    @apply bg-green-600 text-white;
+  }
+
+  .step-inactive {
+    @apply bg-gray-200 text-gray-600;
+  }
+
+  /* Form actions */
+  .form-actions {
+    @apply flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-8 border-t border-gray-200;
+  }
+
+  .btn-form-primary {
+    @apply px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-200 inline-flex items-center justify-center;
+  }
+
+  .btn-form-secondary {
+    @apply px-8 py-3 bg-white text-gray-700 font-semibold rounded-xl border border-gray-300 hover:bg-gray-50 hover:border-gray-400 transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-200 inline-flex items-center justify-center;
+  }
+
+  /* Improved form transitions and interactions */
+  .form-section:hover {
+    transform: translateY(-1px);
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .enhanced-input:hover {
+    @apply shadow-sm;
+  }
+
+  .enhanced-select:hover {
+    @apply shadow-sm;
+  }
+
+  .enhanced-textarea:hover {
+    @apply shadow-sm;
+  }
+
+  /* IMEI specific enhancements */
+  .imei-container {
+    @apply relative;
+  }
+
+  .imei-validation-icon {
+    @apply absolute right-3 top-1/2 transform -translate-y-1/2 transition-all duration-300;
+  }
+
+  .imei-counter {
+    @apply absolute -bottom-6 right-0 text-xs font-medium transition-all duration-300;
+  }
+
+  /* Form validation states */
+  .form-field.has-error .enhanced-input {
+    @apply border-red-400 bg-red-50 focus:border-red-500;
+  }
+
+  .form-field.has-success .enhanced-input {
+    @apply border-green-400 bg-green-50 focus:border-green-500;
+  }
+
+  .form-field.has-warning .enhanced-input {
+    @apply border-yellow-400 bg-yellow-50 focus:border-yellow-500;
+  }
+
+  /* Loading states */
+  .btn-loading {
+    @apply opacity-70 cursor-not-allowed;
+  }
+
+  .btn-loading:hover {
+    @apply transform-none scale-100;
+  }
+
+  /* Enhanced focus states */
+  .enhanced-input:focus-within {
+    @apply ring-4 ring-blue-200 border-blue-500;
+  }
+
+  .enhanced-select:focus-within {
+    @apply ring-4 ring-blue-200 border-blue-500;
+  }
+
+  .enhanced-textarea:focus-within {
+    @apply ring-4 ring-blue-200 border-blue-500;
   }
 
   /* Animations */
