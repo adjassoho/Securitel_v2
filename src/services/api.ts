@@ -16,6 +16,11 @@ import type {
   PasswordChangeRequest,
   ProfileUpdateRequest,
   DashboardStats,
+  AgentStats,
+  ClientRegistration,
+  WithdrawalRequest,
+  Withdrawal,
+  User,
 } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api';
@@ -247,6 +252,57 @@ export const paymentService = {
 
   verifyPayment: async (reference: string) => {
     const response = await api.get(`/payments/verify/${reference}`);
+    return response.data;
+  },
+};
+
+// Services pour les agents/enregistreurs
+export const agentService = {
+  getStats: async (): Promise<AgentStats> => {
+    const response = await api.get('/agent/stats');
+    return response.data;
+  },
+
+  getRegistrations: async (filters?: { status?: string; from?: string; to?: string }): Promise<ClientRegistration[]> => {
+    const response = await api.get('/agent/registrations', { params: filters });
+    return response.data;
+  },
+
+  createClientAccount: async (data: FormData): Promise<{ user: User; password: string }> => {
+    const response = await api.post('/agent/create-client', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  registerClientPhone: async (clientId: string, data: FormData): Promise<Phone> => {
+    const response = await api.post(`/agent/register-phone/${clientId}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  updateRegistration: async (registrationId: string, data: any): Promise<ClientRegistration> => {
+    const response = await api.put(`/agent/registrations/${registrationId}`, data);
+    return response.data;
+  },
+
+  requestWithdrawal: async (data: WithdrawalRequest): Promise<Withdrawal> => {
+    const response = await api.post('/agent/withdrawals', data);
+    return response.data;
+  },
+
+  getWithdrawals: async (): Promise<Withdrawal[]> => {
+    const response = await api.get('/agent/withdrawals');
+    return response.data;
+  },
+
+  getReferralLink: async (): Promise<{ link: string }> => {
+    const response = await api.get('/agent/referral-link');
     return response.data;
   },
 };

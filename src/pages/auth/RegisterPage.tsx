@@ -4,11 +4,15 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import type { RegisterRequest } from '@/types';
+import { useScrollToTopOnMount } from '@/hooks/useScrollToTopOnMount';
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { register: registerUser, error, clearError, isLoading } = useAuthStore();
+  
+  // Scroll vers le haut lors du chargement de la page
+  useScrollToTopOnMount();
   
   const {
     register,

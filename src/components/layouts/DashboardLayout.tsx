@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { cn } from '@/utils/cn';
+import ScrollToTop from '@/components/ui/ScrollToTop';
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -244,6 +245,9 @@ const DashboardLayout = () => {
           <Outlet />
         </main>
       </div>
+
+      {/* Scroll to top button */}
+      <ScrollToTop threshold={150} />
     </div>
   );
 };

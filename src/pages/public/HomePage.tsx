@@ -291,10 +291,10 @@ const HomePage = () => {
                 
                 <Link 
                   to="/login" 
-                  className="group inline-flex items-center text-lg font-semibold text-blue-200 hover:text-white transition-all duration-300 hover:scale-105"
+                  className="group link-login text-lg"
                 >
                   Se connecter 
-                  <ArrowRight className="ml-3 h-6 w-6 transform group-hover:translate-x-2 transition-transform duration-300" />
+                  <ArrowRight className="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
               </div>
 
@@ -411,13 +411,77 @@ const HomePage = () => {
             ))}
           </div>
           
-          {/* Features Illustration */}
+          {/* Features Ecosystem Illustration */}
           <div className="mt-20 text-center">
-            <img 
-              src="/images/fonctionnality.png" 
-              alt="Fonctionnalités SecuriTel" 
-              className="mx-auto max-w-2xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
-            />
+            <div className="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-3xl p-8 mx-auto max-w-5xl shadow-xl">
+              <div className="mb-8">
+                <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                  🛡️ Écosystème complet de protection SecuriTel
+                </h3>
+                <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                  Cette illustration montre comment nos 5 fonctionnalités principales travaillent ensemble 
+                  pour créer un bouclier de protection complet autour de votre téléphone. Chaque service 
+                  est interconnecté pour vous offrir une sécurité maximale.
+                </p>
+              </div>
+              
+              {/* Main ecosystem illustration */}
+              <div className="mb-8">
+                <img 
+                  src="/images/features-ecosystem.svg" 
+                  alt="Écosystème SecuriTel - Comment nos fonctionnalités travaillent ensemble pour protéger votre téléphone" 
+                  className="mx-auto max-w-full h-auto rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500"
+                />
+              </div>
+              
+              {/* Explanation cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold">1</span>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Enregistrement sécurisé</h4>
+                  <p className="text-sm text-gray-600">Votre téléphone est enregistré dans notre base de données protégée</p>
+                </div>
+                
+                <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold">2</span>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Protection active</h4>
+                  <p className="text-sm text-gray-600">Surveillance continue et vérifications automatiques</p>
+                </div>
+                
+                <div className="bg-white rounded-xl p-6 shadow-lg">
+                  <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold">3</span>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Récupération rapide</h4>
+                  <p className="text-sm text-gray-600">Signalement instantané et collaboration avec les autorités</p>
+                </div>
+              </div>
+              
+              <div className="mt-8 p-6 bg-white rounded-2xl shadow-lg">
+                <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600">
+                  <span className="flex items-center">
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                    10,000+ téléphones protégés
+                  </span>
+                  <span className="flex items-center">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                    Base de données sécurisée
+                  </span>
+                  <span className="flex items-center">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                    Partenaire officiel des forces de l'ordre
+                  </span>
+                  <span className="flex items-center">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                    Support 24/7
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
           
           <div className="text-center mt-12">
@@ -613,71 +677,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Enhanced Testimonials Section */}
-      <section id="testimonials" className="py-32 bg-white relative overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 opacity-5">
-          <img 
-            src="/images/testimonials-bg.svg" 
-            alt="" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className={`text-center mb-20 transition-all duration-1000 ${
-            visibleSections.has('testimonials') ? 'animate-slideInUp opacity-100' : 'opacity-0 translate-y-10'
-          }`}>
-            <h2 className="text-5xl font-bold text-gray-900 sm:text-6xl lg:text-7xl mb-6">
-              Ils nous <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">font confiance</span>
-            </h2>
-            <p className="mt-6 text-xl text-gray-600 max-w-4xl mx-auto">
-              Découvrez les histoires réelles de protection réussie de nos utilisateurs
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={index}
-                className={`bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 border border-gray-100 ${
-                  index === currentTestimonial ? 'ring-2 ring-blue-500 scale-105' : ''
-                } transition-all duration-1000 ${
-                  visibleSections.has('testimonials') ? 'animate-slideInUp opacity-100' : 'opacity-0 translate-y-10'
-                }`}
-                style={{ 
-                  animationDelay: `${index * 200}ms`,
-                  transitionDelay: `${index * 200}ms`
-                }}
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-3xl shadow-lg">
-                      {testimonial.avatar}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center mb-4">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                      ))}
-                    </div>
-                    <p className="text-lg text-gray-700 italic mb-4 leading-relaxed">
-                      "{testimonial.content}"
-                    </p>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">{testimonial.name}</p>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
-                      <p className="text-xs text-gray-500 mt-1">{testimonial.location}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Enhanced Pricing Section */}
       <section id="pricing" className="py-32 bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -756,6 +755,71 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Enhanced Testimonials Section */}
+      <section id="testimonials" className="py-32 bg-white relative overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 opacity-5">
+          <img 
+            src="/images/testimonials-bg.svg" 
+            alt="" 
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className={`text-center mb-20 transition-all duration-1000 ${
+            visibleSections.has('testimonials') ? 'animate-slideInUp opacity-100' : 'opacity-0 translate-y-10'
+          }`}>
+            <h2 className="text-5xl font-bold text-gray-900 sm:text-6xl lg:text-7xl mb-6">
+              Ils nous <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">font confiance</span>
+            </h2>
+            <p className="mt-6 text-xl text-gray-600 max-w-4xl mx-auto">
+              Découvrez les histoires réelles de protection réussie de nos utilisateurs
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {testimonials.map((testimonial, index) => (
+              <div 
+                key={index}
+                className={`bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50 rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 border border-gray-100 ${
+                  index === currentTestimonial ? 'ring-2 ring-blue-500 scale-105' : ''
+                } transition-all duration-1000 ${
+                  visibleSections.has('testimonials') ? 'animate-slideInUp opacity-100' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ 
+                  animationDelay: `${index * 200}ms`,
+                  transitionDelay: `${index * 200}ms`
+                }}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <div className="h-16 w-16 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-3xl shadow-lg">
+                      {testimonial.avatar}
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center mb-4">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                      ))}
+                    </div>
+                    <p className="text-lg text-gray-700 italic mb-4 leading-relaxed">
+                      "{testimonial.content}"
+                    </p>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">{testimonial.name}</p>
+                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+                      <p className="text-xs text-gray-500 mt-1">{testimonial.location}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Enhanced CTA Section */}
       <section id="cta" className="py-32 relative overflow-hidden">
         {/* Background Image */}
@@ -790,10 +854,10 @@ const HomePage = () => {
             
             <Link 
               to="/login" 
-              className="inline-flex items-center px-12 py-6 text-xl font-semibold text-blue-200 hover:text-white transition-all duration-300 hover:scale-105"
+              className="group link-login px-12 py-6 text-xl"
             >
               Se connecter
-              <ArrowRight className="ml-3 h-6 w-6" />
+              <ArrowRight className="ml-3 h-6 w-6 transform group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </div>
         </div>

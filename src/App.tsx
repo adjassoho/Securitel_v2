@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/stores/useAuthStore';
+import CookieBanner from '@/components/ui/CookieBanner';
+import ScrollToTopOnRouteChange from '@/components/ui/ScrollToTopOnRouteChange';
 
 // Layouts
 import PublicLayout from '@/components/layouts/PublicLayout';
@@ -15,6 +17,10 @@ import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
 import VerifyRegistrationPage from '@/pages/auth/VerifyRegistrationPage';
 import Enter2FACodePage from '@/pages/auth/Enter2FACodePage';
 import ContactPage from '@/pages/public/ContactPage';
+import LegalPage from '@/pages/public/LegalPage';
+import PrivacyPage from '@/pages/public/PrivacyPage';
+import TermsPage from '@/pages/public/TermsPage';
+import CookiesPage from '@/pages/public/CookiesPage';
 
 // Pages protégées
 import DashboardPage from '@/pages/dashboard/DashboardPage';
@@ -32,6 +38,11 @@ import ProfilePage from '@/pages/profile/ProfilePage';
 import SettingsPage from '@/pages/profile/SettingsPage';
 import BecomeAgentPage from '@/pages/profile/BecomeAgentPage';
 
+// Pages agent
+import AgentDashboard from '@/pages/agent/AgentDashboard';
+import CreateClientPage from '@/pages/agent/CreateClientPage';
+import AgentRegisterPhonePage from '@/pages/agent/RegisterPhonePage';
+
 // Composant de protection des routes
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuthStore();
@@ -43,10 +54,26 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Composant de protection des routes agent
+const AgentRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user } = useAuthStore();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user?.role !== 'agent' && user?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
 function App() {
   return (
     <>
       <Router>
+        <ScrollToTopOnRouteChange />
         <Routes>
           {/* Routes publiques */}
           <Route element={<PublicLayout />}>
@@ -58,6 +85,10 @@ function App() {
             <Route path="/verify-email" element={<VerifyRegistrationPage />} />
             <Route path="/verify-2fa" element={<Enter2FACodePage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/legal" element={<LegalPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/cookies" element={<CookiesPage />} />
           </Route>
 
           {/* Routes protégées */}
@@ -92,9 +123,25 @@ function App() {
             <Route path="/become-agent" element={<BecomeAgentPage />} />
           </Route>
 
+          {/* Routes agent */}
+          <Route
+            element={
+              <AgentRoute>
+                <DashboardLayout />
+              </AgentRoute>
+            }
+          >
+            <Route path="/agent/dashboard" element={<AgentDashboard />} />
+            <Route path="/agent/create-client" element={<CreateClientPage />} />
+            <Route path="/agent/register-phone" element={<AgentRegisterPhonePage />} />
+            {/* TODO: Ajouter les autres routes agent */}
+          </Route>
+
           {/* Redirection par défaut */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        {/* Cookie Banner */}
+        <CookieBanner />
       </Router>
       
       <Toaster

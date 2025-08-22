@@ -2,6 +2,7 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Shield, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/utils/cn';
+import ScrollToTopAdvanced from '@/components/ui/ScrollToTopAdvanced';
 
 const PublicLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -93,7 +94,7 @@ const PublicLayout = () => {
               <div className="mt-4 space-y-2">
                 <Link
                   to="/login"
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-center text-base font-medium text-gray-700 hover:bg-gray-50"
+                  className="block w-full btn-login text-center text-base"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Connexion
@@ -141,19 +142,29 @@ const PublicLayout = () => {
               </h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="/mentions-legales" className="text-gray-400 hover:text-white">
+                  <Link to="/legal" className="text-gray-400 hover:text-white transition-colors">
                     Mentions légales
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/politique-confidentialite" className="text-gray-400 hover:text-white">
+                  <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">
                     Politique de confidentialité
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/cgu" className="text-gray-400 hover:text-white">
+                  <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">
                     CGU
-                  </a>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">
+                    Contact
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/cookies" className="text-gray-400 hover:text-white transition-colors">
+                    Paramètres des cookies
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -172,6 +183,14 @@ const PublicLayout = () => {
           </div>
         </div>
       </footer>
+
+      {/* Scroll to top button */}
+      <ScrollToTopAdvanced 
+        variant="progress" 
+        position="bottom-right" 
+        size="md" 
+        threshold={200}
+      />
     </div>
   );
 };

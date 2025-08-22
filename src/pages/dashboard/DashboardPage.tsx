@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { 
   Smartphone, 
   Activity, 
@@ -13,8 +13,16 @@ import {
 import { dashboardService } from '@/services/api';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const DashboardPage = () => {
+  const { user } = useAuthStore();
+  
+  // Rediriger les agents vers leur tableau de bord spécifique
+  if (user?.role === 'agent') {
+    return <Navigate to="/agent/dashboard" replace />;
+  }
+  
   const { data: stats, isLoading } = useQuery({
     queryKey: ['dashboard-stats'],
     queryFn: dashboardService.getStats,

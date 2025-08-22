@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom';
 import { authService } from '@/services/api';
 import toast from 'react-hot-toast';
 import { ArrowLeft } from 'lucide-react';
+import { useScrollToTopOnMount } from '@/hooks/useScrollToTopOnMount';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  
+  // Scroll vers le haut lors du chargement de la page
+  useScrollToTopOnMount();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

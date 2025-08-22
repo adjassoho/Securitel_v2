@@ -2,12 +2,16 @@ import { useState } from 'react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { Shield } from 'lucide-react';
+import { useScrollToTopOnMount } from '@/hooks/useScrollToTopOnMount';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { login, error, clearError } = useAuthStore();
+  
+  // Scroll vers le haut lors du chargement de la page
+  useScrollToTopOnMount();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

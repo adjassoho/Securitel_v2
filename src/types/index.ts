@@ -148,6 +148,58 @@ export interface AgentApplicationRequest {
   quiz_score: number;
 }
 
+// Types pour l'enregistreur/agent
+export interface AgentStats {
+  total_registrations: number;
+  validated_registrations: number;
+  rejected_registrations: number;
+  pending_registrations: number;
+  total_revenue: number;
+  available_balance: number;
+  referral_link: string;
+}
+
+export interface ClientRegistration {
+  id: string;
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  phone_imei: string;
+  status: 'pending' | 'validated' | 'rejected';
+  created_at: string;
+  commission: number;
+  rejection_reason?: string;
+}
+
+export interface WithdrawalRequest {
+  amount: number;
+  method: 'mtn' | 'moov';
+  phone_number: string;
+  beneficiary_name: string;
+}
+
+export interface Withdrawal {
+  id: string;
+  amount: number;
+  method: string;
+  status: 'pending' | 'approved' | 'rejected';
+  requested_at: string;
+  processed_at?: string;
+  admin_comment?: string;
+}
+
+export interface CreateClientAccountRequest {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  password: string;
+  address: string;
+  id_type: 'cni' | 'passport' | 'voter_card';
+  id_number: string;
+  id_document: File;
+}
+
 // Types pour les notifications
 export interface Notification {
   id: string;

@@ -34,7 +34,15 @@
   }
 
   .btn-outline {
-    @apply btn border border-gray-300 bg-white hover:bg-gray-100 hover:border-primary-500;
+    @apply btn border border-gray-300 bg-white hover:bg-gray-100 hover:border-primary-500 transition-colors;
+  }
+
+  .btn-login {
+    @apply btn border-2 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-primary-400 hover:text-primary-600 transition-all duration-200;
+  }
+
+  .link-login {
+    @apply inline-flex items-center font-semibold text-primary-600 hover:text-primary-700 transition-all duration-300 hover:scale-105;
   }
 
   .input {
@@ -571,5 +579,171 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #2563eb, #7c3aed);
+  }
+
+  /* Cookie banner animations */
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  .animate-slideUp {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  .animate-slideDown {
+    animation: slideDown 0.4s ease-out;
+  }
+
+  /* Cookie toggle switch */
+  .cookie-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+  }
+
+  .cookie-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .cookie-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 24px;
+  }
+
+  .cookie-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+
+  input:checked + .cookie-slider {
+    background-color: #3b82f6;
+  }
+
+  input:checked + .cookie-slider:before {
+    transform: translateX(20px);
+  }
+
+  /* Cookie banner backdrop */
+  .cookie-backdrop {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Scroll to top button animations */
+  @keyframes scrollButtonBounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translate3d(0, 0, 0);
+    }
+    40%, 43% {
+      transform: translate3d(0, -4px, 0);
+    }
+    70% {
+      transform: translate3d(0, -2px, 0);
+    }
+    90% {
+      transform: translate3d(0, -1px, 0);
+    }
+  }
+
+  .scroll-button-bounce {
+    animation: scrollButtonBounce 2s infinite;
+  }
+
+  @keyframes scrollButtonPulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+  }
+
+  .scroll-button-pulse {
+    animation: scrollButtonPulse 2s infinite;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Ensure pages start at top */
+  body {
+    scroll-behavior: smooth;
+  }
+
+  /* Fix for route changes scroll position */
+  .route-container {
+    min-height: 100vh;
+    scroll-behavior: smooth;
+  }
+
+  /* Enhanced scroll button with glow */
+  .scroll-to-top-glow {
+    position: relative;
+  }
+
+  .scroll-to-top-glow::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(45deg, #3b82f6, #8b5cf6, #3b82f6);
+    background-size: 200% 200%;
+    animation: gradient-rotate 3s linear infinite;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+  }
+
+  @keyframes gradient-rotate {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 }
