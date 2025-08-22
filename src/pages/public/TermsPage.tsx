@@ -1,4 +1,4 @@
-import { FileText, Shield, AlertTriangle, CheckCircle, XCircle, Scale, Mail, Phone } from 'lucide-react';
+import { FileText, AlertTriangle, CheckCircle, XCircle, Scale, Mail, Phone } from 'lucide-react';
 
 const TermsPage = () => {
   return (

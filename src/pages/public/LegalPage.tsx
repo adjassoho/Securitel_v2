@@ -1,4 +1,4 @@
-import { Shield, Building, Mail, Phone, MapPin } from 'lucide-react';
+import { Building, Mail, Phone, MapPin } from 'lucide-react';
 
 const LegalPage = () => {
   return (

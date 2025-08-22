@@ -1,4 +1,4 @@
-import { Shield, Eye, Lock, Database, UserCheck, AlertTriangle, Mail, Phone } from 'lucide-react';
+import { Eye, Lock, Database, UserCheck, AlertTriangle, Mail, Phone } from 'lucide-react';
 
 const PrivacyPage = () => {
   return (
