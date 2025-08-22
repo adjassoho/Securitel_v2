@@ -700,7 +700,7 @@ const HomePage = () => {
               
               <div className="relative text-center">
                 <div className="inline-flex items-center px-6 py-3 mb-8 text-sm font-medium text-green-700 bg-green-100 rounded-full border border-green-200">
-                  🎉 Offre limitée
+                  🎉 Tarif annuel avantageux
                 </div>
                 
                 <h3 className="text-4xl font-bold text-gray-900 mb-6">
@@ -709,9 +709,9 @@ const HomePage = () => {
                 
                 <div className="mb-8">
                   <span className="text-7xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-                    500 FCFA
+                    1500 FCFA/an
                   </span>
-                  <p className="text-gray-600 mt-2">Pour les 1000 premiers inscrits</p>
+                  <p className="text-gray-600 mt-2">(soit 125 FCFA/mois)</p>
                 </div>
                 
                 <div className="space-y-4 text-left mb-10">
