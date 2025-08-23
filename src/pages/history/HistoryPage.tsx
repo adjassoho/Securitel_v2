@@ -8,8 +8,7 @@ const HistoryPage = () => {
         <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl mb-8">
           <div className="text-center">
             <div className="relative mb-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
-              <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-6 border border-white/20 mx-auto w-fit">
+              <div className="bg-white/10 backdrop-blur-lg rounded-full p-6 border border-white/20 mx-auto w-fit">
                 <Clock className="h-16 w-16 text-blue-600 mx-auto" />
               </div>
             </div>
@@ -27,8 +26,7 @@ const HistoryPage = () => {
         <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl">
           <div className="text-center max-w-2xl mx-auto">
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
-              <div className="relative bg-gradient-to-r from-orange-100 to-yellow-100 rounded-full p-8 border border-orange-200">
+              <div className="bg-gradient-to-r from-orange-100 to-yellow-100 rounded-full p-8 border border-orange-200">
                 <Construction className="h-20 w-20 text-orange-600 mx-auto" />
               </div>
             </div>

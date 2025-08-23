@@ -49,7 +49,7 @@ export function ReportTheftPage() {
       queryClient.invalidateQueries({ queryKey: ['reports'] });
       setShowSuccess(true);
       setTimeout(() => {
-        navigate('/dashboard/phones');
+        navigate('/phones');
       }, 3000);
     },
   });
@@ -268,7 +268,7 @@ export function ReportTheftPage() {
           <div className="flex gap-4 pt-4">
             <button
               type="button"
-              onClick={() => navigate('/dashboard/phones')}
+              onClick={() => navigate('/phones')}
               className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Annuler

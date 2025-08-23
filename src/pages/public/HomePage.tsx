@@ -409,73 +409,71 @@ const HomePage = () => {
           
           {/* Features Ecosystem Illustration */}
           <div className="mt-20 text-center">
-            <div className="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-3xl p-8 mx-auto max-w-5xl shadow-xl">
-              <div className="mb-8">
-                <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                  🛡️ Écosystème complet de protection SecuriTel
-                </h3>
-                <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
-                  Cette illustration montre comment nos 5 fonctionnalités principales travaillent ensemble 
-                  pour créer un bouclier de protection complet autour de votre téléphone. Chaque service 
-                  est interconnecté pour vous offrir une sécurité maximale.
-                </p>
+            <div className="mb-8">
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">
+                🛡️ Écosystème complet de protection SecuriTel
+              </h3>
+              <p className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
+                Cette illustration montre comment nos 5 fonctionnalités principales travaillent ensemble 
+                pour créer un bouclier de protection complet autour de votre téléphone. Chaque service 
+                est interconnecté pour vous offrir une sécurité maximale.
+              </p>
+            </div>
+            
+            {/* Main ecosystem illustration */}
+            <div className="mb-8">
+              <img 
+                src="/images/features-ecosystem.svg" 
+                alt="Écosystème SecuriTel - Comment nos fonctionnalités travaillent ensemble pour protéger votre téléphone" 
+                className="mx-auto max-w-full h-auto rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500"
+              />
+            </div>
+            
+            {/* Explanation cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-white font-bold">1</span>
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Enregistrement sécurisé</h4>
+                <p className="text-sm text-gray-600">Votre téléphone est enregistré dans notre base de données protégée</p>
               </div>
               
-              {/* Main ecosystem illustration */}
-              <div className="mb-8">
-                <img 
-                  src="/images/features-ecosystem.svg" 
-                  alt="Écosystème SecuriTel - Comment nos fonctionnalités travaillent ensemble pour protéger votre téléphone" 
-                  className="mx-auto max-w-full h-auto rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500"
-                />
+              <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-white font-bold">2</span>
+                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Protection active</h4>
+                <p className="text-sm text-gray-600">Surveillance continue et vérifications automatiques</p>
               </div>
               
-              {/* Explanation cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <div className="bg-white rounded-xl p-6 shadow-lg">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white font-bold">1</span>
-                  </div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Enregistrement sécurisé</h4>
-                  <p className="text-sm text-gray-600">Votre téléphone est enregistré dans notre base de données protégée</p>
+              <div className="bg-white rounded-xl p-6 shadow-lg">
+                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-white font-bold">3</span>
                 </div>
-                
-                <div className="bg-white rounded-xl p-6 shadow-lg">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white font-bold">2</span>
-                  </div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Protection active</h4>
-                  <p className="text-sm text-gray-600">Surveillance continue et vérifications automatiques</p>
-                </div>
-                
-                <div className="bg-white rounded-xl p-6 shadow-lg">
-                  <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white font-bold">3</span>
-                  </div>
-                  <h4 className="font-semibold text-gray-900 mb-2">Récupération rapide</h4>
-                  <p className="text-sm text-gray-600">Signalement instantané et collaboration avec les autorités</p>
-                </div>
+                <h4 className="font-semibold text-gray-900 mb-2">Récupération rapide</h4>
+                <p className="text-sm text-gray-600">Signalement instantané et collaboration avec les autorités</p>
               </div>
-              
-              <div className="mt-8 p-6 bg-white rounded-2xl shadow-lg">
-                <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600">
-                  <span className="flex items-center">
-                    <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                    10,000+ téléphones protégés
-                  </span>
-                  <span className="flex items-center">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                    Base de données sécurisée
-                  </span>
-                  <span className="flex items-center">
-                    <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                    Partenaire officiel des forces de l'ordre
-                  </span>
-                  <span className="flex items-center">
-                    <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
-                    Support 24/7
-                  </span>
-                </div>
+            </div>
+            
+            <div className="mt-8 p-6 bg-white rounded-2xl shadow-lg">
+              <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-600">
+                <span className="flex items-center">
+                  <div className="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                  10,000+ téléphones protégés
+                </span>
+                <span className="flex items-center">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                  Base de données sécurisée
+                </span>
+                <span className="flex items-center">
+                  <div className="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                  Partenaire officiel des forces de l'ordre
+                </span>
+                <span className="flex items-center">
+                  <div className="w-3 h-3 bg-orange-500 rounded-full mr-2"></div>
+                  Support 24/7
+                </span>
               </div>
             </div>
           </div>
@@ -727,15 +725,6 @@ const HomePage = () => {
                     <CheckCircle className="h-6 w-6 text-green-500 mr-4 flex-shrink-0" />
                     <span>Protection juridique incluse</span>
                   </div>
-                </div>
-                
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 mb-10 border border-green-200">
-                  <p className="text-sm font-semibold text-green-700 mb-2">
-                    🎁 Bonus parrainage
-                  </p>
-                  <p className="text-sm text-green-600">
-                    Gagnez 50 FCFA par inscription de filleul
-                  </p>
                 </div>
                 
                 <Link 

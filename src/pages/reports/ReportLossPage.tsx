@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { MapPin, Calendar, Clock, AlertCircle, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { phoneService } from '../../services/api';
@@ -21,10 +22,12 @@ type ReportLossData = z.infer<typeof reportLossSchema>;
 const ReportLossPage = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [userPhones] = useState([
-    { id: '1', brand: 'Apple', model: 'iPhone 13', imei: '123456789012345' },
-    { id: '2', brand: 'Samsung', model: 'Galaxy S22', imei: '987654321098765' },
-  ]);
+
+  // Récupérer les téléphones de l'utilisateur
+  const { data: phones, isLoading: phonesLoading } = useQuery({
+    queryKey: ['userPhones'],
+    queryFn: phoneService.getMyPhones,
+  });
 
   const {
     register,
@@ -45,13 +48,43 @@ const ReportLossPage = () => {
         additionalInfo: data.additionalInfo,
       });
       toast.success('Signalement de perte enregistré avec succès');
-      navigate('/dashboard');
+      navigate('/phones');
     } catch (error) {
       toast.error('Erreur lors du signalement. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (phonesLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  const legitimatePhones = phones?.filter((phone: any) => phone.status === 'legitimate') || [];
+
+  if (legitimatePhones.length === 0) {
+    return (
+      <div className="p-4 sm:p-6 lg:p-8">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+          <AlertCircle className="mx-auto h-12 w-12 text-yellow-600 mb-4" />
+          <h3 className="text-lg font-medium text-gray-900">Aucun téléphone légitime</h3>
+          <p className="mt-2 text-sm text-gray-600">
+            Vous n'avez aucun téléphone légitime à signaler comme perdu.
+          </p>
+          <button
+            onClick={() => navigate('/phones')}
+            className="mt-4 btn-primary"
+          >
+            Retour à mes téléphones
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -81,12 +114,12 @@ const ReportLossPage = () => {
               <select
                 id="phoneId"
                 {...register('phoneId')}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900"
               >
                 <option value="">Sélectionnez un téléphone</option>
-                {userPhones.map((phone) => (
+                {legitimatePhones.map((phone: any) => (
                   <option key={phone.id} value={phone.id}>
-                    {phone.brand} {phone.model} - IMEI: {phone.imei}
+                    {phone.brand} {phone.model} - IMEI: {phone.imei1}
                   </option>
                 ))}
               </select>
@@ -107,7 +140,7 @@ const ReportLossPage = () => {
                   id="lossDate"
                   {...register('lossDate')}
                   max={new Date().toISOString().split('T')[0]}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900"
                 />
                 {errors.lossDate && (
                   <p className="mt-1 text-sm text-red-600">{errors.lossDate.message}</p>
@@ -123,7 +156,7 @@ const ReportLossPage = () => {
                   type="time"
                   id="lossTime"
                   {...register('lossTime')}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900"
                 />
               </div>
             </div>
@@ -139,7 +172,7 @@ const ReportLossPage = () => {
                 rows={3}
                 {...register('lastKnownLocation')}
                 placeholder="Décrivez le dernier endroit où vous avez vu votre téléphone (adresse, lieu, quartier...)"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900 placeholder-gray-500 resize-none"
               />
               {errors.lastKnownLocation && (
                 <p className="mt-1 text-sm text-red-600">{errors.lastKnownLocation.message}</p>
@@ -156,7 +189,7 @@ const ReportLossPage = () => {
                 rows={4}
                 {...register('lossCircumstances')}
                 placeholder="Décrivez comment vous avez perdu votre téléphone (oubli dans un transport, chute, etc.)"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900 placeholder-gray-500 resize-none"
               />
               {errors.lossCircumstances && (
                 <p className="mt-1 text-sm text-red-600">{errors.lossCircumstances.message}</p>
@@ -173,7 +206,7 @@ const ReportLossPage = () => {
                 rows={3}
                 {...register('additionalInfo')}
                 placeholder="Ajoutez toute information qui pourrait aider à retrouver votre téléphone"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className="mt-1 block w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900 placeholder-gray-500 resize-none"
               />
             </div>
 

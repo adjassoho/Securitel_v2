@@ -45,7 +45,7 @@ const ReportTheftPage = () => {
     }),
     onSuccess: () => {
       toast.success('Vol signalé avec succès');
-      navigate('/dashboard/my-phones');
+      navigate('/phones');
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Erreur lors du signalement');
@@ -70,19 +70,19 @@ const ReportTheftPage = () => {
     );
   }
 
-  const activePhones = phones?.filter((phone: any) => phone.status === 'active') || [];
+  const activePhones = phones?.filter((phone: any) => phone.status === 'legitimate') || [];
 
   if (activePhones.length === 0) {
     return (
       <div className="p-4 sm:p-6 lg:p-8">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
           <AlertTriangle className="mx-auto h-12 w-12 text-yellow-600 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">Aucun téléphone actif</h3>
+          <h3 className="text-lg font-medium text-gray-900">Aucun téléphone légitime</h3>
           <p className="mt-2 text-sm text-gray-600">
-            Vous n'avez aucun téléphone actif à signaler comme volé.
+            Vous n'avez aucun téléphone légitime à signaler comme volé.
           </p>
           <button
-            onClick={() => navigate('/dashboard/my-phones')}
+            onClick={() => navigate('/phones')}
             className="mt-4 btn-primary"
           >
             Retour à mes téléphones
