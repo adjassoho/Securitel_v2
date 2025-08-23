@@ -1,119 +1,355 @@
-import { User, Bell, Lock, Smartphone, Construction, Sparkles } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { userService } from '@/services/api';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+
+const profileUpdateSchema = z.object({
+  first_name: z.string().min(2, 'Le prénom doit contenir au moins 2 caractères'),
+  last_name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
+  email: z.string().email('Email invalide'),
+  phone: z.string().min(8, 'Le numéro de téléphone doit contenir au moins 8 chiffres'),
+  address: z.string().min(5, 'L\'adresse doit contenir au moins 5 caractères'),
+  whatsapp: z.string().optional(),
+});
+
+type ProfileUpdateData = z.infer<typeof profileUpdateSchema>;
 
 const ProfilePage = () => {
-  const { user } = useAuthStore();
-  
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header avec glass morphism */}
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl mb-8">
-          <div className="flex items-center space-x-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
-              <div className="relative w-24 h-24 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full flex items-center justify-center text-white text-2xl font-bold border-4 border-white/20">
-                {user?.first_name?.[0]}{user?.last_name?.[0]}
-              </div>
-            </div>
-            
-            <div className="flex-1">
-              <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                {user?.first_name} {user?.last_name}
-              </h1>
-              <p className="text-lg text-gray-600 mb-1">{user?.email}</p>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-green-600">Compte actif</span>
-              </div>
-            </div>
-            
-            <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-4 border border-white/30">
-              <Sparkles className="h-8 w-8 text-emerald-600 mx-auto mb-2" />
-              <p className="text-sm font-medium text-gray-600 text-center">Membre depuis</p>
-              <p className="text-xs text-gray-500 text-center">2024</p>
-            </div>
-          </div>
-        </div>
+  const { user, updateUser } = useAuthStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-        {/* Section en développement */}
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl">
-          <div className="text-center max-w-2xl mx-auto">
-            <div className="relative mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full blur-lg opacity-30 animate-pulse"></div>
-              <div className="relative bg-gradient-to-r from-orange-100 to-yellow-100 rounded-full p-8 border border-orange-200">
-                <Construction className="h-20 w-20 text-orange-600 mx-auto" />
+  // Récupération du profil
+  const { data: profileData, isLoading, refetch } = useQuery({
+    queryKey: ['profile'],
+    queryFn: userService.getProfile,
+  });
+
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<ProfileUpdateData>({
+    resolver: zodResolver(profileUpdateSchema),
+    defaultValues: {
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      address: user?.address || '',
+      whatsapp: user?.whatsapp || '',
+    }
+  });
+
+  // Mise à jour du profil
+  const updateProfileMutation = useMutation({
+    mutationFn: userService.updateProfile,
+    onSuccess: (data) => {
+      updateUser(data.user);
+      setIsEditing(false);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+      toast.success('Profil mis à jour avec succès !');
+      refetch();
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || 'Erreur lors de la mise à jour');
+    },
+  });
+
+  useEffect(() => {
+    if (profileData) {
+      reset({
+        first_name: profileData.first_name,
+        last_name: profileData.last_name,
+        email: profileData.email,
+        phone: profileData.phone,
+        address: profileData.address || '',
+        whatsapp: profileData.whatsapp || '',
+      });
+    }
+  }, [profileData, reset]);
+
+  const onSubmit = (data: ProfileUpdateData) => {
+    updateProfileMutation.mutate(data);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    reset();
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 flex items-center justify-center">
+        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+          <p className="text-white mt-4 text-center">Chargement du profil...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 -left-4 w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float"></div>
+        <div className="absolute top-0 -right-4 w-72 h-72 bg-cyan-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '2s'}}></div>
+        <div className="absolute -bottom-8 left-20 w-72 h-72 bg-teal-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-float" style={{animationDelay: '4s'}}></div>
+      </div>
+      
+      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]"></div>
+      
+      <div className="relative min-h-screen py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* En-tête avec profil */}
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-6 lg:space-y-0 lg:space-x-8">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
+                <div className="relative w-24 h-24 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full flex items-center justify-center text-white text-3xl font-bold border-4 border-white/20">
+                  {user?.first_name?.[0]}{user?.last_name?.[0]}
+                </div>
+              </div>
+              
+              <div className="flex-1">
+                <h1 className="text-4xl lg:text-5xl font-bold text-white mb-2 bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
+                  {user?.first_name} {user?.last_name}
+                </h1>
+                <p className="text-lg text-emerald-100 mb-2">{user?.email}</p>
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium text-green-200">Compte actif</span>
+                  </div>
+                  <span className="text-white/60">•</span>
+                  <div className="flex items-center space-x-2">
+                    <Shield className="w-4 h-4 text-emerald-300" />
+                    <span className="text-sm font-medium text-emerald-200 capitalize">{user?.role || 'Utilisateur'}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 border border-white/10">
+                <Calendar className="h-8 w-8 text-emerald-300 mx-auto mb-2" />
+                <p className="text-sm font-medium text-white/90 text-center">Membre depuis</p>
+                <p className="text-xs text-white/70 text-center">{new Date(user?.created_at || '').getFullYear() || '2024'}</p>
               </div>
             </div>
             
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Gestion de profil avancée 🚀
-            </h2>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Nous travaillons sur une interface complète de gestion de profil 
-              pour vous offrir un contrôle total sur vos informations et préférences.
-            </p>
-            
-            {/* Aperçu des fonctionnalités à venir */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/30 hover:scale-105 transition-all duration-300 group">
-                <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-4 w-fit mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <User className="h-8 w-8 text-white" />
+            {/* Message de succès */}
+            {showSuccess && (
+              <div className="mt-6 p-4 bg-green-500/20 backdrop-blur-lg border border-green-500/30 rounded-2xl">
+                <div className="flex items-center text-green-100">
+                  <CheckCircle className="w-5 h-5 mr-3" />
+                  <span className="font-medium">Profil mis à jour avec succès !</span>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Informations personnelles</h3>
-                <p className="text-sm text-gray-600">Modifier nom, email, téléphone et adresse</p>
+              </div>
+            )}
+          </div>
+
+          {/* Formulaire d'édition du profil */}
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-2xl font-bold text-white mb-2">Informations personnelles</h2>
+                <p className="text-emerald-100">Modifiez vos informations de profil</p>
               </div>
               
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/30 hover:scale-105 transition-all duration-300 group">
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl p-4 w-fit mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Lock className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Sécurité</h3>
-                <p className="text-sm text-gray-600">Changer mot de passe et activer 2FA</p>
-              </div>
-              
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/30 hover:scale-105 transition-all duration-300 group">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl p-4 w-fit mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Bell className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Notifications</h3>
-                <p className="text-sm text-gray-600">Gérer vos préférences de notification</p>
-              </div>
-              
-              <div className="bg-white/80 backdrop-blur-lg rounded-2xl p-6 border border-white/30 hover:scale-105 transition-all duration-300 group">
-                <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl p-4 w-fit mx-auto mb-4 group-hover:scale-110 transition-transform">
-                  <Smartphone className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Mes appareils</h3>
-                <p className="text-sm text-gray-600">Vue d'ensemble de vos téléphones</p>
-              </div>
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                >
+                  <Edit3 className="w-5 h-5" />
+                  <span>Modifier</span>
+                </button>
+              )}
             </div>
             
-            {/* Informations actuelles accessibles */}
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
-                <h3 className="font-semibold text-emerald-800 mb-3 flex items-center">
-                  <User className="h-5 w-5 mr-2" />
-                  Informations actuelles
-                </h3>
-                <div className="space-y-2 text-sm">
-                  <p><span className="font-medium text-emerald-700">Nom :</span> <span className="text-emerald-600">{user?.first_name} {user?.last_name}</span></p>
-                  <p><span className="font-medium text-emerald-700">Email :</span> <span className="text-emerald-600">{user?.email}</span></p>
-                  <p><span className="font-medium text-emerald-700">Rôle :</span> <span className="text-emerald-600 capitalize">{user?.role || 'Utilisateur'}</span></p>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Prénom */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-white/90 flex items-center">
+                    <User className="w-4 h-4 mr-2 text-emerald-300" />
+                    Prénom
+                  </label>
+                  <input
+                    type="text"
+                    {...register('first_name')}
+                    disabled={!isEditing}
+                    className={`
+                      w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300
+                      ${!isEditing ? 'cursor-not-allowed opacity-70' : 'hover:bg-white/15'}
+                      ${errors.first_name ? 'border-red-400 ring-4 ring-red-400/20' : ''}
+                    `}
+                    placeholder="Votre prénom"
+                  />
+                  {errors.first_name && (
+                    <p className="text-sm text-red-300 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      {errors.first_name.message}
+                    </p>
+                  )}
+                </div>
+                
+                {/* Nom */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-white/90 flex items-center">
+                    <User className="w-4 h-4 mr-2 text-emerald-300" />
+                    Nom
+                  </label>
+                  <input
+                    type="text"
+                    {...register('last_name')}
+                    disabled={!isEditing}
+                    className={`
+                      w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300
+                      ${!isEditing ? 'cursor-not-allowed opacity-70' : 'hover:bg-white/15'}
+                      ${errors.last_name ? 'border-red-400 ring-4 ring-red-400/20' : ''}
+                    `}
+                    placeholder="Votre nom"
+                  />
+                  {errors.last_name && (
+                    <p className="text-sm text-red-300 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      {errors.last_name.message}
+                    </p>
+                  )}
                 </div>
               </div>
               
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-200">
-                <div className="flex items-center justify-center space-x-3 mb-3">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-blue-700">Mise à jour prévue</span>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Email */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-white/90 flex items-center">
+                    <Mail className="w-4 h-4 mr-2 text-emerald-300" />
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    {...register('email')}
+                    disabled={!isEditing}
+                    className={`
+                      w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300
+                      ${!isEditing ? 'cursor-not-allowed opacity-70' : 'hover:bg-white/15'}
+                      ${errors.email ? 'border-red-400 ring-4 ring-red-400/20' : ''}
+                    `}
+                    placeholder="votre@email.com"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-300 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
-                <p className="text-sm text-blue-600 text-center">
-                  La gestion complète du profil sera disponible 
-                  dans une prochaine mise à jour. Restez connecté !
-                </p>
+                
+                {/* Téléphone */}
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-white/90 flex items-center">
+                    <Phone className="w-4 h-4 mr-2 text-emerald-300" />
+                    Téléphone
+                  </label>
+                  <input
+                    type="tel"
+                    {...register('phone')}
+                    disabled={!isEditing}
+                    className={`
+                      w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300
+                      ${!isEditing ? 'cursor-not-allowed opacity-70' : 'hover:bg-white/15'}
+                      ${errors.phone ? 'border-red-400 ring-4 ring-red-400/20' : ''}
+                    `}
+                    placeholder="+229 12 34 56 78"
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-red-300 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+              
+              {/* Adresse */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-white/90 flex items-center">
+                  <MapPin className="w-4 h-4 mr-2 text-emerald-300" />
+                  Adresse
+                </label>
+                <textarea
+                  {...register('address')}
+                  disabled={!isEditing}
+                  rows={3}
+                  className={`
+                    w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 resize-none
+                    ${!isEditing ? 'cursor-not-allowed opacity-70' : 'hover:bg-white/15'}
+                    ${errors.address ? 'border-red-400 ring-4 ring-red-400/20' : ''}
+                  `}
+                  placeholder="Votre adresse complète"
+                />
+                {errors.address && (
+                  <p className="text-sm text-red-300 flex items-center">
+                    <AlertCircle className="w-4 h-4 mr-2" />
+                    {errors.address.message}
+                  </p>
+                )}
+              </div>
+              
+              {/* WhatsApp (optionnel) */}
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-white/90 flex items-center">
+                  <Phone className="w-4 h-4 mr-2 text-emerald-300" />
+                  WhatsApp (optionnel)
+                </label>
+                <input
+                  type="tel"
+                  {...register('whatsapp')}
+                  disabled={!isEditing}
+                  className={`
+                    w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300
+                    ${!isEditing ? 'cursor-not-allowed opacity-70' : 'hover:bg-white/15'}
+                  `}
+                  placeholder="Numéro WhatsApp (si différent)"
+                />
+              </div>
+              
+              {/* Boutons d'action */}
+              {isEditing && (
+                <div className="flex space-x-4 pt-6">
+                  <button
+                    type="submit"
+                    disabled={updateProfileMutation.isPending}
+                    className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                  >
+                    {updateProfileMutation.isPending ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Sauvegarde...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        <span>Sauvegarder</span>
+                      </>
+                    )}
+                  </button>
+                  
+                  <button
+                    type="button"
+                    onClick={handleCancel}
+                    disabled={updateProfileMutation.isPending}
+                    className="flex-1 bg-white/20 hover:bg-white/30 text-white font-semibold py-3 px-6 rounded-2xl transition-all duration-300 border border-white/30 hover:border-white/50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                  >
+                    <X className="w-5 h-5" />
+                    <span>Annuler</span>
+                  </button>
+                </div>
+              )}
+            </form>
           </div>
         </div>
       </div>
