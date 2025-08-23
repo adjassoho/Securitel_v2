@@ -1,50 +1,99 @@
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { phoneService } from '@/services/api';
-import { Search, AlertTriangle, CheckCircle, XCircle, Smartphone } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle, XCircle, Smartphone, Hash } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+type VerificationType = 'imei' | 'serial';
+
 const VerifyIMEIPage = () => {
-  const [imei, setImei] = useState('');
+  const [verificationType, setVerificationType] = useState<VerificationType>('imei');
+  const [inputValue, setInputValue] = useState('');
   const [result, setResult] = useState<any>(null);
   const [isValid, setIsValid] = useState(false);
 
-  // Validation stricte IMEI
-  const validateIMEI = (imei: string) => {
-    const cleanIMEI = imei.replace(/\D/g, '');
-    return cleanIMEI.length === 15 && /^[0-9]{15}$/.test(cleanIMEI);
+  // Validation stricte selon le type
+  const validateInput = (value: string, type: VerificationType) => {
+    const cleanValue = value.replace(/\D/g, '');
+    
+    if (type === 'imei') {
+      return cleanValue.length === 15 && /^[0-9]{15}$/.test(cleanValue);
+    } else {
+      // Pour le numéro de série, accepter alphanumériques, généralement 8-20 caractères
+      return value.trim().length >= 8 && value.trim().length <= 20 && /^[A-Za-z0-9]+$/.test(value.trim());
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Ne garder que les chiffres
-    const cleanValue = value.replace(/\D/g, '');
     
-    // Limiter à 15 caractères
-    if (cleanValue.length <= 15) {
-      setImei(cleanValue);
-      setIsValid(validateIMEI(cleanValue));
+    if (verificationType === 'imei') {
+      // Pour IMEI : ne garder que les chiffres
+      const cleanValue = value.replace(/\D/g, '');
+      
+      // Limiter à 15 caractères
+      if (cleanValue.length <= 15) {
+        setInputValue(cleanValue);
+        setIsValid(validateInput(cleanValue, verificationType));
+      }
+    } else {
+      // Pour numéro de série : alphanumériques seulement
+      const cleanValue = value.replace(/[^A-Za-z0-9]/g, '');
+      
+      // Limiter à 20 caractères
+      if (cleanValue.length <= 20) {
+        setInputValue(cleanValue.toUpperCase());
+        setIsValid(validateInput(cleanValue, verificationType));
+      }
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Empêcher la saisie de lettres et caractères spéciaux
-    if (!/[0-9]/.test(e.key) && 
-        !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
-      e.preventDefault();
+    if (verificationType === 'imei') {
+      // Pour IMEI : empêcher la saisie de lettres et caractères spéciaux
+      if (!/[0-9]/.test(e.key) && 
+          !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault();
+      }
+    } else {
+      // Pour numéro de série : permettre alphanumériques
+      if (!/[A-Za-z0-9]/.test(e.key) && 
+          !['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault();
+      }
     }
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
     const pasteData = e.clipboardData.getData('text');
-    const cleanData = pasteData.replace(/\D/g, '').slice(0, 15);
-    setImei(cleanData);
-    setIsValid(validateIMEI(cleanData));
+    
+    if (verificationType === 'imei') {
+      const cleanData = pasteData.replace(/\D/g, '').slice(0, 15);
+      setInputValue(cleanData);
+      setIsValid(validateInput(cleanData, verificationType));
+    } else {
+      const cleanData = pasteData.replace(/[^A-Za-z0-9]/g, '').slice(0, 20).toUpperCase();
+      setInputValue(cleanData);
+      setIsValid(validateInput(cleanData, verificationType));
+    }
+  };
+
+  const handleTypeChange = (type: VerificationType) => {
+    setVerificationType(type);
+    setInputValue('');
+    setIsValid(false);
+    setResult(null);
   };
 
   const verifyMutation = useMutation({
-    mutationFn: (imei: string) => phoneService.verifyIMEI(imei),
+    mutationFn: (data: { value: string; type: VerificationType }) => {
+      if (data.type === 'imei') {
+        return phoneService.verifyIMEI(data.value);
+      } else {
+        return phoneService.verifySerial(data.value);
+      }
+    },
     onSuccess: (data) => {
       setResult(data);
     },
@@ -52,8 +101,8 @@ const VerifyIMEIPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (imei.length === 15) {
-      verifyMutation.mutate(imei);
+    if (isValid && inputValue.trim()) {
+      verifyMutation.mutate({ value: inputValue.trim(), type: verificationType });
     }
   };
 
@@ -140,43 +189,92 @@ const VerifyIMEIPage = () => {
               </div>
             </div>
             <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
-              Vérifier un IMEI
+              Vérifier un téléphone
             </h1>
             <p className="text-lg lg:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-              Vérifiez le statut d'un téléphone avant l'achat pour éviter les mauvaises surprises
+              Vérifiez le statut d'un téléphone par IMEI ou numéro de série avant l'achat
             </p>
           </div>
 
           {/* Formulaire principal */}
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Sélecteur de type de vérification */}
+              <div className="mb-8">
+                <div className="flex items-center justify-center space-x-1 bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => handleTypeChange('imei')}
+                    className={`
+                      flex-1 flex items-center justify-center px-6 py-4 rounded-xl text-sm font-semibold transition-all duration-300
+                      ${
+                        verificationType === 'imei'
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg'
+                          : 'text-white/70 hover:text-white hover:bg-white/10'
+                      }
+                    `}
+                  >
+                    <Smartphone className="w-5 h-5 mr-2" />
+                    IMEI
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleTypeChange('serial')}
+                    className={`
+                      flex-1 flex items-center justify-center px-6 py-4 rounded-xl text-sm font-semibold transition-all duration-300
+                      ${
+                        verificationType === 'serial'
+                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg'
+                          : 'text-white/70 hover:text-white hover:bg-white/10'
+                      }
+                    `}
+                  >
+                    <Hash className="w-5 h-5 mr-2" />
+                    Numéro de série
+                  </button>
+                </div>
+              </div>
+
               <div className="space-y-4">
                 <label className="text-sm font-medium text-white/90 flex items-center">
-                  <Smartphone className="w-5 h-5 mr-2 text-emerald-300" />
-                  Numéro IMEI
+                  {verificationType === 'imei' ? (
+                    <>
+                      <Smartphone className="w-5 h-5 mr-2 text-emerald-300" />
+                      Numéro IMEI
+                    </>
+                  ) : (
+                    <>
+                      <Hash className="w-5 h-5 mr-2 text-emerald-300" />
+                      Numéro de série
+                    </>
+                  )}
                   <span className="text-red-400 ml-1">*</span>
                 </label>
                 
                 <div className="relative">
                   <input
                     type="text"
-                    id="imei"
-                    value={imei}
+                    id="verification-input"
+                    value={inputValue}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     onPaste={handlePaste}
                     className={`
                       w-full px-16 py-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-lg tracking-widest text-center
                       ${
-                        imei.length > 0
-                          ? isValid && imei.length === 15
+                        inputValue.length > 0
+                          ? isValid
                             ? 'border-emerald-400 ring-4 ring-emerald-400/20'
                             : 'border-red-400 ring-4 ring-red-400/20'
                           : ''
                       }
                     `}
-                    placeholder="Entrez les 15 chiffres de l'IMEI"
-                    maxLength={15}
+                    placeholder={
+                      verificationType === 'imei'
+                        ? "Entrez les 15 chiffres de l'IMEI"
+                        : "Entrez le numéro de série"
+                    }
+                    maxLength={verificationType === 'imei' ? 15 : 20}
                     autoComplete="off"
                     spellCheck={false}
                   />
@@ -188,9 +286,9 @@ const VerifyIMEIPage = () => {
                   
                   {/* Indicateur de validation */}
                   <div className="absolute inset-y-0 right-4 flex items-center">
-                    {imei.length > 0 && (
+                    {inputValue.length > 0 && (
                       <>
-                        {isValid && imei.length === 15 ? (
+                        {isValid ? (
                           <CheckCircle className="w-6 h-6 text-emerald-400" />
                         ) : (
                           <XCircle className="w-6 h-6 text-red-400" />
@@ -202,45 +300,81 @@ const VerifyIMEIPage = () => {
                   {/* Compteur de caractères */}
                   <div className="absolute -bottom-6 right-0 text-sm font-medium">
                     <span className={`
-                      ${imei.length === 15 
-                        ? 'text-emerald-400' 
-                        : imei.length > 0 
-                          ? 'text-cyan-400' 
-                          : 'text-white/60'
+                      ${
+                        verificationType === 'imei'
+                          ? inputValue.length === 15
+                            ? 'text-emerald-400'
+                            : inputValue.length > 0
+                              ? 'text-cyan-400'
+                              : 'text-white/60'
+                          : isValid
+                            ? 'text-emerald-400'
+                            : inputValue.length > 0
+                              ? 'text-cyan-400'
+                              : 'text-white/60'
                       }
                     `}>
-                      {imei.length}/15
+                      {verificationType === 'imei'
+                        ? `${inputValue.length}/15`
+                        : `${inputValue.length}/20`
+                      }
                     </span>
                   </div>
                 </div>
                 
                 {/* Messages d'aide */}
                 <div className="space-y-2">
-                  {imei.length > 0 && imei.length < 15 && (
-                    <p className="text-sm text-cyan-300 flex items-center">
-                      <span className="w-1 h-1 bg-cyan-300 rounded-full mr-2"></span>
-                      Entrez exactement 15 chiffres (encore {15 - imei.length} caractères)
-                    </p>
-                  )}
-                  
-                  {imei.length === 15 && isValid && (
-                    <p className="text-sm text-emerald-300 flex items-center">
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      IMEI valide
-                    </p>
-                  )}
-                  
-                  {imei.length === 0 && (
-                    <p className="text-sm text-white/70">
-                      L'IMEI se trouve généralement dans les paramètres du téléphone ou en composant *#06#
-                    </p>
+                  {verificationType === 'imei' ? (
+                    <>
+                      {inputValue.length > 0 && inputValue.length < 15 && (
+                        <p className="text-sm text-cyan-300 flex items-center">
+                          <span className="w-1 h-1 bg-cyan-300 rounded-full mr-2"></span>
+                          Entrez exactement 15 chiffres (encore {15 - inputValue.length} caractères)
+                        </p>
+                      )}
+                      
+                      {inputValue.length === 15 && isValid && (
+                        <p className="text-sm text-emerald-300 flex items-center">
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          IMEI valide
+                        </p>
+                      )}
+                      
+                      {inputValue.length === 0 && (
+                        <p className="text-sm text-white/70">
+                          L'IMEI se trouve généralement dans les paramètres du téléphone ou en composant *#06#
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {inputValue.length > 0 && inputValue.length < 8 && (
+                        <p className="text-sm text-cyan-300 flex items-center">
+                          <span className="w-1 h-1 bg-cyan-300 rounded-full mr-2"></span>
+                          Entrez au moins 8 caractères (encore {8 - inputValue.length} minimum)
+                        </p>
+                      )}
+                      
+                      {isValid && (
+                        <p className="text-sm text-emerald-300 flex items-center">
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Numéro de série valide
+                        </p>
+                      )}
+                      
+                      {inputValue.length === 0 && (
+                        <p className="text-sm text-white/70">
+                          Le numéro de série se trouve généralement sur la boîte ou dans les paramètres du téléphone
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
 
               <button
                 type="submit"
-                disabled={!isValid || imei.length !== 15 || verifyMutation.isPending}
+                disabled={!isValid || !inputValue.trim() || verifyMutation.isPending}
                 className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
               >
                 {verifyMutation.isPending ? (
@@ -251,7 +385,9 @@ const VerifyIMEIPage = () => {
                 ) : (
                   <>
                     <Search className="w-5 h-5" />
-                    <span>Vérifier l'IMEI</span>
+                    <span>
+                      Vérifier {verificationType === 'imei' ? "l'IMEI" : "le numéro de série"}
+                    </span>
                   </>
                 )}
               </button>
@@ -347,7 +483,7 @@ const VerifyIMEIPage = () => {
                 <button
                   onClick={() => {
                     setResult(null);
-                    setImei('');
+                    setInputValue('');
                     setIsValid(false);
                   }}
                   className="w-full px-8 py-4 text-lg font-semibold text-white bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl hover:bg-white/30 transition-all duration-300"
@@ -363,26 +499,44 @@ const VerifyIMEIPage = () => {
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-lg">
               <h3 className="font-semibold text-white mb-4 flex items-center">
                 <Search className="w-5 h-5 mr-2 text-emerald-300" />
-                Comment trouver l'IMEI ?
+                Comment trouver ces informations ?
               </h3>
-              <ul className="text-sm text-white/80 space-y-3">
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></span>
-                  Composez *#06# sur le clavier
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></span>
-                  Paramètres → À propos du téléphone
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></span>
-                  Sur la boîte d'origine
-                </li>
-                <li className="flex items-center">
-                  <span className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></span>
-                  Sous la batterie (anciens modèles)
-                </li>
-              </ul>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-semibold text-emerald-300 mb-2">IMEI :</h4>
+                  <ul className="text-sm text-white/80 space-y-2">
+                    <li className="flex items-center">
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></span>
+                      Composez *#06# sur le clavier
+                    </li>
+                    <li className="flex items-center">
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></span>
+                      Paramètres → À propos du téléphone
+                    </li>
+                    <li className="flex items-center">
+                      <span className="w-2 h-2 bg-emerald-400 rounded-full mr-3"></span>
+                      Sur la boîte d'origine
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-sm font-semibold text-teal-300 mb-2">Numéro de série :</h4>
+                  <ul className="text-sm text-white/80 space-y-2">
+                    <li className="flex items-center">
+                      <span className="w-2 h-2 bg-teal-400 rounded-full mr-3"></span>
+                      Paramètres → À propos du téléphone
+                    </li>
+                    <li className="flex items-center">
+                      <span className="w-2 h-2 bg-teal-400 rounded-full mr-3"></span>
+                      Sur la boîte d'origine
+                    </li>
+                    <li className="flex items-center">
+                      <span className="w-2 h-2 bg-teal-400 rounded-full mr-3"></span>
+                      Étiquette au dos du téléphone
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-lg">

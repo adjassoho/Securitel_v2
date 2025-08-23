@@ -159,6 +159,11 @@ export const phoneService = {
     return response.data;
   },
 
+  verifySerial: async (serialNumber: string): Promise<IMEIVerificationResult> => {
+    const response = await api.get(`/phones/verify-serial/${serialNumber}`);
+    return response.data;
+  },
+
   getPhoneById: async (id: string): Promise<Phone> => {
     const response = await api.get(`/phones/${id}`);
     return response.data;
