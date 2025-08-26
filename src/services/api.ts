@@ -50,10 +50,39 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Log détaillé de l'erreur
+    console.log('Erreur API interceptée:', {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
+    // Ne traiter la redirection que pour les erreurs 401 provenant de notre API interne
     if (error.response?.status === 401) {
-      localStorage.removeItem('auth_token');
-      window.location.href = '/login';
+      // Vérifier si l'erreur provient de notre API interne (pas OpenRouter)
+      const isInternalAPI = error.config?.baseURL === API_BASE_URL;
+      
+      if (isInternalAPI) {
+        // Ne pas rediriger automatiquement si nous sommes déjà sur certaines pages
+        const currentPath = window.location.pathname;
+        const exemptPaths = ['/login', '/register', '/forgot-password', '/reset-password', '/diagnostic'];
+        
+        if (!exemptPaths.includes(currentPath)) {
+          console.log('Redirection vers la page de connexion pour erreur 401 interne...');
+          localStorage.removeItem('auth_token');
+          delete api.defaults.headers.common['Authorization'];
+          
+          // Émettre un événement personnalisé au lieu de rediriger directement
+          window.dispatchEvent(new CustomEvent('unauthorized-access'));
+        }
+      } else {
+        // Erreur provenant d'une API externe (comme OpenRouter)
+        console.log('Erreur 401 provenant d\'une API externe, pas de redirection automatique');
+      }
     }
+    
     return Promise.reject(error);
   }
 );

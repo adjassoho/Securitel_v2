@@ -37,6 +37,7 @@ import HistoryPage from '@/pages/history/HistoryPage';
 import ProfilePage from '@/pages/profile/ProfilePage';
 import SettingsPage from '@/pages/profile/SettingsPage';
 import BecomeAgentPage from '@/pages/profile/BecomeAgentPage';
+import DiagnosticTestPage from '@/pages/diagnostic/DiagnosticTestPage';
 
 // Pages agent
 import AgentDashboard from '@/pages/agent/AgentDashboard';
@@ -121,6 +122,9 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/become-agent" element={<BecomeAgentPage />} />
+            
+            {/* Diagnostic */}
+            <Route path="/diagnostic" element={<DiagnosticTestPage />} />
           </Route>
 
           {/* Routes agent */}

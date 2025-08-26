@@ -7,6 +7,8 @@ import toast from 'react-hot-toast';
 import { Upload, Check, AlertCircle, X, FileImage, ChevronRight, ChevronLeft, Smartphone } from 'lucide-react';
 import type { RegisterPhoneRequest } from '@/types';
 import IMEIInput from '@/components/ui/IMEIInput';
+import { useIAValidation } from '@/hooks/useIAValidation';
+import IAValidationIndicator from '@/components/ui/IAValidationIndicator';
 
 interface FormData {
   imei1: string;
@@ -27,6 +29,13 @@ interface UploadedFile {
   preview: string;
 }
 
+// Ajout de l'interface pour les résultats de validation IA
+interface IAValidationResult {
+  isValid: boolean;
+  errors: string[];
+  extractedData: any;
+}
+
 const RegisterPhonePage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -36,6 +45,17 @@ const RegisterPhonePage = () => {
     serial_proof?: UploadedFile;
     specs_proof?: UploadedFile;
   }>({});
+  
+  // États pour la validation IA
+  const [iaValidations, setIaValidations] = useState<Record<string, IAValidationResult>>({});
+  const [isIaValidating, setIsIaValidating] = useState<Record<string, boolean>>({
+    imei_proof: false,
+    serial_proof: false,
+    specs_proof: false
+  });
+  
+  // Utilisation du hook de validation IA
+  const { validateImage } = useIAValidation();
 
   const {
     register,
@@ -62,13 +82,71 @@ const RegisterPhonePage = () => {
     );
   };
 
-  // Validation de l'étape 2
+  // Validation de l'étape 2 avec vérification IA
   const isStep2Valid = () => {
     return (
       uploadedFiles.imei_proof &&
       uploadedFiles.serial_proof &&
-      uploadedFiles.specs_proof
+      uploadedFiles.specs_proof &&
+      iaValidations.imei_proof?.isValid !== false &&
+      iaValidations.serial_proof?.isValid !== false &&
+      iaValidations.specs_proof?.isValid !== false
     );
+  };
+
+  // Fonction de validation IA pour un fichier
+  const validateWithIA = async (fieldName: 'imei_proof' | 'serial_proof' | 'specs_proof') => {
+    const file = uploadedFiles[fieldName]?.file;
+    if (!file) return;
+    
+    setIsIaValidating(prev => ({ ...prev, [fieldName]: true }));
+    
+    try {
+      let dataType: 'imei' | 'serial' | 'specs' = 'imei';
+      let userInput: any = {};
+      
+      switch (fieldName) {
+        case 'imei_proof':
+          dataType = 'imei';
+          userInput = { 
+            imei1: watchedValues.imei1,
+            serial_number: watchedValues.serial_number
+          };
+          break;
+        case 'serial_proof':
+          dataType = 'serial';
+          userInput = { serial_number: watchedValues.serial_number };
+          break;
+        case 'specs_proof':
+          dataType = 'specs';
+          userInput = { ram: watchedValues.ram, storage: watchedValues.storage };
+          break;
+      }
+      
+      const result = await validateImage(file, dataType, userInput);
+      setIaValidations(prev => ({ ...prev, [fieldName]: result }));
+      
+      if (!result.isValid) {
+        toast.error(`La vérification IA a échoué pour ${fieldName}. Veuillez corriger les erreurs.`);
+      } else {
+        toast.success(`Vérification IA réussie pour ${fieldName}!`);
+      }
+    } catch (error: any) {
+      console.error('Erreur lors de la validation IA:', error);
+      toast.error(error.message || 'Une erreur est survenue lors de la vérification IA.');
+      
+      // Créer un résultat d'erreur pour l'affichage
+      setIaValidations(prev => ({
+        ...prev,
+        [fieldName]: {
+          isValid: false,
+          errors: [error.message || 'Une erreur est survenue lors de la vérification IA.'],
+          extractedData: {}
+        }
+      }));
+    } finally {
+      setIsIaValidating(prev => ({ ...prev, [fieldName]: false }));
+    }
   };
 
   const handleFileUpload = (fieldName: 'imei_proof' | 'serial_proof' | 'specs_proof', file: File) => {
@@ -83,6 +161,11 @@ const RegisterPhonePage = () => {
       const fileList = new DataTransfer();
       fileList.items.add(file);
       setValue(fieldName, fileList.files);
+      
+      // Déclencher la validation IA automatiquement après l'upload
+      setTimeout(() => {
+        validateWithIA(fieldName);
+      }, 1000);
     }
   };
 
@@ -93,6 +176,13 @@ const RegisterPhonePage = () => {
       return newFiles;
     });
     setValue(fieldName, undefined as any);
+    
+    // Supprimer également la validation IA associée
+    setIaValidations(prev => {
+      const newValidations = { ...prev };
+      delete newValidations[fieldName];
+      return newValidations;
+    });
   };
 
   const registerPhoneMutation = useMutation({
@@ -108,7 +198,16 @@ const RegisterPhonePage = () => {
       navigate('/phones');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur lors de l\'enregistrement');
+      // Gérer les erreurs sans redirection automatique
+      if (error.response?.status === 401) {
+        toast.error('Erreur d\'authentification. Veuillez vous reconnecter.');
+      } else if (error.response?.status === 403) {
+        toast.error('Accès refusé. Vérifiez vos permissions.');
+      } else if (error.response?.status === 429) {
+        toast.error('Trop de requêtes. Veuillez réessayer plus tard.');
+      } else {
+        toast.error(error.response?.data?.message || 'Erreur lors de l\'enregistrement');
+      }
       setPaymentProcessing(false);
     },
   });
@@ -139,10 +238,23 @@ const RegisterPhonePage = () => {
         toast.error('Veuillez remplir tous les champs obligatoires');
       }
     } else if (step === 2) {
-      if (isStep2Valid()) {
+      // Vérifier si toutes les validations IA sont terminées
+      const allValidationsComplete = 
+        iaValidations.imei_proof !== undefined &&
+        iaValidations.serial_proof !== undefined &&
+        iaValidations.specs_proof !== undefined;
+      
+      if (isStep2Valid() && allValidationsComplete) {
         setStep(3);
       } else {
-        toast.error('Veuillez télécharger toutes les preuves demandées');
+        // Si les validations IA n'ont pas encore été effectuées, les déclencher
+        if (!allValidationsComplete) {
+          if (!iaValidations.imei_proof) await validateWithIA('imei_proof');
+          if (!iaValidations.serial_proof) await validateWithIA('serial_proof');
+          if (!iaValidations.specs_proof) await validateWithIA('specs_proof');
+        }
+        
+        toast.error('Veuillez télécharger toutes les preuves demandées et attendre la validation IA');
       }
     }
   };
@@ -447,6 +559,12 @@ const RegisterPhonePage = () => {
                           <p className="text-sm text-white/70">
                             {(uploadedFiles.imei_proof.file.size / 1024 / 1024).toFixed(2)} MB
                           </p>
+                          {/* Indicateur de validation IA */}
+                          <IAValidationIndicator 
+                            isAnalyzing={isIaValidating.imei_proof}
+                            validationResult={iaValidations.imei_proof}
+                            onRetry={() => validateWithIA('imei_proof')}
+                          />
                         </div>
                         <button
                           type="button"
@@ -456,6 +574,17 @@ const RegisterPhonePage = () => {
                           <X className="w-5 h-5" />
                         </button>
                       </div>
+                      {/* Affichage des erreurs IA */}
+                      {iaValidations.imei_proof && !iaValidations.imei_proof.isValid && (
+                        <div className="mt-3 p-3 bg-red-500/20 rounded-lg border border-red-500/30">
+                          <p className="text-sm text-red-200 font-medium">Erreurs de validation :</p>
+                          <ul className="mt-1 text-xs text-red-100">
+                            {iaValidations.imei_proof.errors.map((error, index) => (
+                              <li key={index} className="list-disc list-inside">• {error}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="relative">
@@ -511,6 +640,12 @@ const RegisterPhonePage = () => {
                           <p className="text-sm text-white/70">
                             {(uploadedFiles.serial_proof.file.size / 1024 / 1024).toFixed(2)} MB
                           </p>
+                          {/* Indicateur de validation IA */}
+                          <IAValidationIndicator 
+                            isAnalyzing={isIaValidating.serial_proof}
+                            validationResult={iaValidations.serial_proof}
+                            onRetry={() => validateWithIA('serial_proof')}
+                          />
                         </div>
                         <button
                           type="button"
@@ -520,6 +655,17 @@ const RegisterPhonePage = () => {
                           <X className="w-5 h-5" />
                         </button>
                       </div>
+                      {/* Affichage des erreurs IA */}
+                      {iaValidations.serial_proof && !iaValidations.serial_proof.isValid && (
+                        <div className="mt-3 p-3 bg-red-500/20 rounded-lg border border-red-500/30">
+                          <p className="text-sm text-red-200 font-medium">Erreurs de validation :</p>
+                          <ul className="mt-1 text-xs text-red-100">
+                            {iaValidations.serial_proof.errors.map((error, index) => (
+                              <li key={index} className="list-disc list-inside">• {error}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="relative">
@@ -575,6 +721,12 @@ const RegisterPhonePage = () => {
                           <p className="text-sm text-white/70">
                             {(uploadedFiles.specs_proof.file.size / 1024 / 1024).toFixed(2)} MB
                           </p>
+                          {/* Indicateur de validation IA */}
+                          <IAValidationIndicator 
+                            isAnalyzing={isIaValidating.specs_proof}
+                            validationResult={iaValidations.specs_proof}
+                            onRetry={() => validateWithIA('specs_proof')}
+                          />
                         </div>
                         <button
                           type="button"
@@ -584,6 +736,17 @@ const RegisterPhonePage = () => {
                           <X className="w-5 h-5" />
                         </button>
                       </div>
+                      {/* Affichage des erreurs IA */}
+                      {iaValidations.specs_proof && !iaValidations.specs_proof.isValid && (
+                        <div className="mt-3 p-3 bg-red-500/20 rounded-lg border border-red-500/30">
+                          <p className="text-sm text-red-200 font-medium">Erreurs de validation :</p>
+                          <ul className="mt-1 text-xs text-red-100">
+                            {iaValidations.specs_proof.errors.map((error, index) => (
+                              <li key={index} className="list-disc list-inside">• {error}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="relative">
@@ -633,9 +796,9 @@ const RegisterPhonePage = () => {
               <button
                 type="button"
                 onClick={handleNextStep}
-                disabled={!isStep2Valid()}
+                disabled={!isStep2Valid() || isIaValidating.imei_proof || isIaValidating.serial_proof || isIaValidating.specs_proof}
                 className={`px-8 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-2 ${
-                  isStep2Valid()
+                  isStep2Valid() && !isIaValidating.imei_proof && !isIaValidating.serial_proof && !isIaValidating.specs_proof
                     ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105'
                     : 'bg-white/10 text-white/50 cursor-not-allowed'
                 }`}

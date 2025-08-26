@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { phoneService } from '@/services/api';
 import { Search, AlertTriangle, CheckCircle, XCircle, Smartphone, Hash } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import IAVerificationSection from '@/components/verification/IAVerificationSection';
 
 type VerificationType = 'imei' | 'serial';
 
@@ -394,6 +395,9 @@ const VerifyIMEIPage = () => {
             </form>
           </div>
 
+          {/* Section de vérification par IA */}
+          <IAVerificationSection />
+
           {/* Résultat de la vérification */}
           {result && (
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
@@ -495,7 +499,7 @@ const VerifyIMEIPage = () => {
           )}
 
           {/* Informations supplémentaires */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-lg">
               <h3 className="font-semibold text-white mb-4 flex items-center">
                 <Search className="w-5 h-5 mr-2 text-emerald-300" />
