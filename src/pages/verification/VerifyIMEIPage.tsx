@@ -98,6 +98,8 @@ const VerifyIMEIPage = () => {
     },
     onSuccess: (data) => {
       console.log('Résultat de vérification reçu:', data);
+      console.log('Data.found:', data.found);
+      console.log('Data.phone:', data.phone);
       setResult(data);
       
       // Notification de succès
@@ -448,7 +450,7 @@ const VerifyIMEIPage = () => {
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
               <div className="text-center">
                 {/* Affichage des erreurs */}
-                {result.error && (
+                {(result as any).error && (
                   <>
                     <div className="mb-4">
                       <XCircle className="h-12 w-12 text-red-400 mx-auto" />
@@ -457,7 +459,7 @@ const VerifyIMEIPage = () => {
                       Erreur de vérification
                     </h2>
                     <p className="text-white/80 mb-6">
-                      {result.error}
+                      {(result as any).error}
                     </p>
                     <div className="mt-6 p-4 bg-red-500/20 backdrop-blur-lg border border-red-500/30 rounded-2xl">
                       <p className="text-sm text-red-200">
@@ -467,8 +469,15 @@ const VerifyIMEIPage = () => {
                   </>
                 )}
                 
+                {/* Debug info */}
+                {result && (
+                  <div className="mb-4 p-2 bg-black/20 rounded text-xs text-white/60">
+                    Debug: found={String(result.found)}, phone={String(!!result.phone)}
+                  </div>
+                )}
+                
                 {/* Affichage des résultats normaux */}
-                {!result.error && result.found ? (
+                {!(result as any).error && result.found && result.phone ? (
                   <>
                     <div className="mb-4">{getStatusIcon(result.phone.status)}</div>
                     <h2 className={`text-2xl font-bold mb-2 ${getStatusColor(result.phone.status)}`}>
@@ -514,7 +523,7 @@ const VerifyIMEIPage = () => {
                       </div>
                     )}
                   </>
-                ) : (
+                ) : !(result as any).error && result.found === false ? (
                   <>
                     <div className="mb-4">
                       <AlertTriangle className="h-12 w-12 text-yellow-400 mx-auto" />
@@ -546,7 +555,7 @@ const VerifyIMEIPage = () => {
                       </Link>
                     </div>
                   </>
-                )}
+                ) : null}
               </div>
 
               <div className="mt-8 pt-6 border-t border-white/20">
