@@ -14,7 +14,7 @@ const profileUpdateSchema = z.object({
   last_name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
   email: z.string().email('Email invalide'),
   phone: z.string().min(8, 'Le numéro de téléphone doit contenir au moins 8 chiffres'),
-  address: z.string().min(5, 'L\'adresse doit contenir au moins 5 caractères'),
+  address: z.string().optional(),
   whatsapp: z.string().optional(),
 });
 
@@ -58,7 +58,12 @@ const ProfilePage = () => {
       refetch();
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur lors de la mise à jour');
+      console.error('Erreur mise à jour profil:', error);
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          error.message || 
+                          'Erreur lors de la mise à jour du profil';
+      toast.error(errorMessage);
     },
   });
 

@@ -170,7 +170,7 @@ export interface ProfileUpdateRequest {
   last_name: string;
   email: string;
   phone: string;
-  address: string;
+  address?: string;
   whatsapp?: string;
 }
 
