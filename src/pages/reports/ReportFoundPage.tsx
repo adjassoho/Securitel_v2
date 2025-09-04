@@ -6,11 +6,10 @@ import { Search, MapPin, Calendar, Phone, CheckCircle, XCircle, Smartphone, Hash
 import { Link } from 'react-router-dom';
 import { reportService } from '../../services/api';
 
-type VerificationType = 'imei' | 'serial';
-
 const foundReportSchema = z.object({
-  verificationType: z.enum(['imei', 'serial']),
-  identifierValue: z.string().min(1, 'Cette information est requise'),
+  imei1: z.string().min(15, 'IMEI 1 doit contenir exactement 15 chiffres').max(15, 'IMEI 1 doit contenir exactement 15 chiffres').regex(/^[0-9]{15}$/, 'IMEI 1 doit contenir uniquement des chiffres'),
+  imei2: z.string().min(15, 'IMEI 2 doit contenir exactement 15 chiffres').max(15, 'IMEI 2 doit contenir exactement 15 chiffres').regex(/^[0-9]{15}$/, 'IMEI 2 doit contenir uniquement des chiffres'),
+  serialNumber: z.string().min(8, 'Le numéro de série doit contenir au moins 8 caractères').max(20, 'Le numéro de série ne peut pas dépasser 20 caractères').regex(/^[A-Za-z0-9]+$/, 'Le numéro de série ne peut contenir que des lettres et des chiffres'),
   foundDate: z.string().min(1, 'La date de découverte est requise'),
   foundLocation: z.string().min(10, 'Veuillez décrire le lieu de découverte (minimum 10 caractères)').max(500),
   reporterPhone: z.string().min(8, 'Le numéro de téléphone doit contenir au moins 8 chiffres').regex(/^[+0-9\s()-]+$/, 'Format de téléphone invalide'),
@@ -19,74 +18,81 @@ const foundReportSchema = z.object({
 type FoundReportData = z.infer<typeof foundReportSchema>;
 
 const ReportFoundPage = () => {
-  const [verificationType, setVerificationType] = useState<VerificationType>('imei');
-  const [identifierValue, setIdentifierValue] = useState('');
-  const [isValid, setIsValid] = useState(false);
+  const [imei1Value, setImei1Value] = useState('');
+  const [imei2Value, setImei2Value] = useState('');
+  const [serialValue, setSerialValue] = useState('');
+  const [isImei1Valid, setIsImei1Valid] = useState(false);
+  const [isImei2Valid, setIsImei2Valid] = useState(false);
+  const [isSerialValid, setIsSerialValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FoundReportData>({
-    resolver: zodResolver(foundReportSchema),
-    defaultValues: {
-      verificationType: 'imei'
-    }
+    resolver: zodResolver(foundReportSchema)
   });
 
-  // Validation stricte selon le type
-  const validateIdentifier = (value: string, type: VerificationType) => {
-    if (type === 'imei') {
-      const cleanValue = value.replace(/\D/g, '');
-      return cleanValue.length === 15 && /^[0-9]{15}$/.test(cleanValue);
-    } else {
-      return value.trim().length >= 8 && value.trim().length <= 20 && /^[A-Za-z0-9]+$/.test(value.trim());
-    }
+  // Validation des champs
+  const validateIMEI = (value: string) => {
+    const cleanValue = value.replace(/\D/g, '');
+    return cleanValue.length === 15 && /^[0-9]{15}$/.test(cleanValue);
   };
 
-  const handleIdentifierChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const validateSerial = (value: string) => {
+    return value.trim().length >= 8 && value.trim().length <= 20 && /^[A-Za-z0-9]+$/.test(value.trim());
+  };
+
+  const handleImei1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
-    if (verificationType === 'imei') {
-      const cleanValue = value.replace(/\D/g, '');
-      if (cleanValue.length <= 15) {
-        setIdentifierValue(cleanValue);
-        setValue('identifierValue', cleanValue);
-        setIsValid(validateIdentifier(cleanValue, verificationType));
-      }
-    } else {
-      const cleanValue = value.replace(/[^A-Za-z0-9]/g, '');
-      if (cleanValue.length <= 20) {
-        const upperValue = cleanValue.toUpperCase();
-        setIdentifierValue(upperValue);
-        setValue('identifierValue', upperValue);
-        setIsValid(validateIdentifier(upperValue, verificationType));
-      }
+    const cleanValue = value.replace(/\D/g, '');
+    if (cleanValue.length <= 15) {
+      setImei1Value(cleanValue);
+      setValue('imei1', cleanValue);
+      setIsImei1Valid(validateIMEI(cleanValue));
     }
   };
 
-  const handleTypeChange = (type: VerificationType) => {
-    setVerificationType(type);
-    setIdentifierValue('');
-    setIsValid(false);
-    setValue('verificationType', type);
-    setValue('identifierValue', '');
+  const handleImei2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const cleanValue = value.replace(/\D/g, '');
+    if (cleanValue.length <= 15) {
+      setImei2Value(cleanValue);
+      setValue('imei2', cleanValue);
+      setIsImei2Valid(validateIMEI(cleanValue));
+    }
+  };
+
+  const handleSerialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const cleanValue = value.replace(/[^A-Za-z0-9]/g, '');
+    if (cleanValue.length <= 20) {
+      const upperValue = cleanValue.toUpperCase();
+      setSerialValue(upperValue);
+      setValue('serialNumber', upperValue);
+      setIsSerialValid(validateSerial(upperValue));
+    }
   };
 
   const onSubmit = async (data: FoundReportData) => {
-    if (!isValid) return;
+    if (!isImei1Valid || !isImei2Valid || !isSerialValid) return;
     
     setIsSubmitting(true);
     try {
       await reportService.reportFound({
-        serial_number: data.verificationType === 'serial' ? data.identifierValue : '',
-        imei: data.verificationType === 'imei' ? data.identifierValue : '',
+        imei1: data.imei1,
+        imei2: data.imei2,
+        serial_number: data.serialNumber,
         found_date: data.foundDate,
         found_location: data.foundLocation,
         reporter_phone: data.reporterPhone,
       });
       setNotification({ type: 'success', message: 'Signalement envoyé avec succès !' });
       reset();
-      setIdentifierValue('');
-      setIsValid(false);
+      setImei1Value('');
+      setImei2Value('');
+      setSerialValue('');
+      setIsImei1Valid(false);
+      setIsImei2Valid(false);
+      setIsSerialValid(false);
     } catch (error) {
       setNotification({ type: 'error', message: 'Erreur lors de l\'envoi du signalement.' });
     } finally {
@@ -155,110 +161,161 @@ const ReportFoundPage = () => {
           {/* Formulaire principal */}
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-              {/* Sélecteur de type d'identification */}
+              {/* Informations d'identification du téléphone */}
               <div>
-                <label className="block text-sm font-medium text-white/90 mb-4">
-                  Type d'identification du téléphone
-                </label>
-                <div className="flex items-center space-x-1 bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => handleTypeChange('imei')}
-                    className={`
-                      flex-1 flex items-center justify-center px-6 py-4 rounded-xl text-sm font-semibold transition-all duration-300
-                      ${
-                        verificationType === 'imei'
-                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg'
-                          : 'text-white/70 hover:text-white hover:bg-white/10'
-                      }
-                    `}
-                  >
-                    <Smartphone className="w-5 h-5 mr-2" />
-                    IMEI
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleTypeChange('serial')}
-                    className={`
-                      flex-1 flex items-center justify-center px-6 py-4 rounded-xl text-sm font-semibold transition-all duration-300
-                      ${
-                        verificationType === 'serial'
-                          ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg'
-                          : 'text-white/70 hover:text-white hover:bg-white/10'
-                      }
-                    `}
-                  >
-                    <Hash className="w-5 h-5 mr-2" />
-                    Numéro de série
-                  </button>
-                </div>
-              </div>
-
-              {/* Champ d'identification */}
-              <div className="space-y-4">
-                <label className="text-sm font-medium text-white/90 flex items-center">
-                  {verificationType === 'imei' ? (
-                    <>
-                      <Smartphone className="w-5 h-5 mr-2 text-emerald-300" />
-                      Numéro IMEI du téléphone trouvé
-                    </>
-                  ) : (
-                    <>
-                      <Hash className="w-5 h-5 mr-2 text-emerald-300" />
-                      Numéro de série du téléphone trouvé
-                    </>
-                  )}
-                  <span className="text-red-400 ml-1">*</span>
-                </label>
+                <h3 className="text-lg font-semibold text-white mb-6 flex items-center">
+                  <Smartphone className="w-5 h-5 mr-2 text-emerald-300" />
+                  Informations d'identification du téléphone
+                </h3>
+                <p className="text-sm text-white/70 mb-6">
+                  Veuillez renseigner tous les champs ci-dessous pour identifier précisément le téléphone trouvé.
+                </p>
                 
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={identifierValue}
-                    onChange={handleIdentifierChange}
-                    className={`
-                      w-full px-16 py-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-lg tracking-widest text-center
-                      ${
-                        identifierValue.length > 0
-                          ? isValid
-                            ? 'border-emerald-400 ring-4 ring-emerald-400/20'
-                            : 'border-red-400 ring-4 ring-red-400/20'
-                          : ''
-                      }
-                    `}
-                    placeholder={
-                      verificationType === 'imei'
-                        ? "Entrez les 15 chiffres de l'IMEI"
-                        : "Entrez le numéro de série"
-                    }
-                    maxLength={verificationType === 'imei' ? 15 : 20}
-                    autoComplete="off"
-                    spellCheck={false}
-                  />
-                  
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-white/60" />
-                  </div>
-                  
-                  <div className="absolute inset-y-0 right-4 flex items-center">
-                    {identifierValue.length > 0 && (
-                      <>
-                        {isValid ? (
-                          <CheckCircle className="w-6 h-6 text-emerald-400" />
-                        ) : (
-                          <XCircle className="w-6 h-6 text-red-400" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* IMEI 1 */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium text-white/90 flex items-center">
+                      <Smartphone className="w-4 h-4 mr-2 text-emerald-300" />
+                      IMEI 1
+                      <span className="text-red-400 ml-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={imei1Value}
+                        onChange={handleImei1Change}
+                        className={`
+                          w-full px-12 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-sm tracking-wider text-center
+                          ${
+                            imei1Value.length > 0
+                              ? isImei1Valid
+                                ? 'border-emerald-400 ring-2 ring-emerald-400/20'
+                                : 'border-red-400 ring-2 ring-red-400/20'
+                              : ''
+                          }
+                        `}
+                        placeholder="15 chiffres"
+                        maxLength={15}
+                        autoComplete="off"
+                        spellCheck={false}
+                      />
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <Search className="h-4 w-4 text-white/60" />
+                      </div>
+                      <div className="absolute inset-y-0 right-3 flex items-center">
+                        {imei1Value.length > 0 && (
+                          isImei1Valid ? (
+                            <CheckCircle className="w-5 h-5 text-emerald-400" />
+                          ) : (
+                            <XCircle className="w-5 h-5 text-red-400" />
+                          )
                         )}
-                      </>
+                      </div>
+                    </div>
+                    {errors.imei1 && (
+                      <p className="text-xs text-red-300 flex items-center">
+                        <XCircle className="w-3 h-3 mr-1" />
+                        {errors.imei1.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* IMEI 2 */}
+                  <div className="space-y-3">
+                    <label className="text-sm font-medium text-white/90 flex items-center">
+                      <Smartphone className="w-4 h-4 mr-2 text-emerald-300" />
+                      IMEI 2
+                      <span className="text-red-400 ml-1">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={imei2Value}
+                        onChange={handleImei2Change}
+                        className={`
+                          w-full px-12 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-sm tracking-wider text-center
+                          ${
+                            imei2Value.length > 0
+                              ? isImei2Valid
+                                ? 'border-emerald-400 ring-2 ring-emerald-400/20'
+                                : 'border-red-400 ring-2 ring-red-400/20'
+                              : ''
+                          }
+                        `}
+                        placeholder="15 chiffres"
+                        maxLength={15}
+                        autoComplete="off"
+                        spellCheck={false}
+                      />
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <Search className="h-4 w-4 text-white/60" />
+                      </div>
+                      <div className="absolute inset-y-0 right-3 flex items-center">
+                        {imei2Value.length > 0 && (
+                          isImei2Valid ? (
+                            <CheckCircle className="w-5 h-5 text-emerald-400" />
+                          ) : (
+                            <XCircle className="w-5 h-5 text-red-400" />
+                          )
+                        )}
+                      </div>
+                    </div>
+                    {errors.imei2 && (
+                      <p className="text-xs text-red-300 flex items-center">
+                        <XCircle className="w-3 h-3 mr-1" />
+                        {errors.imei2.message}
+                      </p>
                     )}
                   </div>
                 </div>
-                
-                {errors.identifierValue && (
-                  <p className="text-sm text-red-300 flex items-center">
-                    <XCircle className="w-4 h-4 mr-2" />
-                    {errors.identifierValue.message}
-                  </p>
-                )}
+
+                {/* Numéro de série */}
+                <div className="mt-6 space-y-3">
+                  <label className="text-sm font-medium text-white/90 flex items-center">
+                    <Hash className="w-4 h-4 mr-2 text-emerald-300" />
+                    Numéro de série
+                    <span className="text-red-400 ml-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={serialValue}
+                      onChange={handleSerialChange}
+                      className={`
+                        w-full px-12 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-sm tracking-wider text-center
+                        ${
+                          serialValue.length > 0
+                            ? isSerialValid
+                              ? 'border-emerald-400 ring-2 ring-emerald-400/20'
+                              : 'border-red-400 ring-2 ring-red-400/20'
+                            : ''
+                        }
+                      `}
+                      placeholder="8-20 caractères alphanumériques"
+                      maxLength={20}
+                      autoComplete="off"
+                      spellCheck={false}
+                    />
+                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                      <Search className="h-4 w-4 text-white/60" />
+                    </div>
+                    <div className="absolute inset-y-0 right-3 flex items-center">
+                      {serialValue.length > 0 && (
+                        isSerialValid ? (
+                          <CheckCircle className="w-5 h-5 text-emerald-400" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-red-400" />
+                        )
+                      )}
+                    </div>
+                  </div>
+                  {errors.serialNumber && (
+                    <p className="text-xs text-red-300 flex items-center">
+                      <XCircle className="w-3 h-3 mr-1" />
+                      {errors.serialNumber.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Date de découverte */}
@@ -327,7 +384,7 @@ const ReportFoundPage = () => {
               {/* Bouton de soumission */}
               <button
                 type="submit"
-                disabled={!isValid || isSubmitting}
+                disabled={!isImei1Valid || !isImei2Valid || !isSerialValid || isSubmitting}
                 className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-400/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
               >
                 {isSubmitting ? (

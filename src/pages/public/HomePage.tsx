@@ -279,7 +279,7 @@ const HomePage = () => {
                 >
                   <span className="relative z-10 flex items-center">
                     <img src="/images/logo.png" alt="SecuriTel Logo" className="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" />
-                    Commencer gratuitement
+                  Commencer gratuitement
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-700 to-cyan-700 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
@@ -546,7 +546,7 @@ const HomePage = () => {
               alt="Comment ça marche - SecuriTel" 
               className="mx-auto max-w-3xl w-full h-auto rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-500"
             />
-          </div>
+            </div>
           
           <div className="text-center mt-12">
             <Link 
@@ -587,8 +587,8 @@ const HomePage = () => {
                 />
                 {/* Overlay effect */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              </div>
-              
+          </div>
+          
               {/* Floating elements */}
               <div className="absolute -top-4 -right-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-full text-sm font-semibold shadow-lg animate-float">
                 ✓ Solution Officielle
@@ -653,7 +653,7 @@ const HomePage = () => {
                     <p className="text-gray-600">Processus de transfert de propriété sécurisé et légal, contrairement au marché informel.</p>
                   </div>
                 </div>
-              </div>
+            </div>
               
               {/* CTA Button */}
               <div className="pt-6">
@@ -1097,8 +1097,8 @@ const HomePage = () => {
                     <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-2">
                       Email *
                     </label>
-                    <input
-                      type="email"
+              <input
+                type="email"
                       id="contact-email"
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                       placeholder="votre@email.com"
@@ -1149,7 +1149,7 @@ const HomePage = () => {
                   <Send className="w-6 h-6 mr-3" />
                   Envoyer le message
                 </Link>
-              </form>
+            </form>
             </div>
           </div>
         </div>

@@ -206,7 +206,7 @@ const RegisterPhonePage = () => {
       } else if (error.response?.status === 429) {
         toast.error('Trop de requêtes. Veuillez réessayer plus tard.');
       } else {
-        toast.error(error.response?.data?.message || 'Erreur lors de l\'enregistrement');
+      toast.error(error.response?.data?.message || 'Erreur lors de l\'enregistrement');
       }
       setPaymentProcessing(false);
     },
@@ -342,9 +342,9 @@ const RegisterPhonePage = () => {
                     : 'bg-white/20 text-white/50'
                 }`}>
                   {step > 2 ? <Check className="w-6 h-6" /> : '2'}
-                </div>
+            </div>
                 <span className="ml-3 font-semibold text-lg">Preuves</span>
-              </div>
+          </div>
               
               <div className={`flex-1 h-2 mx-6 rounded-full transition-all duration-300 ${
                 step >= 3 ? 'bg-gradient-to-r from-emerald-600 to-teal-600' : 'bg-white/20'
@@ -358,12 +358,12 @@ const RegisterPhonePage = () => {
                     ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg' 
                     : 'bg-white/20 text-white/50'
                 }`}>
-                  3
-                </div>
-                <span className="ml-3 font-semibold text-lg">Paiement</span>
-              </div>
+              3
             </div>
+                <span className="ml-3 font-semibold text-lg">Paiement</span>
           </div>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Step 1: Information */}
@@ -380,12 +380,12 @@ const RegisterPhonePage = () => {
                   label="IMEI 1"
                   required
                   register={register('imei1', {
-                    required: 'IMEI 1 est obligatoire',
-                    pattern: {
-                      value: /^[0-9]{15}$/,
-                      message: 'IMEI doit contenir exactement 15 chiffres',
-                    },
-                  })}
+                      required: 'IMEI 1 est obligatoire',
+                      pattern: {
+                        value: /^[0-9]{15}$/,
+                        message: 'IMEI doit contenir exactement 15 chiffres',
+                      },
+                    })}
                   error={errors.imei1?.message}
                   placeholder="Premier IMEI (15 chiffres)"
                 />
@@ -394,15 +394,15 @@ const RegisterPhonePage = () => {
                   label="IMEI 2"
                   required
                   register={register('imei2', {
-                    required: 'IMEI 2 est obligatoire',
-                    pattern: {
-                      value: /^[0-9]{15}$/,
-                      message: 'IMEI doit contenir exactement 15 chiffres',
-                    },
-                  })}
+                      required: 'IMEI 2 est obligatoire',
+                      pattern: {
+                        value: /^[0-9]{15}$/,
+                        message: 'IMEI doit contenir exactement 15 chiffres',
+                      },
+                    })}
                   error={errors.imei2?.message}
                   placeholder="Second IMEI (15 chiffres)"
-                />
+                  />
 
                 <div>
                   <label className="block text-sm font-medium text-white/90 mb-2">
@@ -610,7 +610,7 @@ const RegisterPhonePage = () => {
                           <p className="text-xs text-white/60">PNG, JPG jusqu'à 10MB</p>
                         </div>
                       </label>
-                    </div>
+                  </div>
                   )}
                   {errors.imei_proof && (
                     <p className="mt-2 text-sm text-red-300 flex items-center">
@@ -691,7 +691,7 @@ const RegisterPhonePage = () => {
                           <p className="text-xs text-white/60">PNG, JPG jusqu'à 10MB</p>
                         </div>
                       </label>
-                    </div>
+                  </div>
                   )}
                   {errors.serial_proof && (
                     <p className="mt-2 text-sm text-red-300 flex items-center">
@@ -772,7 +772,7 @@ const RegisterPhonePage = () => {
                           <p className="text-xs text-white/60">PNG, JPG jusqu'à 10MB</p>
                         </div>
                       </label>
-                    </div>
+                  </div>
                   )}
                   {errors.specs_proof && (
                     <p className="mt-2 text-sm text-red-300 flex items-center">

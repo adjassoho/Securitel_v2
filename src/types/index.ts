@@ -141,8 +141,9 @@ export interface LossReport {
 }
 
 export interface FoundPhoneReport {
-  imei?: string;
-  serial_number?: string;
+  imei1: string;
+  imei2: string;
+  serial_number: string;
   found_date: string;
   found_location: string;
   reporter_phone: string;
