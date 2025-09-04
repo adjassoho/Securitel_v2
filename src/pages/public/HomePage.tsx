@@ -845,6 +845,20 @@ const HomePage = () => {
               <ArrowRight className="ml-3 h-6 w-6 transform group-hover:translate-x-1 transition-transform duration-300" />
             </Link>
           </div>
+          
+          {/* Section pour devenir agent */}
+          <div className="mt-16 pt-8 border-t border-white/20">
+            <p className="text-lg text-blue-200 mb-6">
+              Vous souhaitez contribuer à la sécurité des téléphones au Bénin ?
+            </p>
+            <Link 
+              to="/profile/become-agent" 
+              className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-emerald-600 to-teal-600 rounded-xl shadow-xl hover:shadow-emerald-500/25 transform hover:-translate-y-1 transition-all duration-300"
+            >
+              <Shield className="w-5 h-5 mr-2" />
+              Devenir Agent Enregistreur
+            </Link>
+          </div>
         </div>
       </section>
 

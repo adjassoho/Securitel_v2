@@ -33,12 +33,12 @@ const ReportFoundPage = () => {
 
   // Validation des champs
   const validateIMEI = (value: string) => {
-    const cleanValue = value.replace(/\D/g, '');
-    return cleanValue.length === 15 && /^[0-9]{15}$/.test(cleanValue);
+      const cleanValue = value.replace(/\D/g, '');
+      return cleanValue.length === 15 && /^[0-9]{15}$/.test(cleanValue);
   };
 
   const validateSerial = (value: string) => {
-    return value.trim().length >= 8 && value.trim().length <= 20 && /^[A-Za-z0-9]+$/.test(value.trim());
+      return value.trim().length >= 8 && value.trim().length <= 20 && /^[A-Za-z0-9]+$/.test(value.trim());
   };
 
   const handleImei1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,8 +53,8 @@ const ReportFoundPage = () => {
 
   const handleImei2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const cleanValue = value.replace(/\D/g, '');
-    if (cleanValue.length <= 15) {
+      const cleanValue = value.replace(/\D/g, '');
+      if (cleanValue.length <= 15) {
       setImei2Value(cleanValue);
       setValue('imei2', cleanValue);
       setIsImei2Valid(validateIMEI(cleanValue));
@@ -63,9 +63,9 @@ const ReportFoundPage = () => {
 
   const handleSerialChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const cleanValue = value.replace(/[^A-Za-z0-9]/g, '');
-    if (cleanValue.length <= 20) {
-      const upperValue = cleanValue.toUpperCase();
+      const cleanValue = value.replace(/[^A-Za-z0-9]/g, '');
+      if (cleanValue.length <= 20) {
+        const upperValue = cleanValue.toUpperCase();
       setSerialValue(upperValue);
       setValue('serialNumber', upperValue);
       setIsSerialValid(validateSerial(upperValue));
@@ -178,13 +178,13 @@ const ReportFoundPage = () => {
                       <Smartphone className="w-4 h-4 mr-2 text-emerald-300" />
                       IMEI 1
                       <span className="text-red-400 ml-1">*</span>
-                    </label>
+                </label>
                     <div className="relative">
                       <input
                         type="text"
                         value={imei1Value}
                         onChange={handleImei1Change}
-                        className={`
+                    className={`
                           w-full px-12 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-sm tracking-wider text-center
                           ${
                             imei1Value.length > 0
@@ -232,7 +232,7 @@ const ReportFoundPage = () => {
                         type="text"
                         value={imei2Value}
                         onChange={handleImei2Change}
-                        className={`
+                    className={`
                           w-full px-12 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-sm tracking-wider text-center
                           ${
                             imei2Value.length > 0
@@ -266,39 +266,39 @@ const ReportFoundPage = () => {
                         {errors.imei2.message}
                       </p>
                     )}
-                  </div>
                 </div>
+              </div>
 
                 {/* Numéro de série */}
                 <div className="mt-6 space-y-3">
-                  <label className="text-sm font-medium text-white/90 flex items-center">
+                <label className="text-sm font-medium text-white/90 flex items-center">
                     <Hash className="w-4 h-4 mr-2 text-emerald-300" />
                     Numéro de série
-                    <span className="text-red-400 ml-1">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
+                  <span className="text-red-400 ml-1">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
                       value={serialValue}
                       onChange={handleSerialChange}
-                      className={`
+                    className={`
                         w-full px-12 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-sm tracking-wider text-center
                         ${
                           serialValue.length > 0
                             ? isSerialValid
                               ? 'border-emerald-400 ring-2 ring-emerald-400/20'
                               : 'border-red-400 ring-2 ring-red-400/20'
-                            : ''
-                        }
-                      `}
+                          : ''
+                      }
+                    `}
                       placeholder="8-20 caractères alphanumériques"
                       maxLength={20}
-                      autoComplete="off"
-                      spellCheck={false}
-                    />
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                       <Search className="h-4 w-4 text-white/60" />
-                    </div>
+                  </div>
                     <div className="absolute inset-y-0 right-3 flex items-center">
                       {serialValue.length > 0 && (
                         isSerialValid ? (
@@ -306,15 +306,15 @@ const ReportFoundPage = () => {
                         ) : (
                           <XCircle className="w-5 h-5 text-red-400" />
                         )
-                      )}
-                    </div>
+                    )}
                   </div>
+                </div>
                   {errors.serialNumber && (
                     <p className="text-xs text-red-300 flex items-center">
                       <XCircle className="w-3 h-3 mr-1" />
                       {errors.serialNumber.message}
-                    </p>
-                  )}
+                  </p>
+                )}
                 </div>
               </div>
 

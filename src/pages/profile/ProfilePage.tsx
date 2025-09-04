@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { Link } from 'react-router-dom';
 import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { userService } from '@/services/api';
@@ -350,6 +351,46 @@ const ProfilePage = () => {
                 </div>
               )}
             </form>
+          </div>
+
+          {/* Section Devenir Agent */}
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+            <div className="text-center">
+              <div className="relative mb-6">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
+                <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-4 border border-white/20 mx-auto w-16 h-16 flex items-center justify-center">
+                  <Shield className="w-8 h-8 text-blue-400" />
+                </div>
+              </div>
+              
+              <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
+                Devenez <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Agent Enregistreur</span>
+              </h2>
+              <p className="text-lg text-emerald-100 mb-6 max-w-2xl mx-auto">
+                Rejoignez notre réseau d'agents et contribuez à la sécurité des téléphones au Bénin tout en générant des revenus
+              </p>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <Link 
+                  to="/profile/become-agent" 
+                  className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300"
+                >
+                  <Shield className="w-5 h-5 mr-2" />
+                  Postuler maintenant
+                </Link>
+                
+                <div className="flex items-center space-x-4 text-sm text-emerald-200">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                    Revenus attractifs
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                    Formation incluse
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

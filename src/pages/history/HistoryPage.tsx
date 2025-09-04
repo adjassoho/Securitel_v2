@@ -158,13 +158,13 @@ const HistoryPage = () => {
               {error instanceof Error ? error.message : 'Une erreur inattendue s\'est produite'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={() => refetch()}
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
-              >
-                <RefreshCw className="h-5 w-5 mr-2" />
-                Réessayer
-              </button>
+            <button
+              onClick={() => refetch()}
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+            >
+              <RefreshCw className="h-5 w-5 mr-2" />
+              Réessayer
+            </button>
               <button
                 onClick={() => window.location.reload()}
                 className="inline-flex items-center px-6 py-3 bg-white/90 backdrop-blur-sm text-gray-700 border-2 border-gray-300 rounded-xl hover:border-gray-400 transition-all duration-300"

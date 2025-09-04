@@ -48,7 +48,7 @@ const DashboardLayout = () => {
       ],
     },
     { name: 'Historique', href: '/history', icon: History },
-    { name: 'Devenir agent enregistreur', href: '/become-agent', icon: User },
+    { name: 'Devenir agent enregistreur', href: '/profile/become-agent', icon: User },
   ];
 
   const isActive = (href: string) => location.pathname === href;
