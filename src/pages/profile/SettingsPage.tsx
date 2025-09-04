@@ -45,7 +45,12 @@ const SettingsPage = () => {
       reset();
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Erreur lors du changement de mot de passe');
+      console.error('Erreur changement mot de passe:', error);
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          error.message || 
+                          'Erreur lors du changement de mot de passe';
+      toast.error(errorMessage);
     },
   });
 

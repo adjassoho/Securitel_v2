@@ -243,7 +243,8 @@ export const userService = {
   },
 
   changePassword: async (data: PasswordChangeRequest) => {
-    await api.put('/user/password', data);
+    const response = await api.post('/change-password', data);
+    return response.data;
   },
 
   enable2FA: async () => {
