@@ -257,7 +257,8 @@ export const userService = {
   },
 
   updateNotifications: async (notifications: { email: boolean; sms: boolean }) => {
-    await api.put('/user/notifications', notifications);
+    const response = await api.post('/notifications', notifications);
+    return response.data;
   },
 
   applyAsAgent: async (data: FormData) => {

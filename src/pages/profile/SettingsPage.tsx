@@ -62,8 +62,13 @@ const SettingsPage = () => {
       setTimeout(() => setShowSuccess(''), 3000);
       toast.success('Préférences de notification mises à jour !');
     },
-    onError: () => {
-      toast.error('Erreur lors de la mise à jour des notifications');
+    onError: (error: any) => {
+      console.error('Erreur mise à jour notifications:', error);
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          error.message || 
+                          'Erreur lors de la mise à jour des notifications';
+      toast.error(errorMessage);
     },
   });
 
@@ -101,7 +106,11 @@ const SettingsPage = () => {
   const handleNotificationChange = (type: 'email' | 'sms', value: boolean) => {
     const newNotifications = { ...notifications, [type]: value };
     setNotifications(newNotifications);
-    updateNotificationsMutation.mutate(newNotifications);
+    
+    // Éviter les appels API si la mutation est en cours
+    if (!updateNotificationsMutation.isPending) {
+      updateNotificationsMutation.mutate(newNotifications);
+    }
   };
 
   const togglePasswordVisibility = (field: 'old' | 'new' | 'confirm') => {
