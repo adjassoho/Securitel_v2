@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'react-router-dom';
-import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield, Camera, Upload } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { userService } from '@/services/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -24,6 +24,9 @@ const ProfilePage = () => {
   const { user, updateUser } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Récupération du profil
   const { data: profileData, isLoading, refetch } = useQuery({
@@ -76,6 +79,45 @@ const ProfilePage = () => {
     updateProfileMutation.mutate(data);
   };
 
+  // Gestion de l'upload de photo de profil
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Vérifier la taille du fichier (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La taille du fichier ne doit pas dépasser 5MB');
+      return;
+    }
+
+    // Vérifier le type de fichier
+    if (!file.type.startsWith('image/')) {
+      toast.error('Veuillez sélectionner un fichier image');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      // Créer un URL temporaire pour l'aperçu
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+      
+      // Ici, tu peux ajouter l'appel API pour uploader l'image
+      // await userService.uploadProfileImage(file);
+      
+      toast.success('Photo de profil mise à jour avec succès !');
+    } catch (error) {
+      toast.error('Erreur lors de l\'upload de la photo');
+      setProfileImage(null);
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
   const handleCancel = () => {
     setIsEditing(false);
     reset();
@@ -108,10 +150,44 @@ const ProfilePage = () => {
           {/* En-tête avec profil */}
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
             <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-6 lg:space-y-0 lg:space-x-8">
-              <div className="relative">
+              <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
-                <div className="relative w-24 h-24 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full flex items-center justify-center text-white text-3xl font-bold border-4 border-white/20">
-                  {user?.first_name?.[0]}{user?.last_name?.[0]}
+                <div 
+                  className="relative w-24 h-24 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full flex items-center justify-center text-white text-3xl font-bold border-4 border-white/20 cursor-pointer overflow-hidden transition-all duration-300 hover:scale-105"
+                  onClick={handleImageClick}
+                >
+                  {profileImage ? (
+                    <img 
+                      src={profileImage} 
+                      alt="Photo de profil" 
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <span>{user?.first_name?.[0]}{user?.last_name?.[0]}</span>
+                  )}
+                  
+                  {/* Overlay pour l'upload */}
+                  <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {isUploadingImage ? (
+                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    ) : (
+                      <Camera className="w-6 h-6 text-white" />
+                    )}
+                  </div>
+                </div>
+                
+                {/* Input file caché */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+                
+                {/* Indicateur d'upload */}
+                <div className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-1 border-2 border-white">
+                  <Upload className="w-3 h-3 text-white" />
                 </div>
               </div>
               
@@ -136,7 +212,12 @@ const ProfilePage = () => {
               <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-4 border border-white/10">
                 <Calendar className="h-8 w-8 text-emerald-300 mx-auto mb-2" />
                 <p className="text-sm font-medium text-white/90 text-center">Membre depuis</p>
-                <p className="text-xs text-white/70 text-center">{new Date(user?.created_at || '').getFullYear() || '2024'}</p>
+                <p className="text-xs text-white/70 text-center">
+                  {user?.created_at ? new Date(user.created_at).toLocaleDateString('fr-FR', { 
+                    year: 'numeric', 
+                    month: 'long' 
+                  }) : 'Date inconnue'}
+                </p>
               </div>
             </div>
             
