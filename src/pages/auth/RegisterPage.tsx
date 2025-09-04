@@ -436,19 +436,19 @@ const RegisterPage = () => {
                 <div className="pt-6 border-t border-white/20">
                   <p className="text-center text-sm text-white/70 leading-relaxed">
                     En créant votre compte, vous acceptez nos{' '}
-                    <a 
-                      href="/cgu" 
+                    <Link 
+                      to="/cgu" 
                       className="text-emerald-300 hover:text-emerald-200 underline decoration-emerald-400 underline-offset-4 transition-colors"
                     >
                       conditions générales d'utilisation
-                    </a>
+                    </Link>
                     {' '}et notre{' '}
-                    <a 
-                      href="/privacy" 
+                    <Link 
+                      to="/privacy" 
                       className="text-emerald-300 hover:text-emerald-200 underline decoration-emerald-400 underline-offset-4 transition-colors"
                     >
                       politique de confidentialité
-                    </a>
+                    </Link>
                   </p>
                 </div>
               </form>
