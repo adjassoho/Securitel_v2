@@ -256,7 +256,7 @@ export const userService = {
     await api.post('/user/2fa/disable');
   },
 
-  updateNotifications: async (notifications: { email: boolean; sms: boolean }) => {
+  updateNotifications: async (notifications: { email: boolean }) => {
     const response = await api.post('/notifications', notifications);
     return response.data;
   },

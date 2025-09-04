@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Lock, Shield, Bell, Mail, MessageSquare, Eye, EyeOff, Key, CheckCircle, AlertCircle, Settings, Smartphone } from 'lucide-react';
+import { Lock, Shield, Bell, Mail, Eye, EyeOff, Key, CheckCircle, AlertCircle, Settings, Smartphone } from 'lucide-react';
 import { userService } from '@/services/api';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -25,8 +25,7 @@ const SettingsPage = () => {
     confirm: false
   });
   const [notifications, setNotifications] = useState({
-    email: true,
-    sms: false
+    email: true
   });
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
   const [showSuccess, setShowSuccess] = useState('');
@@ -103,7 +102,7 @@ const SettingsPage = () => {
     changePasswordMutation.mutate(data);
   };
 
-  const handleNotificationChange = (type: 'email' | 'sms', value: boolean) => {
+  const handleNotificationChange = (type: 'email', value: boolean) => {
     const newNotifications = { ...notifications, [type]: value };
     setNotifications(newNotifications);
     
@@ -393,30 +392,6 @@ const SettingsPage = () => {
                 </div>
               </div>
               
-              {/* Notifications par SMS */}
-              <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-3">
-                      <MessageSquare className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-white">Notifications par SMS</h4>
-                      <p className="text-emerald-100 text-sm">Recevez des alertes urgentes par SMS</p>
-                    </div>
-                  </div>
-                  
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={notifications.sms}
-                      onChange={(e) => handleNotificationChange('sms', e.target.checked)}
-                      className="sr-only peer"
-                    />
-                    <div className="w-14 h-7 bg-white/20 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-400/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-emerald-600 peer-checked:to-teal-600"></div>
-                  </label>
-                </div>
-              </div>
             </div>
           </div>
         </div>
