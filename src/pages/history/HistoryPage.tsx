@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { historyService } from '@/services/api';
 import {
@@ -39,7 +39,17 @@ const HistoryPage = () => {
     queryKey: ['history', filters],
     queryFn: () => historyService.getHistory(filters),
     staleTime: 30000, // 30 secondes
+    retry: 3, // Retry 3 fois en cas d'erreur
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000), // Délai exponentiel
   });
+
+  // Gestion des erreurs avec useEffect
+  React.useEffect(() => {
+    if (error) {
+      console.error('Erreur lors du chargement de l\'historique:', error);
+      toast.error('Erreur lors du chargement de l\'historique');
+    }
+  }, [error]);
 
   const actionTypeConfig = {
     registration: {
@@ -94,7 +104,7 @@ const HistoryPage = () => {
   };
 
   const exportHistory = () => {
-    if (!historyItems || historyItems.length === 0) {
+    if (!historyItems || !Array.isArray(historyItems) || historyItems.length === 0) {
       toast.error('Aucune donnée à exporter');
       return;
     }
@@ -103,7 +113,7 @@ const HistoryPage = () => {
       ['Date', 'Type', 'Description', 'IMEI'].join(','),
       ...historyItems.map(item => [
         new Date(item.created_at).toLocaleDateString('fr-FR'),
-        actionTypeConfig[item.action_type]?.label || item.action_type,
+        (actionTypeConfig as any)[item.action_type]?.label || item.action_type,
         `"${item.description}"`,
         item.phone_imei || ''
       ].join(','))
@@ -126,15 +136,15 @@ const HistoryPage = () => {
     };
   };
 
-  const filteredItems = historyItems?.filter(item => {
+  const filteredItems = historyItems && Array.isArray(historyItems) ? historyItems.filter(item => {
     if (!filters.search) return true;
     const searchLower = filters.search.toLowerCase();
     return (
       item.description.toLowerCase().includes(searchLower) ||
       item.phone_imei?.toLowerCase().includes(searchLower) ||
-      actionTypeConfig[item.action_type]?.label.toLowerCase().includes(searchLower)
+      (actionTypeConfig as any)[item.action_type]?.label.toLowerCase().includes(searchLower)
     );
-  });
+  }) : [];
 
   if (error) {
     return (
@@ -143,14 +153,26 @@ const HistoryPage = () => {
           <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-12 border border-white/20 shadow-2xl text-center">
             <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Erreur de chargement</h2>
-            <p className="text-gray-600 mb-6">Impossible de charger l'historique des activités</p>
-            <button
-              onClick={() => refetch()}
-              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
-            >
-              <RefreshCw className="h-5 w-5 mr-2" />
-              Réessayer
-            </button>
+            <p className="text-gray-600 mb-2">Impossible de charger l'historique des activités</p>
+            <p className="text-sm text-gray-500 mb-6">
+              {error instanceof Error ? error.message : 'Une erreur inattendue s\'est produite'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => refetch()}
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
+              >
+                <RefreshCw className="h-5 w-5 mr-2" />
+                Réessayer
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                className="inline-flex items-center px-6 py-3 bg-white/90 backdrop-blur-sm text-gray-700 border-2 border-gray-300 rounded-xl hover:border-gray-400 transition-all duration-300"
+              >
+                <RefreshCw className="h-5 w-5 mr-2" />
+                Recharger la page
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -213,7 +235,7 @@ const HistoryPage = () => {
               
               <button
                 onClick={exportHistory}
-                disabled={!filteredItems || filteredItems.length === 0}
+                disabled={!filteredItems || !Array.isArray(filteredItems) || filteredItems.length === 0}
                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download className="h-5 w-5 mr-2" />
@@ -299,7 +321,7 @@ const HistoryPage = () => {
                 <p className="text-gray-600">Chargement de l'historique...</p>
               </div>
             </div>
-          ) : !filteredItems || filteredItems.length === 0 ? (
+          ) : !filteredItems || !Array.isArray(filteredItems) || filteredItems.length === 0 ? (
             <div className="text-center p-12">
               <Activity className="h-16 w-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
@@ -321,8 +343,8 @@ const HistoryPage = () => {
             </div>
           ) : (
             <div className="divide-y divide-gray-200/50">
-              {filteredItems.map((item) => {
-                const config = actionTypeConfig[item.action_type];
+              {Array.isArray(filteredItems) && filteredItems.map((item) => {
+                const config = (actionTypeConfig as any)[item.action_type];
                 const IconComponent = config?.icon || Activity;
                 const { date, time } = formatDate(item.created_at);
                 
@@ -384,7 +406,7 @@ const HistoryPage = () => {
         </div>
         
         {/* Statistiques en bas */}
-        {filteredItems && filteredItems.length > 0 && (
+        {filteredItems && Array.isArray(filteredItems) && filteredItems.length > 0 && (
           <div className="mt-8 bg-white/60 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl">
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {Object.entries(actionTypeConfig).map(([type, config]) => {

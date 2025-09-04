@@ -224,7 +224,7 @@ export const reportService = {
 
 // Services pour l'historique
 export const historyService = {
-  getHistory: async (filters?: { from?: string; to?: string; type?: string }): Promise<HistoryItem[]> => {
+  getHistory: async (filters?: { from?: string; to?: string; type?: string; search?: string }): Promise<HistoryItem[]> => {
     const response = await api.get('/history', { params: filters });
     return response.data;
   },
