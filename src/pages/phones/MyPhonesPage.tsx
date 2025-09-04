@@ -8,7 +8,8 @@ import {
   CheckCircle,
   MoreVertical,
   RefreshCw,
-  Send
+  Send,
+  Plus
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -66,8 +67,17 @@ const MyPhonesPage = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Mes téléphones</h1>
           <p className="mt-1 text-sm text-gray-600">
-            Gérez vos téléphones enregistrés. Pour enregistrer un nouveau téléphone, rendez-vous dans le tableau de bord.
+            Gérez vos téléphones enregistrés et ajoutez de nouveaux appareils.
           </p>
+        </div>
+        <div className="mt-4 sm:mt-0">
+          <Link
+            to="/phones/register"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Enregistrer un nouveau téléphone
+          </Link>
         </div>
       </div>
 
@@ -162,15 +172,26 @@ const MyPhonesPage = () => {
         </div>
       ) : (
         <div className="text-center py-12">
-          <Smartphone className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Aucun téléphone</h3>
-          <p className="mt-1 text-sm text-gray-500">
-            Commencez par enregistrer votre premier téléphone depuis le tableau de bord.
+          <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <Smartphone className="h-12 w-12 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun téléphone enregistré</h3>
+          <p className="text-sm text-gray-500 mb-8 max-w-md mx-auto">
+            Commencez par enregistrer votre premier téléphone pour le protéger contre le vol et la perte.
           </p>
-          <div className="mt-6">
-            <Link to="/dashboard" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-              Aller au tableau de bord →
+          <div className="space-y-3">
+            <Link
+              to="/phones/register"
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all duration-200"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Enregistrer mon premier téléphone
             </Link>
+            <div>
+              <Link to="/dashboard" className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+                Aller au tableau de bord →
+              </Link>
+            </div>
           </div>
         </div>
       )}
