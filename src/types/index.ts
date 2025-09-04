@@ -1,3 +1,33 @@
+// Types pour l'analyse IA
+export interface IAExtractedData {
+  imei1?: string;
+  imei2?: string;
+  serialNumber?: string;
+  ram?: string;
+  storage?: string;
+}
+
+export interface IAValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+  suggestions: string[];
+  extractedData: IAExtractedData;
+  imeiCount: number;
+  userImeiCount: number;
+}
+
+export interface DualIMEIValidation {
+  imei1Match: boolean;
+  imei2Match: boolean;
+  hasUnmatchedExtracted: boolean;
+  hasUnmatchedUser: boolean;
+  extractedCount: number;
+  userCount: number;
+  missingImeiFields: string[];
+  suggestions: string[];
+}
+
 // Types pour l'authentification
 export interface LoginRequest {
   email: string;

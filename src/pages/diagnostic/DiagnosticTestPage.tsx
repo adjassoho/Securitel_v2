@@ -146,15 +146,41 @@ const DiagnosticTestPage = () => {
     setTestResults(prev => ({ ...prev, iaAnalysis: { status: 'pending', message: 'Analyse en cours...' } }));
     
     try {
-      const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY;
-      if (!apiKey) {
-        throw new Error('Clé API OpenRouter non configurée');
-      }
+      // Logs détaillés pour le diagnostic
+      console.log('🔍 === DÉBUT DU TEST D\'ANALYSE IA ===');
+      console.log('🔑 Variable d\'environnement VITE_OPENROUTER_API_KEY:', import.meta.env.VITE_OPENROUTER_API_KEY);
+      console.log('🔑 Longueur de la variable d\'environnement:', import.meta.env.VITE_OPENROUTER_API_KEY?.length);
       
       const testImage = await createTestImage();
-      console.log('Début de l\'analyse IA...');
+      console.log('🖼️ Image de test créée, taille:', testImage.size, 'bytes');
       
-      // Ajout de logs pour suivre l'exécution
+      // Test direct avec fetch pour comparer
+      console.log('🧪 Test direct avec fetch...');
+      const directTestResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer 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`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': window.location.origin,
+          'X-Title': 'SecuriTel Direct Test'
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-flash-1.5',
+          messages: [{ role: 'user', content: 'Test direct' }],
+          max_tokens: 5
+        })
+      });
+      
+      console.log('🧪 Statut du test direct:', directTestResponse.status);
+      if (!directTestResponse.ok) {
+        const errorText = await directTestResponse.text();
+        console.error('🧪 Erreur du test direct:', errorText);
+      } else {
+        console.log('🧪 Test direct réussi !');
+      }
+      
+      // Maintenant test avec le service
+      console.log('🔧 Test avec le service iaAnalysisService...');
       const startTime = Date.now();
       const result = await iaAnalysisService.analyzeImage(testImage, 'imei');
       const endTime = Date.now();

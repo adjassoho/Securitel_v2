@@ -9,7 +9,7 @@
  * Vous pouvez obtenir une clé API gratuite sur https://openrouter.ai/
  */
 
-import axios from 'axios';
+// Service d'analyse IA utilisant OpenRouter
 
 // Configuration d'OpenRouter
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
@@ -17,17 +17,18 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 // Utilisation du modèle gratuit google/gemini-flash-1.5
 const OPENROUTER_MODEL = 'google/gemini-flash-1.5';
 
-console.log('Valeur de VITE_OPENROUTER_API_KEY:', import.meta.env.VITE_OPENROUTER_API_KEY);
-console.log('OPENROUTER_API_KEY (constante):', OPENROUTER_API_KEY);
+// Service d'analyse IA opérationnel
 
 interface ImageAnalysisResponse {
   extractedData: {
-    imei?: string;
+    imei1?: string;
+    imei2?: string;
     serialNumber?: string;
     ram?: string;
     storage?: string;
   };
   confidence: number;
+  imeiCount: number;
 }
 
 class IAAnalysisService {
@@ -93,9 +94,7 @@ class IAAnalysisService {
    */
   async analyzeImage(file: File, dataType: 'imei' | 'serial' | 'specs'): Promise<ImageAnalysisResponse> {
     try {
-      console.log('Début de l\'analyse IA avec le modèle:', this.model);
-      console.log('Clé API configurée:', !!this.apiKey);
-      console.log('Longueur de la clé API:', this.apiKey?.length);
+      // Analyse IA en cours
       
       // Vérifier si la clé API est configurée
       if (!this.apiKey) {
@@ -105,13 +104,13 @@ class IAAnalysisService {
 
       // Convertir l'image en base64
       const base64Image = await this.fileToBase64(file);
-      console.log('Image convertie en base64, taille:', base64Image.length);
+      // Image convertie en base64
       
       // Déterminer le prompt selon le type de données à extraire
       let prompt = '';
       switch (dataType) {
         case 'imei':
-          prompt = "Examinez cette capture d'écran et extrayez uniquement l'IMEI (15 chiffres) et le numéro de série. Répondez uniquement avec un JSON contenant les champs 'imei' et 'serialNumber'. Si vous ne trouvez pas d'IMEI, mettez 'imei' à null. Si vous ne trouvez pas de numéro de série, mettez 'serialNumber' à null. Exemple de format de réponse : {\"imei\": \"123456789012345\", \"serialNumber\": \"ABC123\"}";
+          prompt = "Examinez cette capture d'écran et extrayez tous les IMEI présents. Pour les téléphones dual-SIM, il peut y avoir deux IMEI (IMEI1 pour SIM1 et IMEI2 pour SIM2). Extrayez également le numéro de série s'il est visible. Répondez uniquement avec un JSON contenant les champs 'imei1', 'imei2' et 'serialNumber'. Si un seul IMEI est trouvé, placez-le dans 'imei1' et mettez 'imei2' à null. Si aucun IMEI n'est trouvé, mettez les champs correspondants à null. Chaque IMEI doit contenir exactement 15 chiffres. Exemple de format de réponse : {\"imei1\": \"123456789012345\", \"imei2\": \"987654321098765\", \"serialNumber\": \"ABC123\"} ou {\"imei1\": \"123456789012345\", \"imei2\": null, \"serialNumber\": \"ABC123\"} pour un seul IMEI.";
           break;
         case 'serial':
           prompt = "Examinez cette capture d'écran et extrayez uniquement le numéro de série. Répondez uniquement avec un JSON contenant le champ 'serialNumber'. Si vous ne trouvez pas de numéro de série, mettez 'serialNumber' à null. Exemple de format de réponse : {\"serialNumber\": \"ABC123\"}";
@@ -121,12 +120,18 @@ class IAAnalysisService {
           break;
       }
 
-      console.log('Envoi de la requête à OpenRouter avec le modèle:', this.model);
+      // Envoi de la requête à OpenRouter
       
-      // Envoyer la requête à OpenRouter avec le modèle gratuit
-      const response = await axios.post(
-        this.apiUrl,
-        {
+      // Utiliser fetch au lieu d'axios (identique au test qui fonctionne)
+      const response = await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.apiKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': window.location.origin,
+          'X-Title': 'SecuriTel'
+        },
+        body: JSON.stringify({
           model: this.model, // Utilisation du modèle gratuit google/gemini-flash-1.5
           messages: [
             {
@@ -147,52 +152,42 @@ class IAAnalysisService {
           ],
           temperature: 0.1,
           max_tokens: 300
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'HTTP-Referer': window.location.origin,
-            'X-Title': 'SecuriTel'
-          },
-          // Ne pas suivre les redirections automatiquement
-          maxRedirects: 0,
-          // Timeout raisonnable
-          timeout: 30000,
-          // Ne pas lancer d'erreur pour les codes 401/403
-          validateStatus: function (status) {
-            console.log('Statut de réponse reçu:', status);
-            return status < 500; // Résoudre uniquement si le status est inférieur à 500
-          }
-        }
-      );
+        })
+      });
 
-      console.log('Réponse reçue de OpenRouter:', response.status, response.data);
+      // Requête envoyée avec succès
       
       // Vérifier le statut de la réponse
-      if (response.status === 401) {
-        console.error('Erreur 401: Clé API invalide');
-        throw new Error('Clé API OpenRouter invalide. Veuillez vérifier votre configuration.');
-      } else if (response.status === 403) {
-        console.error('Erreur 403: Accès refusé');
-        throw new Error('Accès refusé. Vérifiez les permissions de votre clé API.');
-      } else if (response.status === 429) {
-        console.error('Erreur 429: Quota dépassé');
-        throw new Error('Quota OpenRouter dépassé. Veuillez réessayer plus tard.');
-      } else if (response.status >= 500) {
-        console.error('Erreur serveur:', response.status, response.statusText);
-        throw new Error(`Erreur serveur OpenRouter: ${response.statusText}`);
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error(`Erreur ${response.status}:`, errorData);
+        
+        if (response.status === 401) {
+          throw new Error('Clé API OpenRouter invalide. Veuillez vérifier votre configuration.');
+        } else if (response.status === 403) {
+          throw new Error('Accès refusé. Vérifiez les permissions de votre clé API.');
+        } else if (response.status === 429) {
+          throw new Error('Quota OpenRouter dépassé. Veuillez réessayer plus tard.');
+        } else if (response.status >= 500) {
+          throw new Error(`Erreur serveur OpenRouter: ${response.statusText}`);
+        } else {
+          throw new Error(`Erreur OpenRouter (${response.status}): ${response.statusText}`);
+        }
       }
 
       // Extraire la réponse JSON du modèle
-      const content = response.data.choices[0].message.content;
-      console.log('Contenu de la réponse du modèle:', content);
+      const responseData = await response.json();
+      const content = responseData.choices[0].message.content;
       
       let extractedData = this.extractJsonFromResponse(content);
-      console.log('Données extraites du JSON:', extractedData);
       
       // Nettoyer les valeurs extraites
-      if (extractedData.imei) {
-        extractedData.imei = this.cleanExtractedValue(extractedData.imei);
+      if (extractedData.imei1) {
+        extractedData.imei1 = this.cleanExtractedValue(extractedData.imei1);
+      }
+      
+      if (extractedData.imei2) {
+        extractedData.imei2 = this.cleanExtractedValue(extractedData.imei2);
       }
       
       if (extractedData.serialNumber) {
@@ -207,11 +202,16 @@ class IAAnalysisService {
         extractedData.storage = this.cleanExtractedValue(extractedData.storage);
       }
 
+      // Compter le nombre d'IMEI extraits
+      const imeiCount = (extractedData.imei1 ? 1 : 0) + (extractedData.imei2 ? 1 : 0);
+
       console.log('Données extraites après nettoyage:', extractedData);
+      console.log('Nombre d\'IMEI extraits:', imeiCount);
       
       return {
         extractedData,
-        confidence: 0.7 // Confiance pour le modèle gratuit
+        confidence: 0.7, // Confiance pour le modèle gratuit
+        imeiCount
       };
     } catch (error: any) {
       console.error('Erreur lors de l\'analyse de l\'image:', error);
@@ -249,29 +249,46 @@ class IAAnalysisService {
   }
 
   /**
-   * Compare les données extraites par IA avec les données saisies
+   * Compare les données extraites par IA avec les données saisies pour les IMEI dual-SIM
    */
   validateExtractedData(
     extractedData: any,
     userInput: any,
     dataType: 'imei' | 'serial' | 'specs'
-  ): { isValid: boolean; errors: string[] } {
+  ): { 
+    isValid: boolean; 
+    errors: string[];
+    warnings: string[];
+    suggestions: string[];
+    imeiValidation?: {
+      imei1Match: boolean;
+      imei2Match: boolean;
+      extractedCount: number;
+      userCount: number;
+      missingFields: string[];
+    }
+  } {
     const errors: string[] = [];
+    const warnings: string[] = [];
+    const suggestions: string[] = [];
     
     switch (dataType) {
       case 'imei':
-        if (extractedData.imei && userInput.imei1) {
-          // Nettoyer les valeurs pour la comparaison
-          const cleanExtractedImei = this.cleanExtractedValue(extractedData.imei);
-          const cleanUserImei = this.cleanExtractedValue(userInput.imei1);
-          
-          if (cleanExtractedImei !== cleanUserImei) {
-            errors.push(`L'IMEI extrait (${cleanExtractedImei}) ne correspond pas à l'IMEI saisi (${cleanUserImei})`);
-          }
+        const imeiValidation = this.validateDualIMEI(extractedData, userInput);
+        
+        // Ajouter les résultats de validation
+        if (imeiValidation.errors.length > 0) {
+          errors.push(...imeiValidation.errors);
+        }
+        if (imeiValidation.warnings.length > 0) {
+          warnings.push(...imeiValidation.warnings);
+        }
+        if (imeiValidation.suggestions.length > 0) {
+          suggestions.push(...imeiValidation.suggestions);
         }
         
+        // Valider le numéro de série si présent
         if (extractedData.serialNumber && userInput.serial_number) {
-          // Nettoyer les valeurs pour la comparaison
           const cleanExtractedSerial = this.cleanExtractedValue(extractedData.serialNumber);
           const cleanUserSerial = this.cleanExtractedValue(userInput.serial_number);
           
@@ -279,11 +296,23 @@ class IAAnalysisService {
             errors.push(`Le numéro de série extrait (${cleanExtractedSerial}) ne correspond pas au numéro de série saisi (${cleanUserSerial})`);
           }
         }
-        break;
+        
+        return {
+          isValid: errors.length === 0,
+          errors,
+          warnings,
+          suggestions,
+          imeiValidation: {
+            imei1Match: imeiValidation.imei1Match,
+            imei2Match: imeiValidation.imei2Match,
+            extractedCount: imeiValidation.extractedCount,
+            userCount: imeiValidation.userCount,
+            missingFields: imeiValidation.missingImeiFields
+          }
+        };
         
       case 'serial':
         if (extractedData.serialNumber && userInput.serial_number) {
-          // Nettoyer les valeurs pour la comparaison
           const cleanExtractedSerial = this.cleanExtractedValue(extractedData.serialNumber);
           const cleanUserSerial = this.cleanExtractedValue(userInput.serial_number);
           
@@ -295,7 +324,6 @@ class IAAnalysisService {
         
       case 'specs':
         if (extractedData.ram && userInput.ram) {
-          // Nettoyer les valeurs pour la comparaison
           const cleanExtractedRam = this.cleanExtractedValue(extractedData.ram);
           const cleanUserRam = this.cleanExtractedValue(userInput.ram);
           
@@ -305,7 +333,6 @@ class IAAnalysisService {
         }
         
         if (extractedData.storage && userInput.storage) {
-          // Nettoyer les valeurs pour la comparaison
           const cleanExtractedStorage = this.cleanExtractedValue(extractedData.storage);
           const cleanUserStorage = this.cleanExtractedValue(userInput.storage);
           
@@ -318,7 +345,137 @@ class IAAnalysisService {
     
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
+      warnings,
+      suggestions
+    };
+  }
+
+  /**
+   * Validation spécialisée pour les IMEI dual-SIM
+   */
+  private validateDualIMEI(extractedData: any, userInput: any): {
+    imei1Match: boolean;
+    imei2Match: boolean;
+    extractedCount: number;
+    userCount: number;
+    missingImeiFields: string[];
+    errors: string[];
+    warnings: string[];
+    suggestions: string[];
+  } {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+    const suggestions: string[] = [];
+    const missingImeiFields: string[] = [];
+    
+    // Nettoyer et compter les IMEI extraits
+    const extractedImei1 = extractedData.imei1 ? this.cleanExtractedValue(extractedData.imei1) : null;
+    const extractedImei2 = extractedData.imei2 ? this.cleanExtractedValue(extractedData.imei2) : null;
+    const extractedCount = (extractedImei1 ? 1 : 0) + (extractedImei2 ? 1 : 0);
+    
+    // Nettoyer et compter les IMEI saisis par l'utilisateur
+    const userImei1 = userInput.imei1 ? this.cleanExtractedValue(userInput.imei1) : null;
+    const userImei2 = userInput.imei2 ? this.cleanExtractedValue(userInput.imei2) : null;
+    const userCount = (userImei1 ? 1 : 0) + (userImei2 ? 1 : 0);
+    
+    // Variables de correspondance
+    let imei1Match = false;
+    let imei2Match = false;
+    
+    console.log('Validation dual-IMEI:', {
+      extractedImei1,
+      extractedImei2,
+      userImei1,
+      userImei2,
+      extractedCount,
+      userCount
+    });
+    
+    // Cas 1: L'utilisateur n'a saisi qu'un IMEI mais l'IA en a trouvé plusieurs
+    if (userCount === 1 && extractedCount > 1) {
+      // Vérifier si l'IMEI saisi correspond à l'un des IMEI extraits
+      const userImei = userImei1 || userImei2;
+      
+      if (userImei === extractedImei1) {
+        imei1Match = true;
+        warnings.push(`Vous avez saisi l'IMEI1: ${userImei}`);
+        suggestions.push(`L'IA a détecté un second IMEI (IMEI2: ${extractedImei2}). Veuillez saisir l'IMEI2 pour valider complètement votre téléphone dual-SIM.`);
+        missingImeiFields.push('imei2');
+      } else if (userImei === extractedImei2) {
+        imei2Match = true;
+        warnings.push(`Vous avez saisi l'IMEI2: ${userImei}`);
+        suggestions.push(`L'IA a détecté un premier IMEI (IMEI1: ${extractedImei1}). Veuillez saisir l'IMEI1 pour valider complètement votre téléphone dual-SIM.`);
+        missingImeiFields.push('imei1');
+      } else {
+        errors.push(`L'IMEI saisi (${userImei}) ne correspond à aucun des IMEI extraits (IMEI1: ${extractedImei1}, IMEI2: ${extractedImei2})`);
+      }
+    }
+    // Cas 2: L'utilisateur a saisi deux IMEI et l'IA en a trouvé plusieurs
+    else if (userCount > 1 && extractedCount > 1) {
+      // Comparaison directe
+      if (userImei1 === extractedImei1) {
+        imei1Match = true;
+      } else if (userImei1 && extractedImei1) {
+        errors.push(`L'IMEI1 saisi (${userImei1}) ne correspond pas à l'IMEI1 extrait (${extractedImei1})`);
+      }
+      
+      if (userImei2 === extractedImei2) {
+        imei2Match = true;
+      } else if (userImei2 && extractedImei2) {
+        errors.push(`L'IMEI2 saisi (${userImei2}) ne correspond pas à l'IMEI2 extrait (${extractedImei2})`);
+      }
+      
+      // Vérifier si les IMEI sont inversés
+      if (!imei1Match && !imei2Match && userImei1 === extractedImei2 && userImei2 === extractedImei1) {
+        warnings.push(`Les IMEI semblent être inversés. IMEI1 saisi correspond à IMEI2 extrait et vice versa.`);
+        suggestions.push(`Veuillez vérifier l'ordre des IMEI sur votre appareil.`);
+      }
+    }
+    // Cas 3: L'utilisateur a saisi plusieurs IMEI mais l'IA n'en a trouvé qu'un
+    else if (userCount > 1 && extractedCount === 1) {
+      const extractedImei = extractedImei1 || extractedImei2;
+      
+      if (userImei1 === extractedImei) {
+        imei1Match = true;
+        warnings.push(`Seul l'IMEI1 a pu être extrait de l'image: ${extractedImei}`);
+      } else if (userImei2 === extractedImei) {
+        imei2Match = true;
+        warnings.push(`L'IMEI extrait correspond à votre IMEI2: ${extractedImei}`);
+      } else {
+        errors.push(`L'IMEI extrait (${extractedImei}) ne correspond à aucun des IMEI saisis`);
+      }
+    }
+    // Cas 4: Correspondance simple (1 IMEI saisi, 1 IMEI extrait)
+    else if (userCount === 1 && extractedCount === 1) {
+      const userImei = userImei1 || userImei2;
+      const extractedImei = extractedImei1 || extractedImei2;
+      
+      if (userImei === extractedImei) {
+        // Déterminer quel IMEI correspond
+        if (userImei1) {
+          imei1Match = true;
+        } else {
+          imei2Match = true;
+        }
+      } else {
+        errors.push(`L'IMEI saisi (${userImei}) ne correspond pas à l'IMEI extrait (${extractedImei})`);
+      }
+    }
+    // Cas 5: Aucun IMEI extrait
+    else if (extractedCount === 0) {
+      errors.push(`Aucun IMEI n'a pu être extrait de l'image. Veuillez vous assurer que l'image est claire et contient les informations IMEI.`);
+    }
+    
+    return {
+      imei1Match,
+      imei2Match,
+      extractedCount,
+      userCount,
+      missingImeiFields,
+      errors,
+      warnings,
+      suggestions
     };
   }
 }

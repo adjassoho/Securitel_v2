@@ -77,9 +77,9 @@ const ReportTheftPage = () => {
       <div className="p-4 sm:p-6 lg:p-8">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
           <AlertTriangle className="mx-auto h-12 w-12 text-yellow-600 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">Aucun téléphone légitime</h3>
+          <h3 className="text-lg font-medium text-gray-900">Aucun Telephone enregistré</h3>
           <p className="mt-2 text-sm text-gray-600">
-            Vous n'avez aucun téléphone légitime à signaler comme volé.
+            Vous n'avez Aucun Telephone enregistré à signaler comme volé.
           </p>
           <button
             onClick={() => navigate('/phones')}

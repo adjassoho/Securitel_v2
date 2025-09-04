@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { iaAnalysisService } from '@/services/iaAnalysisService';
+import { IAValidationResult } from '@/types';
 import toast from 'react-hot-toast';
-
-interface IAValidationResult {
-  isValid: boolean;
-  errors: string[];
-  extractedData: any;
-}
 
 interface UseIAValidationReturn {
   validateImage: (file: File, dataType: 'imei' | 'serial' | 'specs', userInput: any) => Promise<IAValidationResult>;
@@ -24,6 +19,7 @@ export const useIAValidation = (): UseIAValidationReturn => {
     userInput: any
   ): Promise<IAValidationResult> => {
     console.log('Début de la validation IA pour le type:', dataType);
+    console.log('Données utilisateur:', userInput);
     setIsAnalyzing(true);
     
     try {
@@ -42,7 +38,12 @@ export const useIAValidation = (): UseIAValidationReturn => {
       const result: IAValidationResult = {
         isValid: validation.isValid,
         errors: validation.errors,
-        extractedData: analysisResult.extractedData
+        warnings: validation.warnings || [],
+        suggestions: validation.suggestions || [],
+        extractedData: analysisResult.extractedData,
+        imeiCount: analysisResult.imeiCount || 0,
+        userImeiCount: dataType === 'imei' ? 
+          ((userInput.imei1 ? 1 : 0) + (userInput.imei2 ? 1 : 0)) : 0
       };
       
       // Stocker les résultats
@@ -51,10 +52,29 @@ export const useIAValidation = (): UseIAValidationReturn => {
         [dataType]: result
       }));
       
-      // Afficher les erreurs si nécessaire
-      if (!validation.isValid) {
+      // Afficher les messages appropriés
+      if (!validation.isValid && validation.errors.length > 0) {
         validation.errors.forEach(error => {
           toast.error(error);
+        });
+      }
+      
+      if (validation.warnings && validation.warnings.length > 0) {
+        validation.warnings.forEach(warning => {
+          toast(warning, { icon: '⚠️', duration: 5000 });
+        });
+      }
+      
+      if (validation.suggestions && validation.suggestions.length > 0) {
+        validation.suggestions.forEach(suggestion => {
+          toast(suggestion, { 
+            icon: '💡', 
+            duration: 8000,
+            style: {
+              background: '#3b82f6',
+              color: 'white'
+            }
+          });
         });
       }
       
@@ -69,7 +89,11 @@ export const useIAValidation = (): UseIAValidationReturn => {
       const result: IAValidationResult = {
         isValid: false,
         errors: [errorMessage],
-        extractedData: {}
+        warnings: [],
+        suggestions: [],
+        extractedData: {},
+        imeiCount: 0,
+        userImeiCount: 0
       };
       
       setAnalysisResults(prev => ({

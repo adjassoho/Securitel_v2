@@ -447,6 +447,24 @@ const RegisterPhonePage = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-white/90 mb-2">
+                    Numéro de série <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    {...register('serial_number', { required: 'Le numéro de série est obligatoire' })}
+                    type="text"
+                    className="w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15"
+                    placeholder="Numéro de série du téléphone"
+                  />
+                  {errors.serial_number && (
+                    <p className="mt-2 text-sm text-red-300 flex items-center">
+                      <AlertCircle className="w-4 h-4 mr-2" />
+                      {errors.serial_number.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/90 mb-2">
                     RAM <span className="text-red-400">*</span>
                   </label>
                   <select
@@ -487,24 +505,6 @@ const RegisterPhonePage = () => {
                     <p className="mt-2 text-sm text-red-300 flex items-center">
                       <AlertCircle className="w-4 h-4 mr-2" />
                       {errors.storage.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    Numéro de série <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    {...register('serial_number', { required: 'Le numéro de série est obligatoire' })}
-                    type="text"
-                    className="w-full px-4 py-3 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15"
-                    placeholder="Numéro de série du téléphone"
-                  />
-                  {errors.serial_number && (
-                    <p className="mt-2 text-sm text-red-300 flex items-center">
-                      <AlertCircle className="w-4 h-4 mr-2" />
-                      {errors.serial_number.message}
                     </p>
                   )}
                 </div>

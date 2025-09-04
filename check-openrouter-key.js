@@ -4,7 +4,7 @@
 import axios from 'axios';
 
 // Remplacez par votre nouvelle clé API
-const API_KEY = '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';
+const API_KEY = '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';
 
 async function checkOpenRouterKey() {
   try {

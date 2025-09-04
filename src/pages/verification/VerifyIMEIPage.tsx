@@ -4,6 +4,7 @@ import { phoneService } from '@/services/api';
 import { Search, AlertTriangle, CheckCircle, XCircle, Smartphone, Hash } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import IAVerificationSection from '@/components/verification/IAVerificationSection';
+import toast, { Toaster } from 'react-hot-toast';
 
 type VerificationType = 'imei' | 'serial';
 
@@ -96,7 +97,37 @@ const VerifyIMEIPage = () => {
       }
     },
     onSuccess: (data) => {
+      console.log('Résultat de vérification reçu:', data);
       setResult(data);
+      
+      // Notification de succès
+      if (data.found && data.phone) {
+        const statusMessage = getStatusMessage(data.phone.status);
+        toast.success(`Vérification terminée: ${statusMessage.title}`, {
+          duration: 5000,
+          icon: '✅',
+        });
+      } else {
+        toast('Téléphone non trouvé dans la base de données', {
+          duration: 4000,
+          icon: '⚠️',
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error('Erreur lors de la vérification:', error);
+      
+      // Notification d'erreur
+      toast.error(error.response?.data?.message || 'Erreur lors de la vérification', {
+        duration: 5000,
+        icon: '❌',
+      });
+      
+      // Afficher un message d'erreur à l'utilisateur
+      setResult({
+        found: false,
+        error: error.response?.data?.message || 'Erreur lors de la vérification'
+      });
     },
   });
 
@@ -179,35 +210,35 @@ const VerifyIMEIPage = () => {
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:60px_60px]"></div>
       
-      <div className="relative min-h-screen py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative min-h-screen py-4 sm:py-8">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-8">
           {/* En-tête */}
-          <div className="text-center mb-8">
-            <div className="relative mb-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="relative mb-6 sm:mb-8">
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
-              <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-6 border border-white/20 mx-auto w-20 h-20 flex items-center justify-center">
-                <img src="/images/logo.png" alt="SecuriTel Logo" className="w-10 h-10" />
+              <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-4 sm:p-6 border border-white/20 mx-auto w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                <img src="/images/logo.png" alt="SecuriTel Logo" className="w-8 h-8 sm:w-10 sm:h-10" />
               </div>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 sm:mb-4 bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent px-4">
               Vérifier un téléphone
             </h1>
-            <p className="text-lg lg:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed px-4">
               Vérifiez le statut d'un téléphone par IMEI ou numéro de série avant l'achat
             </p>
           </div>
 
           {/* Formulaire principal */}
-          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 xl:p-12 border border-white/20 shadow-2xl mb-6 sm:mb-8">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               {/* Sélecteur de type de vérification */}
-              <div className="mb-8">
-                <div className="flex items-center justify-center space-x-1 bg-white/5 backdrop-blur-lg rounded-2xl p-2 border border-white/10">
+              <div className="mb-6 sm:mb-8">
+                <div className="flex items-center justify-center space-x-1 bg-white/5 backdrop-blur-lg rounded-xl sm:rounded-2xl p-1 sm:p-2 border border-white/10">
                   <button
                     type="button"
                     onClick={() => handleTypeChange('imei')}
                     className={`
-                      flex-1 flex items-center justify-center px-6 py-4 rounded-xl text-sm font-semibold transition-all duration-300
+                      flex-1 flex items-center justify-center px-3 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300
                       ${
                         verificationType === 'imei'
                           ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg'
@@ -215,14 +246,15 @@ const VerifyIMEIPage = () => {
                       }
                     `}
                   >
-                    <Smartphone className="w-5 h-5 mr-2" />
-                    IMEI
+                    <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                    <span className="hidden xs:inline">IMEI</span>
+                    <span className="xs:hidden">IMEI</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleTypeChange('serial')}
                     className={`
-                      flex-1 flex items-center justify-center px-6 py-4 rounded-xl text-sm font-semibold transition-all duration-300
+                      flex-1 flex items-center justify-center px-3 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300
                       ${
                         verificationType === 'serial'
                           ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg'
@@ -230,22 +262,23 @@ const VerifyIMEIPage = () => {
                       }
                     `}
                   >
-                    <Hash className="w-5 h-5 mr-2" />
-                    Numéro de série
+                    <Hash className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                    <span className="hidden sm:inline">Numéro de série</span>
+                    <span className="sm:hidden">Série</span>
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <label className="text-sm font-medium text-white/90 flex items-center">
+              <div className="space-y-3 sm:space-y-4">
+                <label className="text-xs sm:text-sm font-medium text-white/90 flex items-center">
                   {verificationType === 'imei' ? (
                     <>
-                      <Smartphone className="w-5 h-5 mr-2 text-emerald-300" />
+                      <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-emerald-300" />
                       Numéro IMEI
                     </>
                   ) : (
                     <>
-                      <Hash className="w-5 h-5 mr-2 text-emerald-300" />
+                      <Hash className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-emerald-300" />
                       Numéro de série
                     </>
                   )}
@@ -261,12 +294,12 @@ const VerifyIMEIPage = () => {
                     onKeyDown={handleKeyDown}
                     onPaste={handlePaste}
                     className={`
-                      w-full px-16 py-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-lg tracking-widest text-center
+                      w-full px-12 sm:px-16 py-3 sm:py-4 bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl sm:rounded-2xl text-white placeholder:text-white/60 focus:border-emerald-400 focus:ring-2 sm:focus:ring-4 focus:ring-emerald-400/20 focus:outline-none transition-all duration-300 hover:bg-white/15 font-mono text-sm sm:text-base lg:text-lg tracking-wider sm:tracking-widest text-center
                       ${
                         inputValue.length > 0
                           ? isValid
-                            ? 'border-emerald-400 ring-4 ring-emerald-400/20'
-                            : 'border-red-400 ring-4 ring-red-400/20'
+                            ? 'border-emerald-400 ring-2 sm:ring-4 ring-emerald-400/20'
+                            : 'border-red-400 ring-2 sm:ring-4 ring-red-400/20'
                           : ''
                       }
                     `}
@@ -392,6 +425,18 @@ const VerifyIMEIPage = () => {
                   </>
                 )}
               </button>
+              
+              {/* Indicateur de chargement global */}
+              {verifyMutation.isPending && (
+                <div className="mt-4 p-4 bg-emerald-500/20 backdrop-blur-lg border border-emerald-500/30 rounded-2xl">
+                  <div className="flex items-center justify-center space-x-3">
+                    <div className="w-4 h-4 border-2 border-emerald-300 border-t-white rounded-full animate-spin"></div>
+                    <span className="text-emerald-200 text-sm">
+                      Recherche dans la base de données SecuriTel...
+                    </span>
+                  </div>
+                </div>
+              )}
             </form>
           </div>
 
@@ -402,7 +447,28 @@ const VerifyIMEIPage = () => {
           {result && (
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 lg:p-12 border border-white/20 shadow-2xl mb-8">
               <div className="text-center">
-                {result.found ? (
+                {/* Affichage des erreurs */}
+                {result.error && (
+                  <>
+                    <div className="mb-4">
+                      <XCircle className="h-12 w-12 text-red-400 mx-auto" />
+                    </div>
+                    <h2 className="text-2xl font-bold mb-2 text-red-400">
+                      Erreur de vérification
+                    </h2>
+                    <p className="text-white/80 mb-6">
+                      {result.error}
+                    </p>
+                    <div className="mt-6 p-4 bg-red-500/20 backdrop-blur-lg border border-red-500/30 rounded-2xl">
+                      <p className="text-sm text-red-200">
+                        Veuillez réessayer ou contacter le support si le problème persiste.
+                      </p>
+                    </div>
+                  </>
+                )}
+                
+                {/* Affichage des résultats normaux */}
+                {!result.error && result.found ? (
                   <>
                     <div className="mb-4">{getStatusIcon(result.phone.status)}</div>
                     <h2 className={`text-2xl font-bold mb-2 ${getStatusColor(result.phone.status)}`}>
@@ -570,6 +636,31 @@ const VerifyIMEIPage = () => {
           </div>
         </div>
       </div>
+      
+      {/* Système de notifications */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#1f2937',
+            color: '#fff',
+            border: '1px solid #374151',
+          },
+          success: {
+            style: {
+              background: '#059669',
+              color: '#fff',
+            },
+          },
+          error: {
+            style: {
+              background: '#dc2626',
+              color: '#fff',
+            },
+          },
+        }}
+      />
     </div>
   );
 };
