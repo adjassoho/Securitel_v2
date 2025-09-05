@@ -505,6 +505,20 @@ const ProfilePage = () => {
                     <h3 className="text-lg font-semibold text-white mb-2">Interface Agent</h3>
                     <p className="text-sm text-orange-100/80">Gestion des enregistrements et clients</p>
                   </Link>
+
+                  <Link
+                    to="/technician/dashboard"
+                    className="group bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 hover:from-cyan-500/30 hover:to-cyan-600/30 backdrop-blur-lg border border-cyan-400/30 hover:border-cyan-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-cyan-500/20 rounded-xl">
+                        <Wrench className="w-6 h-6 text-cyan-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-cyan-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Interface Technicien</h3>
+                    <p className="text-sm text-cyan-100/80">Gestion des techniciens GSM</p>
+                  </Link>
                 </>
               )}
 
