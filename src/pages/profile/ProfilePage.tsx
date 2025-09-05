@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'react-router-dom';
-import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield, Camera, Upload, Settings, BarChart3, Users, Smartphone, AlertTriangle, UserCheck, ArrowRight, UserPlus, Search, FileText, DollarSign, HelpCircle, CreditCard } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield, Camera, Upload, Settings, BarChart3, Users, Smartphone, AlertTriangle, UserCheck, ArrowRight, UserPlus, Search, FileText, DollarSign, HelpCircle, CreditCard, Wrench, QrCode } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { userService } from '@/services/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -504,6 +504,67 @@ const ProfilePage = () => {
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-2">Interface Agent</h3>
                     <p className="text-sm text-orange-100/80">Gestion des enregistrements et clients</p>
+                  </Link>
+                </>
+              )}
+
+              {/* Technicien */}
+              {user?.role === 'technician' && (
+                <>
+                  <Link
+                    to="/technician/dashboard"
+                    className="group bg-gradient-to-br from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 backdrop-blur-lg border border-blue-400/30 hover:border-blue-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-blue-500/20 rounded-xl">
+                        <Wrench className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Tableau de Bord Technicien</h3>
+                    <p className="text-sm text-blue-100/80">Interface technicien GSM</p>
+                  </Link>
+
+                  <Link
+                    to="/technician/verify-imei"
+                    className="group bg-gradient-to-br from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 backdrop-blur-lg border border-green-400/30 hover:border-green-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-green-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-green-500/20 rounded-xl">
+                        <Search className="w-6 h-6 text-green-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-green-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Vérifier IMEI</h3>
+                    <p className="text-sm text-green-100/80">Vérification avant achat</p>
+                  </Link>
+
+                  <Link
+                    to="/technician/code-tgsm"
+                    className="group bg-gradient-to-br from-purple-500/20 to-purple-600/20 hover:from-purple-500/30 hover:to-purple-600/30 backdrop-blur-lg border border-purple-400/30 hover:border-purple-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-purple-500/20 rounded-xl">
+                        <QrCode className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mon Code T-GSM</h3>
+                    <p className="text-sm text-purple-100/80">Identifiant technicien</p>
+                  </Link>
+
+                  <Link
+                    to="/technician/accounting"
+                    className="group bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 hover:from-emerald-500/30 hover:to-emerald-600/30 backdrop-blur-lg border border-emerald-400/30 hover:border-emerald-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-emerald-500/20 rounded-xl">
+                        <DollarSign className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Comptabilité</h3>
+                    <p className="text-sm text-emerald-100/80">Gains et retraits</p>
                   </Link>
                 </>
               )}

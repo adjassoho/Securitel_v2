@@ -53,7 +53,7 @@ export interface User {
   phone: string;
   address?: string;
   whatsapp?: string;
-  role: 'user' | 'agent' | 'admin' | 'super_admin' | 'police';
+  role: 'user' | 'agent' | 'admin' | 'super_admin' | 'police' | 'technician';
   created_at: string;
   updated_at: string;
 }
@@ -703,4 +703,118 @@ export interface ReferralStats {
   total_commission_earned: number;
   monthly_commission: number;
   referral_link: string;
+}
+
+// Types pour les techniciens GSM
+export interface Technician {
+  id: string;
+  user_id: string;
+  code_tgsm: string;
+  status: 'active' | 'inactive' | 'suspended';
+  specializations: string[];
+  experience_years: number;
+  certifications: string[];
+  rating: number;
+  total_verifications: number;
+  total_reports: number;
+  total_earnings: number;
+  created_at: string;
+  updated_at: string;
+  user: User;
+}
+
+export interface TechnicianStats {
+  total_verifications: number;
+  total_reports: number;
+  total_earnings: number;
+  total_withdrawals: number;
+  current_balance: number;
+  monthly_earnings: number;
+  weekly_verifications: number;
+  success_rate: number;
+  average_rating: number;
+  registered_people: number;
+}
+
+export interface TechnicianVerification {
+  id: string;
+  technician_id: string;
+  imei: string;
+  phone_brand?: string;
+  phone_model?: string;
+  verification_type: 'purchase' | 'repair' | 'inspection';
+  status: 'valid' | 'stolen' | 'lost' | 'unknown';
+  result_details: string;
+  location?: string;
+  client_name?: string;
+  client_phone?: string;
+  created_at: string;
+  phone_details?: {
+    brand: string;
+    model: string;
+    color: string;
+    owner_name?: string;
+    owner_phone?: string;
+  };
+}
+
+export interface TechnicianReport {
+  id: string;
+  technician_id: string;
+  phone_id: string;
+  report_type: 'theft' | 'suspicious' | 'found';
+  description: string;
+  location: string;
+  status: 'pending' | 'validated' | 'rejected';
+  created_at: string;
+  phone: {
+    imei: string;
+    brand: string;
+    model: string;
+    owner_name: string;
+  };
+}
+
+export interface TechnicianWithdrawal {
+  id: string;
+  technician_id: string;
+  amount: number;
+  status: 'pending' | 'approved' | 'rejected' | 'completed';
+  payment_method: 'mobile_money' | 'bank_transfer' | 'cash';
+  payment_details: string;
+  reason?: string;
+  admin_notes?: string;
+  created_at: string;
+  processed_at?: string;
+}
+
+export interface TechnicianProfile {
+  id: string;
+  user_id: string;
+  code_tgsm: string;
+  specializations: string[];
+  experience_years: number;
+  certifications: string[];
+  bio?: string;
+  working_hours: string;
+  service_areas: string[];
+  contact_phone: string;
+  emergency_contact: string;
+  bank_details?: {
+    bank_name: string;
+    account_number: string;
+    account_holder: string;
+  };
+  mobile_money_details?: {
+    provider: 'mtn' | 'moov' | 'orange';
+    phone_number: string;
+    account_name: string;
+  };
+  created_at: string;
+  updated_at: string;
+  user: {
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
 }

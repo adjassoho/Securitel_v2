@@ -42,6 +42,11 @@ import type {
   AgentProfile,
   FAQItem,
   ReferralStats,
+  TechnicianStats,
+  TechnicianVerification,
+  TechnicianReport,
+  TechnicianWithdrawal,
+  TechnicianProfile,
 } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api';
@@ -949,5 +954,249 @@ export const policeService = {
   }): Promise<{ location: string; count: number; phones: any[] }[]> => {
     const response = await api.get('/police/phones/stolen-by-location', { params: filters });
     return response.data;
+  },
+};
+
+// Services pour les techniciens GSM
+export const technicianService = {
+  // Dashboard et statistiques
+  getStats: async (): Promise<TechnicianStats> => {
+    const response = await api.get('/technician/stats');
+    return response.data;
+  },
+
+  getDashboard: async (): Promise<{
+    stats: TechnicianStats;
+    recent_verifications: TechnicianVerification[];
+    recent_reports: TechnicianReport[];
+    alerts: any[];
+  }> => {
+    const response = await api.get('/technician/dashboard');
+    return response.data;
+  },
+
+  // Profil technicien
+  getProfile: async (): Promise<TechnicianProfile> => {
+    const response = await api.get('/technician/profile');
+    return response.data;
+  },
+
+  updateProfile: async (data: FormData): Promise<TechnicianProfile> => {
+    const response = await api.put('/technician/profile', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  getCodeTGSM: async (): Promise<{ code_tgsm: string; qr_code: string }> => {
+    const response = await api.get('/technician/code-tgsm');
+    return response.data;
+  },
+
+  // Vérification IMEI
+  verifyIMEI: async (data: {
+    imei: string;
+    verification_type: 'purchase' | 'repair' | 'inspection';
+    location?: string;
+    client_name?: string;
+    client_phone?: string;
+  }): Promise<TechnicianVerification> => {
+    const response = await api.post('/technician/verify-imei', data);
+    return response.data;
+  },
+
+  getVerifications: async (filters?: {
+    status?: string;
+    type?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    verifications: TechnicianVerification[];
+    total: number;
+    page: number;
+    total_pages: number;
+  }> => {
+    const response = await api.get('/technician/verifications', { params: filters });
+    return response.data;
+  },
+
+  getVerificationById: async (id: string): Promise<TechnicianVerification> => {
+    const response = await api.get(`/technician/verifications/${id}`);
+    return response.data;
+  },
+
+  // Signalements
+  reportTheft: async (data: {
+    phone_id: string;
+    description: string;
+    location: string;
+    client_name?: string;
+    client_phone?: string;
+  }): Promise<TechnicianReport> => {
+    const response = await api.post('/technician/reports/theft', data);
+    return response.data;
+  },
+
+  reportSuspicious: async (data: {
+    phone_id: string;
+    description: string;
+    location: string;
+    client_name?: string;
+    client_phone?: string;
+  }): Promise<TechnicianReport> => {
+    const response = await api.post('/technician/reports/suspicious', data);
+    return response.data;
+  },
+
+  reportFound: async (data: {
+    phone_id: string;
+    description: string;
+    location: string;
+    client_name?: string;
+    client_phone?: string;
+  }): Promise<TechnicianReport> => {
+    const response = await api.post('/technician/reports/found', data);
+    return response.data;
+  },
+
+  getReports: async (filters?: {
+    type?: string;
+    status?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    reports: TechnicianReport[];
+    total: number;
+    page: number;
+    total_pages: number;
+  }> => {
+    const response = await api.get('/technician/reports', { params: filters });
+    return response.data;
+  },
+
+  getReportById: async (id: string): Promise<TechnicianReport> => {
+    const response = await api.get(`/technician/reports/${id}`);
+    return response.data;
+  },
+
+  // Historique complet
+  getHistory: async (filters?: {
+    type?: 'verification' | 'report';
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    history: (TechnicianVerification | TechnicianReport)[];
+    total: number;
+    page: number;
+    total_pages: number;
+  }> => {
+    const response = await api.get('/technician/history', { params: filters });
+    return response.data;
+  },
+
+  // Enregistrements
+  getRegistrations: async (filters?: {
+    status?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    registrations: any[];
+    total: number;
+    page: number;
+    total_pages: number;
+  }> => {
+    const response = await api.get('/technician/registrations', { params: filters });
+    return response.data;
+  },
+
+  // Comptabilité
+  getAccounting: async (): Promise<{
+    stats: TechnicianStats;
+    recent_withdrawals: TechnicianWithdrawal[];
+    earnings_by_month: { month: string; amount: number }[];
+  }> => {
+    const response = await api.get('/technician/accounting');
+    return response.data;
+  },
+
+  requestWithdrawal: async (data: {
+    amount: number;
+    payment_method: 'mobile_money' | 'bank_transfer' | 'cash';
+    payment_details: string;
+    reason?: string;
+  }): Promise<TechnicianWithdrawal> => {
+    const response = await api.post('/technician/withdrawals', data);
+    return response.data;
+  },
+
+  getWithdrawals: async (filters?: {
+    status?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    withdrawals: TechnicianWithdrawal[];
+    total: number;
+    page: number;
+    total_pages: number;
+  }> => {
+    const response = await api.get('/technician/withdrawals', { params: filters });
+    return response.data;
+  },
+
+  getWithdrawalById: async (id: string): Promise<TechnicianWithdrawal> => {
+    const response = await api.get(`/technician/withdrawals/${id}`);
+    return response.data;
+  },
+
+  // Paramètres
+  updateSettings: async (data: {
+    working_hours?: string;
+    service_areas?: string[];
+    contact_phone?: string;
+    emergency_contact?: string;
+    bank_details?: {
+      bank_name: string;
+      account_number: string;
+      account_holder: string;
+    };
+    mobile_money_details?: {
+      provider: 'mtn' | 'moov' | 'orange';
+      phone_number: string;
+      account_name: string;
+    };
+  }): Promise<TechnicianProfile> => {
+    const response = await api.put('/technician/settings', data);
+    return response.data;
+  },
+
+  changePassword: async (data: {
+    current_password: string;
+    new_password: string;
+    confirm_password: string;
+  }): Promise<void> => {
+    await api.put('/technician/change-password', data);
+  },
+
+  // Déconnexion
+  logout: async (): Promise<void> => {
+    try {
+      await api.post('/technician/logout');
+    } catch (error) {
+      // Continue with local logout even if API call fails
+    }
+    localStorage.removeItem('auth_token');
+    delete api.defaults.headers.common['Authorization'];
   },
 };

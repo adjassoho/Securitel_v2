@@ -57,6 +57,16 @@ import EditRegistrationPage from '@/pages/agent/EditRegistrationPage';
 import IMEIAlertsPage from '@/pages/agent/IMEIAlertsPage';
 import AgentProfilePage from '@/pages/agent/AgentProfilePage';
 
+// Pages technicien
+import TechnicianDashboard from '@/pages/technician/TechnicianDashboard';
+import TechnicianVerifyIMEIPage from '@/pages/technician/TechnicianVerifyIMEIPage';
+import TechnicianCodeTGSMPage from '@/pages/technician/TechnicianCodeTGSMPage';
+import TechnicianReportTheftPage from '@/pages/technician/TechnicianReportTheftPage';
+import TechnicianHistoryPage from '@/pages/technician/TechnicianHistoryPage';
+import TechnicianRegistrationsPage from '@/pages/technician/TechnicianRegistrationsPage';
+import TechnicianAccountingPage from '@/pages/technician/TechnicianAccountingPage';
+import TechnicianSettingsPage from '@/pages/technician/TechnicianSettingsPage';
+
 // Pages admin
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import UsersPage from '@/pages/admin/UsersPage';
@@ -97,6 +107,21 @@ const AgentRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   if (user?.role !== 'agent' && user?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Composant de protection des routes technicien
+const TechnicianRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user } = useAuthStore();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user?.role !== 'technician' && user?.role !== 'admin') {
     return <Navigate to="/dashboard" replace />;
   }
   
@@ -272,6 +297,24 @@ function App() {
             <Route path="/police/stats/location" element={<StatsPage />} />
             <Route path="/police/stats/reports" element={<StatsPage />} />
             <Route path="/police/stats/exports" element={<StatsPage />} />
+          </Route>
+
+          {/* Routes technicien */}
+          <Route
+            element={
+              <TechnicianRoute>
+                <DashboardLayout />
+              </TechnicianRoute>
+            }
+          >
+            <Route path="/technician/dashboard" element={<TechnicianDashboard />} />
+            <Route path="/technician/verify-imei" element={<TechnicianVerifyIMEIPage />} />
+            <Route path="/technician/code-tgsm" element={<TechnicianCodeTGSMPage />} />
+            <Route path="/technician/report-theft" element={<TechnicianReportTheftPage />} />
+            <Route path="/technician/history" element={<TechnicianHistoryPage />} />
+            <Route path="/technician/registrations" element={<TechnicianRegistrationsPage />} />
+            <Route path="/technician/accounting" element={<TechnicianAccountingPage />} />
+            <Route path="/technician/settings" element={<TechnicianSettingsPage />} />
           </Route>
 
           {/* Redirection par défaut */}
