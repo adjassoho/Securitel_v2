@@ -121,7 +121,7 @@ function App() {
             {/* Profil & Paramètres */}
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/become-agent" element={<BecomeAgentPage />} />
+            <Route path="/profile/become-agent" element={<BecomeAgentPage />} />
             
             {/* Diagnostic */}
             <Route path="/diagnostic" element={<DiagnosticTestPage />} />

@@ -89,14 +89,17 @@ const BecomeAgentPage = () => {
         <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl mb-8">
           <div className="text-center">
             <div className="relative mb-6">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
               <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-6 border border-white/20 mx-auto w-20 h-20 flex items-center justify-center">
-                <Shield className="w-10 h-10 text-blue-600" />
+                <img 
+                  src="/images/logo.png" 
+                  alt="SecuriTel Logo" 
+                  className="w-12 h-12 object-contain"
+                />
               </div>
             </div>
             
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Devenir Agent Enregistreur
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Devenir <span className="text-blue-600">Agent Enregistreur</span>
             </h1>
             <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Rejoignez notre réseau d'agents enregistreurs et contribuez à la sécurité des téléphones au Bénin

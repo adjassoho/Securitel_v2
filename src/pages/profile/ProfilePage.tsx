@@ -443,14 +443,17 @@ const ProfilePage = () => {
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
             <div className="text-center">
               <div className="relative mb-6">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full blur-lg opacity-75 animate-pulse"></div>
                 <div className="relative bg-white/10 backdrop-blur-lg rounded-full p-4 border border-white/20 mx-auto w-16 h-16 flex items-center justify-center">
-                  <Shield className="w-8 h-8 text-blue-400" />
+                  <img 
+                    src="/images/logo.png" 
+                    alt="SecuriTel Logo" 
+                    className="w-10 h-10 object-contain"
+                  />
                 </div>
               </div>
               
               <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
-                Devenez <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Agent Enregistreur</span>
+                Devenez <span className="text-blue-400">Agent Enregistreur</span>
               </h2>
               <p className="text-lg text-emerald-100 mb-6 max-w-2xl mx-auto">
                 Rejoignez notre réseau d'agents et contribuez à la sécurité des téléphones au Bénin tout en générant des revenus
@@ -459,7 +462,7 @@ const ProfilePage = () => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link 
                   to="/profile/become-agent" 
-                  className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300"
+                  className="inline-flex items-center px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-blue-600 to-emerald-600 rounded-xl shadow-xl hover:shadow-blue-500/25 transform hover:-translate-y-1 transition-all duration-300"
                 >
                   <Shield className="w-5 h-5 mr-2" />
                   Postuler maintenant

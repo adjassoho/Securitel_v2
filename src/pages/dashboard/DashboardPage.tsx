@@ -119,7 +119,7 @@ const DashboardPage = () => {
             </div>
           </div>
           <div className="mt-4">
-            <Link to="/become-agent" className="text-sm text-primary-600 hover:text-primary-700">
+            <Link to="/profile/become-agent" className="text-sm text-primary-600 hover:text-primary-700">
               Devenir agent enregistreur →
             </Link>
           </div>
