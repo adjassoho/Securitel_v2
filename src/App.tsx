@@ -7,6 +7,8 @@ import ScrollToTopOnRouteChange from '@/components/ui/ScrollToTopOnRouteChange';
 // Layouts
 import PublicLayout from '@/components/layouts/PublicLayout';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
+import AdminLayout from '@/components/layouts/AdminLayout';
+import PoliceLayout from '@/components/layouts/PoliceLayout';
 
 // Pages publiques
 import HomePage from '@/pages/public/HomePage';
@@ -41,6 +43,37 @@ import DiagnosticTestPage from '@/pages/diagnostic/DiagnosticTestPage';
 
 // Pages agent
 import AgentDashboard from '@/pages/agent/AgentDashboard';
+import ClientsPage from '@/pages/agent/ClientsPage';
+import AgentVerifyIMEIPage from '@/pages/agent/VerifyIMEIPage';
+import MyRegistrationsPage from '@/pages/agent/MyRegistrationsPage';
+import AccountingPage from '@/pages/agent/AccountingPage';
+import HelpSupportPage from '@/pages/agent/HelpSupportPage';
+import ReferralStatsPage from '@/pages/agent/ReferralStatsPage';
+import ReferralsPage from '@/pages/agent/ReferralsPage';
+import AdvancedRegisterPhonePage from '@/pages/agent/AdvancedRegisterPhonePage';
+import AdvancedCreateClientPage from '@/pages/agent/AdvancedCreateClientPage';
+import MobileMoneyPaymentPage from '@/pages/agent/MobileMoneyPaymentPage';
+import EditRegistrationPage from '@/pages/agent/EditRegistrationPage';
+import IMEIAlertsPage from '@/pages/agent/IMEIAlertsPage';
+import AgentProfilePage from '@/pages/agent/AgentProfilePage';
+
+// Pages admin
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import UsersPage from '@/pages/admin/UsersPage';
+import PhonesPage from '@/pages/admin/PhonesPage';
+import AdminReportsPage from '@/pages/admin/ReportsPage';
+import AgentsPage from '@/pages/admin/AgentsPage';
+import AdminStatsPage from '@/pages/admin/StatsPage';
+
+// Pages police
+import PoliceDashboard from '@/pages/police/PoliceDashboard';
+import QuickSearchPage from '@/pages/police/QuickSearchPage';
+import AdvancedSearchPage from '@/pages/police/AdvancedSearchPage';
+import SearchHistoryPage from '@/pages/police/SearchHistoryPage';
+import ReportsPage from '@/pages/police/ReportsPage';
+import CasesPage from '@/pages/police/CasesPage';
+import CreateCasePage from '@/pages/police/CreateCasePage';
+import StatsPage from '@/pages/police/StatsPage';
 import CreateClientPage from '@/pages/agent/CreateClientPage';
 import AgentRegisterPhonePage from '@/pages/agent/RegisterPhonePage';
 
@@ -64,6 +97,36 @@ const AgentRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   if (user?.role !== 'agent' && user?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Composant de protection des routes admin
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user } = useAuthStore();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user?.role !== 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Composant de protection des routes police
+const PoliceRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user } = useAuthStore();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user?.role !== 'police') {
     return <Navigate to="/dashboard" replace />;
   }
   
@@ -136,9 +199,79 @@ function App() {
             }
           >
             <Route path="/agent/dashboard" element={<AgentDashboard />} />
+            <Route path="/agent/clients" element={<ClientsPage />} />
             <Route path="/agent/create-client" element={<CreateClientPage />} />
             <Route path="/agent/register-phone" element={<AgentRegisterPhonePage />} />
+            <Route path="/agent/verify-imei" element={<AgentVerifyIMEIPage />} />
+            <Route path="/agent/registrations" element={<MyRegistrationsPage />} />
+            <Route path="/agent/accounting" element={<AccountingPage />} />
+            <Route path="/agent/help" element={<HelpSupportPage />} />
+            <Route path="/agent/referrals" element={<ReferralsPage />} />
+            <Route path="/agent/referral-stats" element={<ReferralStatsPage />} />
+            <Route path="/agent/advanced-register-phone" element={<AdvancedRegisterPhonePage />} />
+            <Route path="/agent/advanced-create-client" element={<AdvancedCreateClientPage />} />
+            <Route path="/agent/mobile-money-payment" element={<MobileMoneyPaymentPage />} />
+            <Route path="/agent/edit-registration/:id" element={<EditRegistrationPage />} />
+            <Route path="/agent/imei-alerts" element={<IMEIAlertsPage />} />
+            <Route path="/agent/profile" element={<AgentProfilePage />} />
             {/* TODO: Ajouter les autres routes agent */}
+          </Route>
+
+          {/* Routes admin */}
+          <Route
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            
+            {/* Gestion des utilisateurs */}
+            <Route path="/admin/users" element={<UsersPage />} />
+            
+            {/* Gestion des téléphones */}
+            <Route path="/admin/phones" element={<PhonesPage />} />
+            
+            {/* Gestion des signalements */}
+            <Route path="/admin/reports" element={<AdminReportsPage />} />
+            
+            {/* Gestion des agents */}
+            <Route path="/admin/agents" element={<AgentsPage />} />
+            
+            {/* Statistiques et rapports */}
+            <Route path="/admin/stats" element={<AdminStatsPage />} />
+          </Route>
+
+          {/* Routes police */}
+          <Route
+            element={
+              <PoliceRoute>
+                <PoliceLayout />
+              </PoliceRoute>
+            }
+          >
+            <Route path="/police" element={<PoliceDashboard />} />
+            <Route path="/police/dashboard" element={<PoliceDashboard />} />
+            
+            {/* Recherche */}
+            <Route path="/police/search/quick" element={<QuickSearchPage />} />
+            <Route path="/police/search/advanced" element={<AdvancedSearchPage />} />
+            <Route path="/police/search/history" element={<SearchHistoryPage />} />
+            
+            {/* Signalements */}
+            <Route path="/police/reports" element={<ReportsPage />} />
+            
+            {/* Dossiers */}
+            <Route path="/police/cases" element={<CasesPage />} />
+            <Route path="/police/cases/create" element={<CreateCasePage />} />
+            
+            {/* Statistiques */}
+            <Route path="/police/stats" element={<StatsPage />} />
+            <Route path="/police/stats/location" element={<StatsPage />} />
+            <Route path="/police/stats/reports" element={<StatsPage />} />
+            <Route path="/police/stats/exports" element={<StatsPage />} />
           </Route>
 
           {/* Redirection par défaut */}

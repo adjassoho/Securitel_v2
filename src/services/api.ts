@@ -21,6 +21,27 @@ import type {
   WithdrawalRequest,
   Withdrawal,
   User,
+  AdminStats,
+  AdminUser,
+  AdminPhone,
+  AdminReport,
+  AdminAgent,
+  Commission,
+  SupportTicket,
+  AdminReportData,
+  SystemSettings,
+  AdminAlert,
+  PoliceStats,
+  PoliceSearchLog,
+  PolicePhoneSearch,
+  PolicePhoneResult,
+  PoliceReport,
+  PoliceCase,
+  PoliceReportData,
+  AgentAlert,
+  AgentProfile,
+  FAQItem,
+  ReferralStats,
 } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api';
@@ -339,6 +360,594 @@ export const agentService = {
 
   getReferralLink: async (): Promise<{ link: string }> => {
     const response = await api.get('/agent/referral-link');
+    return response.data;
+  },
+
+  // Vérification IMEI avant achat
+  verifyIMEI: async (imei: string): Promise<IMEIVerificationResult> => {
+    const response = await api.post('/agent/verify-imei', { imei });
+    return response.data;
+  },
+
+  // Alertes et notifications
+  getAlerts: async (): Promise<AgentAlert[]> => {
+    const response = await api.get('/agent/alerts');
+    return response.data;
+  },
+
+  markAlertAsRead: async (alertId: string): Promise<void> => {
+    await api.put(`/agent/alerts/${alertId}/read`);
+  },
+
+  // Profil agent
+  getProfile: async (): Promise<AgentProfile> => {
+    const response = await api.get('/agent/profile');
+    return response.data;
+  },
+
+  updateProfile: async (data: FormData): Promise<AgentProfile> => {
+    const response = await api.put('/agent/profile', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  changePassword: async (data: {
+    current_password: string;
+    new_password: string;
+    confirm_password: string;
+  }): Promise<void> => {
+    await api.put('/agent/change-password', data);
+  },
+
+  // Centre d'aide
+  getFAQ: async (): Promise<FAQItem[]> => {
+    const response = await api.get('/agent/faq');
+    return response.data;
+  },
+
+  contactSupport: async (data: { subject: string; message: string }): Promise<SupportTicket> => {
+    const response = await api.post('/agent/support', data);
+    return response.data;
+  },
+
+  getSupportTickets: async (): Promise<SupportTicket[]> => {
+    const response = await api.get('/agent/support-tickets');
+    return response.data;
+  },
+
+  // Statistiques de parrainage
+  getReferralStats: async (): Promise<ReferralStats> => {
+    const response = await api.get('/agent/referral-stats');
+    return response.data;
+  },
+
+  // Rapports de commissions
+  getCommissionReport: async (period: 'monthly' | 'yearly'): Promise<any> => {
+    const response = await api.get('/agent/commission-report', { params: { period } });
+    return response.data;
+  },
+
+  // Gestion des parrainages
+  getReferrals: async (filters?: {
+    search?: string;
+    status?: string;
+    from?: string;
+    to?: string;
+  }): Promise<any[]> => {
+    const response = await api.get('/agent/referrals', { params: filters });
+    return response.data;
+  },
+
+  getReferralById: async (referralId: string): Promise<any> => {
+    const response = await api.get(`/agent/referrals/${referralId}`);
+    return response.data;
+  },
+
+  // Génération de QR code pour le lien de parrainage
+  generateReferralQRCode: async (): Promise<{ qr_code: string }> => {
+    const response = await api.get('/agent/referral-qr-code');
+    return response.data;
+  },
+
+  // Paiements Mobile Money
+  initiateMobileMoneyPayment: async (data: {
+    amount: number;
+    phone_number: string;
+    payment_method: 'mtn' | 'moov' | 'orange';
+    description: string;
+    reference: string;
+  }): Promise<{ transaction_id: string; verification_code: string }> => {
+    const response = await api.post('/agent/mobile-money/payment', data);
+    return response.data;
+  },
+
+  checkPaymentStatus: async (transactionId: string): Promise<{
+    status: 'pending' | 'success' | 'failed' | 'cancelled';
+    transaction_id: string;
+    message: string;
+  }> => {
+    const response = await api.get(`/agent/mobile-money/payment/${transactionId}/status`);
+    return response.data;
+  },
+
+  // Création de client avancée
+  createClient: async (data: FormData): Promise<any> => {
+    const response = await api.post('/agent/clients/create', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  // Gestion des enregistrements
+  getRegistrationById: async (id: string): Promise<any> => {
+    const response = await api.get(`/agent/registrations/${id}`);
+    return response.data;
+  },
+
+  updateRegistrationById: async (id: string, data: FormData): Promise<any> => {
+    const response = await api.put(`/agent/registrations/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+
+  // Alertes IMEI
+  getIMEIAlerts: async (filters?: {
+    search?: string;
+    alert_type?: string;
+    severity?: string;
+    status?: string;
+  }): Promise<any[]> => {
+    const response = await api.get('/agent/imei-alerts', { params: filters });
+    return response.data;
+  },
+
+  markIMEIAlertAsRead: async (alertId: string): Promise<void> => {
+    await api.put(`/agent/imei-alerts/${alertId}/read`);
+  },
+
+  resolveIMEIAlert: async (alertId: string, notes: string): Promise<void> => {
+    await api.put(`/agent/imei-alerts/${alertId}/resolve`, { notes });
+  },
+};
+
+// Services pour l'admin
+export const adminService = {
+  // Dashboard et statistiques
+  getStats: async (): Promise<AdminStats> => {
+    const response = await api.get('/admin/stats');
+    return response.data;
+  },
+
+  // Gestion des utilisateurs
+  getUsers: async (filters?: {
+    role?: string;
+    status?: string;
+    city?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ users: AdminUser[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/admin/users', { params: filters });
+    return response.data;
+  },
+
+  getUserById: async (id: string): Promise<AdminUser> => {
+    const response = await api.get(`/admin/users/${id}`);
+    return response.data;
+  },
+
+  updateUser: async (id: string, data: Partial<AdminUser>): Promise<AdminUser> => {
+    const response = await api.put(`/admin/users/${id}`, data);
+    return response.data;
+  },
+
+  suspendUser: async (id: string, reason: string): Promise<void> => {
+    await api.post(`/admin/users/${id}/suspend`, { reason });
+  },
+
+  activateUser: async (id: string): Promise<void> => {
+    await api.post(`/admin/users/${id}/activate`);
+  },
+
+  // Gestion des téléphones
+  getPhones: async (filters?: {
+    status?: string;
+    owner_id?: string;
+    imei?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ phones: AdminPhone[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/admin/phones', { params: filters });
+    return response.data;
+  },
+
+  getPhoneById: async (id: string): Promise<AdminPhone> => {
+    const response = await api.get(`/admin/phones/${id}`);
+    return response.data;
+  },
+
+  updatePhoneStatus: async (id: string, status: string, reason?: string): Promise<AdminPhone> => {
+    const response = await api.put(`/admin/phones/${id}/status`, { status, reason });
+    return response.data;
+  },
+
+  addToBlacklist: async (imei: string, reason: string): Promise<void> => {
+    await api.post('/admin/phones/blacklist', { imei, reason });
+  },
+
+  removeFromBlacklist: async (imei: string): Promise<void> => {
+    await api.delete(`/admin/phones/blacklist/${imei}`);
+  },
+
+  importPhones: async (file: File): Promise<{ success: number; errors: any[] }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await api.post('/admin/phones/import', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+  },
+
+  // Gestion des signalements
+  getReports: async (filters?: {
+    type?: string;
+    status?: string;
+    priority?: string;
+    assigned_agent?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ reports: AdminReport[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/admin/reports', { params: filters });
+    return response.data;
+  },
+
+  getReportById: async (id: string): Promise<AdminReport> => {
+    const response = await api.get(`/admin/reports/${id}`);
+    return response.data;
+  },
+
+  updateReportStatus: async (id: string, status: string, notes?: string): Promise<AdminReport> => {
+    const response = await api.put(`/admin/reports/${id}/status`, { status, notes });
+    return response.data;
+  },
+
+  assignReport: async (id: string, agent_id: string): Promise<AdminReport> => {
+    const response = await api.post(`/admin/reports/${id}/assign`, { agent_id });
+    return response.data;
+  },
+
+  // Gestion des agents
+  getAgents: async (filters?: {
+    status?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ agents: AdminAgent[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/admin/agents', { params: filters });
+    return response.data;
+  },
+
+  getAgentById: async (id: string): Promise<AdminAgent> => {
+    const response = await api.get(`/admin/agents/${id}`);
+    return response.data;
+  },
+
+  approveAgent: async (id: string): Promise<AdminAgent> => {
+    const response = await api.post(`/admin/agents/${id}/approve`);
+    return response.data;
+  },
+
+  rejectAgent: async (id: string, reason: string): Promise<void> => {
+    await api.post(`/admin/agents/${id}/reject`, { reason });
+  },
+
+  suspendAgent: async (id: string, reason: string): Promise<void> => {
+    await api.post(`/admin/agents/${id}/suspend`, { reason });
+  },
+
+  // Gestion des commissions
+  getCommissions: async (filters?: {
+    agent_id?: string;
+    status?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ commissions: Commission[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/admin/commissions', { params: filters });
+    return response.data;
+  },
+
+  processCommission: async (id: string): Promise<Commission> => {
+    const response = await api.post(`/admin/commissions/${id}/process`);
+    return response.data;
+  },
+
+  // Support client
+  getTickets: async (filters?: {
+    status?: string;
+    priority?: string;
+    category?: string;
+    assigned_to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ tickets: SupportTicket[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/admin/support/tickets', { params: filters });
+    return response.data;
+  },
+
+  getTicketById: async (id: string): Promise<SupportTicket> => {
+    const response = await api.get(`/admin/support/tickets/${id}`);
+    return response.data;
+  },
+
+  updateTicketStatus: async (id: string, status: string): Promise<SupportTicket> => {
+    const response = await api.put(`/admin/support/tickets/${id}/status`, { status });
+    return response.data;
+  },
+
+  assignTicket: async (id: string, admin_id: string): Promise<SupportTicket> => {
+    const response = await api.post(`/admin/support/tickets/${id}/assign`, { admin_id });
+    return response.data;
+  },
+
+  addTicketMessage: async (id: string, content: string, attachments?: File[]): Promise<void> => {
+    const formData = new FormData();
+    formData.append('content', content);
+    if (attachments) {
+      attachments.forEach(file => formData.append('attachments', file));
+    }
+    await api.post(`/admin/support/tickets/${id}/messages`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+
+  // Rapports
+  generateReport: async (type: 'daily' | 'weekly' | 'monthly' | 'custom', filters?: {
+    start_date?: string;
+    end_date?: string;
+  }): Promise<AdminReportData> => {
+    const response = await api.post('/admin/reports/generate', { type, filters });
+    return response.data;
+  },
+
+  exportReport: async (reportId: string, format: 'pdf' | 'excel'): Promise<Blob> => {
+    const response = await api.get(`/admin/reports/${reportId}/export`, {
+      params: { format },
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  // Paramètres système
+  getSystemSettings: async (): Promise<SystemSettings> => {
+    const response = await api.get('/admin/settings');
+    return response.data;
+  },
+
+  updateSystemSettings: async (settings: Partial<SystemSettings>): Promise<SystemSettings> => {
+    const response = await api.put('/admin/settings', settings);
+    return response.data;
+  },
+
+  // Alertes
+  getAlerts: async (): Promise<AdminAlert[]> => {
+    const response = await api.get('/admin/alerts');
+    return response.data;
+  },
+
+  markAlertAsResolved: async (id: string): Promise<void> => {
+    await api.post(`/admin/alerts/${id}/resolve`);
+  },
+
+  // Police
+  createPoliceAccess: async (data: {
+    name: string;
+    email: string;
+    phone: string;
+    department: string;
+    badge_number: string;
+  }): Promise<{ user: AdminUser; password: string }> => {
+    const response = await api.post('/admin/police/create-access', data);
+    return response.data;
+  },
+
+  getPoliceAccess: async (): Promise<AdminUser[]> => {
+    const response = await api.get('/admin/police/access');
+    return response.data;
+  },
+
+  revokePoliceAccess: async (id: string): Promise<void> => {
+    await api.delete(`/admin/police/access/${id}`);
+  },
+};
+
+// Services pour la Police
+export const policeService = {
+  // Authentification Police
+  login: async (data: { email: string; password: string }): Promise<{ message: string }> => {
+    const response = await api.post('/police/login', data);
+    return response.data;
+  },
+
+  validate2FA: async (email: string, code: string): Promise<AuthResponse> => {
+    const response = await api.post('/police/validate-2fa', { email, code });
+    const { access_token, user } = response.data;
+    
+    localStorage.setItem('auth_token', access_token);
+    api.defaults.headers.common['Authorization'] = `Bearer ${access_token}`;
+    
+    return { token: access_token, user };
+  },
+
+  logout: async (): Promise<void> => {
+    try {
+      await api.post('/police/logout');
+    } catch (error) {
+      // Continue with local logout even if API call fails
+    }
+    localStorage.removeItem('auth_token');
+    delete api.defaults.headers.common['Authorization'];
+  },
+
+  // Dashboard et statistiques
+  getStats: async (period?: 'daily' | 'weekly' | 'monthly'): Promise<PoliceStats> => {
+    const response = await api.get('/police/stats', { params: { period } });
+    return response.data;
+  },
+
+  // Recherche de téléphones
+  searchPhone: async (searchData: PolicePhoneSearch): Promise<PolicePhoneResult> => {
+    const response = await api.post('/police/phones/search', searchData);
+    return response.data;
+  },
+
+  quickVerify: async (imei: string, location?: string): Promise<PolicePhoneResult> => {
+    const response = await api.get(`/police/phones/verify-quick/${imei}`, {
+      params: { location }
+    });
+    return response.data;
+  },
+
+  getPhoneHistory: async (phoneId: string): Promise<any> => {
+    const response = await api.get(`/police/phones/${phoneId}/full-history`);
+    return response.data;
+  },
+
+  // Gestion des signalements
+  getReports: async (filters?: {
+    status?: string;
+    type?: string;
+    priority?: string;
+    assigned_officer?: string;
+    date_from?: string;
+    date_to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ reports: PoliceReport[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/police/reports', { params: filters });
+    return response.data;
+  },
+
+  getReportById: async (id: string): Promise<PoliceReport> => {
+    const response = await api.get(`/police/reports/${id}`);
+    return response.data;
+  },
+
+  updateReportStatus: async (id: string, status: string, reason?: string): Promise<PoliceReport> => {
+    const response = await api.put(`/police/reports/${id}/status`, { status, reason });
+    return response.data;
+  },
+
+  assignReport: async (id: string, officer_id: string): Promise<PoliceReport> => {
+    const response = await api.post(`/police/reports/${id}/assign`, { officer_id });
+    return response.data;
+  },
+
+  addReportNote: async (id: string, content: string, is_internal: boolean = false): Promise<void> => {
+    await api.post(`/police/reports/${id}/notes`, { content, is_internal });
+  },
+
+  // Gestion des dossiers
+  getCases: async (filters?: {
+    status?: string;
+    priority?: string;
+    assigned_officer?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ cases: PoliceCase[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/police/cases', { params: filters });
+    return response.data;
+  },
+
+  getCaseById: async (id: string): Promise<PoliceCase> => {
+    const response = await api.get(`/police/cases/${id}`);
+    return response.data;
+  },
+
+  createCase: async (data: {
+    title: string;
+    description: string;
+    priority: string;
+    report_ids?: string[];
+  }): Promise<PoliceCase> => {
+    const response = await api.post('/police/cases', data);
+    return response.data;
+  },
+
+  updateCaseStatus: async (id: string, status: string): Promise<PoliceCase> => {
+    const response = await api.put(`/police/cases/${id}/status`, { status });
+    return response.data;
+  },
+
+  assignCase: async (id: string, officer_id: string): Promise<PoliceCase> => {
+    const response = await api.post(`/police/cases/${id}/assign`, { officer_id });
+    return response.data;
+  },
+
+  addCaseNote: async (id: string, content: string, is_confidential: boolean = false): Promise<void> => {
+    await api.post(`/police/cases/${id}/notes`, { content, is_confidential });
+  },
+
+  // Logs et traçabilité
+  getSearchLogs: async (filters?: {
+    officer_id?: string;
+    action?: string;
+    date_from?: string;
+    date_to?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<{ logs: PoliceSearchLog[]; total: number; page: number; total_pages: number }> => {
+    const response = await api.get('/police/logs/search', { params: filters });
+    return response.data;
+  },
+
+  exportSearchLogs: async (filters?: {
+    officer_id?: string;
+    date_from?: string;
+    date_to?: string;
+  }): Promise<Blob> => {
+    const response = await api.get('/police/logs/export', {
+      params: filters,
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  // Rapports et exports
+  generateReport: async (type: 'daily' | 'weekly' | 'monthly' | 'custom', filters?: {
+    start_date?: string;
+    end_date?: string;
+  }): Promise<PoliceReportData> => {
+    const response = await api.post('/police/reports/generate', { type, filters });
+    return response.data;
+  },
+
+  exportReport: async (reportId: string, format: 'pdf' | 'excel'): Promise<Blob> => {
+    const response = await api.get(`/police/reports/${reportId}/export`, {
+      params: { format },
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  // Statistiques par localisation
+  getStolenPhonesByLocation: async (filters?: {
+    city?: string;
+    department?: string;
+    date_from?: string;
+    date_to?: string;
+  }): Promise<{ location: string; count: number; phones: any[] }[]> => {
+    const response = await api.get('/police/phones/stolen-by-location', { params: filters });
     return response.data;
   },
 };

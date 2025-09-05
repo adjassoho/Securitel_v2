@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'react-router-dom';
-import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield, Camera, Upload } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield, Camera, Upload, Settings, BarChart3, Users, Smartphone, AlertTriangle, UserCheck, ArrowRight, UserPlus, Search, FileText, DollarSign, HelpCircle, CreditCard } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { userService } from '@/services/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -437,6 +437,414 @@ const ProfilePage = () => {
                 </div>
               )}
             </form>
+          </div>
+
+          {/* Section Navigation Rapide selon le rôle */}
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl mb-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-white mb-2">Accès Rapide</h2>
+              <p className="text-emerald-100">Accédez rapidement aux interfaces selon vos droits</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Admin / Super Admin */}
+              {(user?.role === 'admin' || user?.role === 'super_admin') && (
+                <>
+                  <Link
+                    to="/admin"
+                    className="group bg-gradient-to-br from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 backdrop-blur-lg border border-red-400/30 hover:border-red-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-red-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-red-500/20 rounded-xl">
+                        <Settings className="w-6 h-6 text-red-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-red-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Administration</h3>
+                    <p className="text-sm text-red-100/80">Gérer les utilisateurs, téléphones et signalements</p>
+                  </Link>
+
+                  <Link
+                    to="/police"
+                    className="group bg-gradient-to-br from-purple-500/20 to-purple-600/20 hover:from-purple-500/30 hover:to-purple-600/30 backdrop-blur-lg border border-purple-400/30 hover:border-purple-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-purple-500/20 rounded-xl">
+                        <Shield className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Interface Police</h3>
+                    <p className="text-sm text-purple-100/80">Recherche et gestion des enquêtes</p>
+                  </Link>
+
+                  <Link
+                    to="/admin/stats"
+                    className="group bg-gradient-to-br from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 backdrop-blur-lg border border-blue-400/30 hover:border-blue-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-blue-500/20 rounded-xl">
+                        <BarChart3 className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Statistiques</h3>
+                    <p className="text-sm text-blue-100/80">Rapports et analyses détaillées</p>
+                  </Link>
+
+                  <Link
+                    to="/agent"
+                    className="group bg-gradient-to-br from-orange-500/20 to-orange-600/20 hover:from-orange-500/30 hover:to-orange-600/30 backdrop-blur-lg border border-orange-400/30 hover:border-orange-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-orange-500/20 rounded-xl">
+                        <UserPlus className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-orange-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Interface Agent</h3>
+                    <p className="text-sm text-orange-100/80">Gestion des enregistrements et clients</p>
+                  </Link>
+                </>
+              )}
+
+              {/* Police */}
+              {user?.role === 'police' && (
+                <>
+                  <Link
+                    to="/police"
+                    className="group bg-gradient-to-br from-purple-500/20 to-purple-600/20 hover:from-purple-500/30 hover:to-purple-600/30 backdrop-blur-lg border border-purple-400/30 hover:border-purple-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-purple-500/20 rounded-xl">
+                        <Shield className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Tableau de Bord Police</h3>
+                    <p className="text-sm text-purple-100/80">Accès aux outils d'enquête et de recherche</p>
+                  </Link>
+
+                  <Link
+                    to="/police/search/quick"
+                    className="group bg-gradient-to-br from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 backdrop-blur-lg border border-green-400/30 hover:border-green-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-green-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-green-500/20 rounded-xl">
+                        <Smartphone className="w-6 h-6 text-green-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-green-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Recherche Rapide</h3>
+                    <p className="text-sm text-green-100/80">Vérification instantanée d'IMEI</p>
+                  </Link>
+
+                  <Link
+                    to="/police/reports"
+                    className="group bg-gradient-to-br from-orange-500/20 to-orange-600/20 hover:from-orange-500/30 hover:to-orange-600/30 backdrop-blur-lg border border-orange-400/30 hover:border-orange-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-orange-500/20 rounded-xl">
+                        <AlertTriangle className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-orange-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Signalements</h3>
+                    <p className="text-sm text-orange-100/80">Gestion des cas d'enquête</p>
+                  </Link>
+                </>
+              )}
+
+              {/* Agent */}
+              {user?.role === 'agent' && (
+                <>
+                  <Link
+                    to="/agent/dashboard"
+                    className="group bg-gradient-to-br from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 backdrop-blur-lg border border-blue-400/30 hover:border-blue-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-blue-500/20 rounded-xl">
+                        <UserCheck className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Tableau de Bord Agent</h3>
+                    <p className="text-sm text-blue-100/80">Gestion des clients et enregistrements</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/clients"
+                    className="group bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 hover:from-emerald-500/30 hover:to-emerald-600/30 backdrop-blur-lg border border-emerald-400/30 hover:border-emerald-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-emerald-500/20 rounded-xl">
+                        <Users className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mes Clients</h3>
+                    <p className="text-sm text-emerald-100/80">Gérer votre portefeuille clients</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/register-phone"
+                    className="group bg-gradient-to-br from-teal-500/20 to-teal-600/20 hover:from-teal-500/30 hover:to-teal-600/30 backdrop-blur-lg border border-teal-400/30 hover:border-teal-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-teal-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-teal-500/20 rounded-xl">
+                        <Smartphone className="w-6 h-6 text-teal-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-teal-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Enregistrer Téléphone</h3>
+                    <p className="text-sm text-teal-100/80">Nouvel enregistrement de téléphone</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/verify-imei"
+                    className="group bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 hover:from-cyan-500/30 hover:to-cyan-600/30 backdrop-blur-lg border border-cyan-400/30 hover:border-cyan-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-cyan-500/20 rounded-xl">
+                        <Search className="w-6 h-6 text-cyan-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-cyan-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Vérifier IMEI</h3>
+                    <p className="text-sm text-cyan-100/80">Vérification avant achat</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/registrations"
+                    className="group bg-gradient-to-br from-amber-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-amber-600/30 backdrop-blur-lg border border-amber-400/30 hover:border-amber-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-amber-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-amber-500/20 rounded-xl">
+                        <FileText className="w-6 h-6 text-amber-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-amber-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mes Enregistrements</h3>
+                    <p className="text-sm text-amber-100/80">Historique et gestion</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/accounting"
+                    className="group bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 hover:from-emerald-500/30 hover:to-emerald-600/30 backdrop-blur-lg border border-emerald-400/30 hover:border-emerald-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-emerald-500/20 rounded-xl">
+                        <DollarSign className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Comptabilité</h3>
+                    <p className="text-sm text-emerald-100/80">Revenus et retraits</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/help"
+                    className="group bg-gradient-to-br from-pink-500/20 to-pink-600/20 hover:from-pink-500/30 hover:to-pink-600/30 backdrop-blur-lg border border-pink-400/30 hover:border-pink-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-pink-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-pink-500/20 rounded-xl">
+                        <HelpCircle className="w-6 h-6 text-pink-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-pink-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Aide & Support</h3>
+                    <p className="text-sm text-pink-100/80">FAQ et contact support</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/referrals"
+                    className="group bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 hover:from-indigo-500/30 hover:to-indigo-600/30 backdrop-blur-lg border border-indigo-400/30 hover:border-indigo-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-indigo-500/20 rounded-xl">
+                        <Users className="w-6 h-6 text-indigo-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mes Parrainés</h3>
+                    <p className="text-sm text-indigo-100/80">Gérer mes parrainés</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/referral-stats"
+                    className="group bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 hover:from-cyan-500/30 hover:to-cyan-600/30 backdrop-blur-lg border border-cyan-400/30 hover:border-cyan-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-cyan-500/20 rounded-xl">
+                        <BarChart3 className="w-6 h-6 text-cyan-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-cyan-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Stats Parrainage</h3>
+                    <p className="text-sm text-cyan-100/80">Statistiques de parrainage</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/advanced-register-phone"
+                    className="group bg-gradient-to-br from-rose-500/20 to-rose-600/20 hover:from-rose-500/30 hover:to-rose-600/30 backdrop-blur-lg border border-rose-400/30 hover:border-rose-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-rose-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-rose-500/20 rounded-xl">
+                        <Smartphone className="w-6 h-6 text-rose-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-rose-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Enregistrement Avancé</h3>
+                    <p className="text-sm text-rose-100/80">Formulaire complet avec captures</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/advanced-create-client"
+                    className="group bg-gradient-to-br from-violet-500/20 to-violet-600/20 hover:from-violet-500/30 hover:to-violet-600/30 backdrop-blur-lg border border-violet-400/30 hover:border-violet-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-violet-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-violet-500/20 rounded-xl">
+                        <UserPlus className="w-6 h-6 text-violet-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-violet-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Créer Client Avancé</h3>
+                    <p className="text-sm text-violet-100/80">Avec vérification d'identité</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/mobile-money-payment"
+                    className="group bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 hover:from-emerald-500/30 hover:to-emerald-600/30 backdrop-blur-lg border border-emerald-400/30 hover:border-emerald-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-emerald-500/20 rounded-xl">
+                        <CreditCard className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Paiement Mobile Money</h3>
+                    <p className="text-sm text-emerald-100/80">MTN, Moov, Orange</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/imei-alerts"
+                    className="group bg-gradient-to-br from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 backdrop-blur-lg border border-red-400/30 hover:border-red-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-red-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-red-500/20 rounded-xl">
+                        <AlertTriangle className="w-6 h-6 text-red-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-red-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Alertes IMEI</h3>
+                    <p className="text-sm text-red-100/80">Surveillance sécurité</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/profile"
+                    className="group bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 hover:from-indigo-500/30 hover:to-indigo-600/30 backdrop-blur-lg border border-indigo-400/30 hover:border-indigo-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-indigo-500/20 rounded-xl">
+                        <User className="w-6 h-6 text-indigo-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mon Profil Agent</h3>
+                    <p className="text-sm text-indigo-100/80">Gérer mes informations</p>
+                  </Link>
+
+                  <Link
+                    to="/agent/create-client"
+                    className="group bg-gradient-to-br from-purple-500/20 to-purple-600/20 hover:from-purple-500/30 hover:to-purple-600/30 backdrop-blur-lg border border-purple-400/30 hover:border-purple-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-purple-500/20 rounded-xl">
+                        <UserPlus className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Nouveau Client</h3>
+                    <p className="text-sm text-purple-100/80">Créer un nouveau client</p>
+                  </Link>
+
+                  <Link
+                    to="/dashboard"
+                    className="group bg-gradient-to-br from-orange-500/20 to-orange-600/20 hover:from-orange-500/30 hover:to-orange-600/30 backdrop-blur-lg border border-orange-400/30 hover:border-orange-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-orange-500/20 rounded-xl">
+                        <BarChart3 className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-orange-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mon Profil Utilisateur</h3>
+                    <p className="text-sm text-orange-100/80">Accéder à mon profil personnel</p>
+                  </Link>
+
+                  <Link
+                    to="/phones"
+                    className="group bg-gradient-to-br from-indigo-500/20 to-indigo-600/20 hover:from-indigo-500/30 hover:to-indigo-600/30 backdrop-blur-lg border border-indigo-400/30 hover:border-indigo-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-indigo-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-indigo-500/20 rounded-xl">
+                        <Smartphone className="w-6 h-6 text-indigo-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-indigo-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mes Téléphones</h3>
+                    <p className="text-sm text-indigo-100/80">Gérer mes appareils personnels</p>
+                  </Link>
+                </>
+              )}
+
+              {/* Utilisateur standard */}
+              {user?.role === 'user' && (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="group bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 hover:from-emerald-500/30 hover:to-emerald-600/30 backdrop-blur-lg border border-emerald-400/30 hover:border-emerald-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-emerald-500/20 rounded-xl">
+                        <BarChart3 className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mon Tableau de Bord</h3>
+                    <p className="text-sm text-emerald-100/80">Vue d'ensemble de vos activités</p>
+                  </Link>
+
+                  <Link
+                    to="/phones"
+                    className="group bg-gradient-to-br from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 backdrop-blur-lg border border-blue-400/30 hover:border-blue-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-blue-500/20 rounded-xl">
+                        <Smartphone className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mes Téléphones</h3>
+                    <p className="text-sm text-blue-100/80">Gérer vos appareils enregistrés</p>
+                  </Link>
+
+                  <Link
+                    to="/reports"
+                    className="group bg-gradient-to-br from-orange-500/20 to-orange-600/20 hover:from-orange-500/30 hover:to-orange-600/30 backdrop-blur-lg border border-orange-400/30 hover:border-orange-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-orange-500/20 rounded-xl">
+                        <AlertTriangle className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <ArrowRight className="w-5 h-5 text-orange-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mb-2">Mes Signalements</h3>
+                    <p className="text-sm text-orange-100/80">Suivre vos déclarations</p>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Section Devenir Agent */}
