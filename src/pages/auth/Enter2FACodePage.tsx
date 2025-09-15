@@ -36,13 +36,24 @@ const Enter2FACodePage = () => {
     e.preventDefault();
     if (!email) return;
     
+    // Nettoyer le code en supprimant les tirets
+    const cleanCode = code.replace(/-/g, '');
+    
+    // Valider que le code a 6 chiffres
+    if (cleanCode.length !== 6) {
+      toast.error('Le code doit contenir 6 chiffres');
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      await validate2FA(email, code.replace(/-/g, ''));
+      console.log('Vérification 2FA:', { email, code: cleanCode });
+      await validate2FA(email, cleanCode);
       sessionStorage.removeItem('pending_auth_email');
       toast.success('Connexion réussie!');
       navigate('/dashboard');
     } catch (error: any) {
+      console.error('Erreur vérification 2FA:', error);
       toast.error(error.response?.data?.message || 'Code incorrect ou expiré');
     } finally {
       setIsLoading(false);

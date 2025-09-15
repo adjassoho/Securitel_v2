@@ -123,7 +123,9 @@ export const authService = {
 
   // Step 2: Validate 2FA code to get token and user data
   validate2FA: async (email: string, code: string): Promise<AuthResponse> => {
+    console.log('API validate2FA appelée:', { email, code });
     const response = await api.post('/validate-2fa', { email, code });
+    console.log('Réponse validate2FA:', response.data);
     const { access_token, user } = response.data;
     
     // Store token and set default header
@@ -157,7 +159,10 @@ export const authService = {
   },
 
   verifyEmail: async (email: string, code: string): Promise<void> => {
-    await api.post('/verify-email', { email, code });
+    console.log('API verifyEmail appelée:', { email, code });
+    const response = await api.post('/verify-email', { email, code });
+    console.log('Réponse verifyEmail:', response.data);
+    return response.data;
   },
 
   resendVerificationCode: async (email: string): Promise<void> => {

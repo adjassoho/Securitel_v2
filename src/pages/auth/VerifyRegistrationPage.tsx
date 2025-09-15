@@ -34,13 +34,24 @@ const VerifyRegistrationPage = () => {
     e.preventDefault();
     if (!email) return;
     
+    // Nettoyer le code en supprimant les tirets
+    const cleanCode = code.replace(/-/g, '');
+    
+    // Valider que le code a 6 chiffres
+    if (cleanCode.length !== 6) {
+      toast.error('Le code doit contenir 6 chiffres');
+      return;
+    }
+    
     setIsLoading(true);
     try {
-      await authService.verifyEmail(email, code);
+      console.log('Vérification email:', { email, code: cleanCode });
+      await authService.verifyEmail(email, cleanCode);
       sessionStorage.removeItem('pending_verification_email');
       toast.success('Email vérifié avec succès!');
       navigate('/login');
     } catch (error: any) {
+      console.error('Erreur vérification email:', error);
       toast.error(error.response?.data?.message || 'Code incorrect ou expiré');
     } finally {
       setIsLoading(false);
