@@ -49,7 +49,7 @@ import type {
   TechnicianProfile,
 } from '@/types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -117,14 +117,14 @@ api.interceptors.response.use(
 export const authService = {
   // Step 1: Initial login request that triggers 2FA code
   login: async (data: LoginRequest): Promise<{ message: string }> => {
-    const response = await api.post('/api/login', data);
+    const response = await api.post('/login', data);
     return response.data;
   },
 
   // Step 2: Validate 2FA code to get token and user data
   validate2FA: async (email: string, code: string): Promise<AuthResponse> => {
     console.log('API validate2FA appelée:', { email, code });
-    const response = await api.post('/api/validate-2fa', { email, code });
+    const response = await api.post('/validate-2fa', { email, code });
     console.log('Réponse validate2FA:', response.data);
     const { access_token, user } = response.data;
     
@@ -136,13 +136,13 @@ export const authService = {
   },
 
   register: async (data: RegisterRequest): Promise<{ message: string }> => {
-    const response = await api.post('/api/register', data);
+    const response = await api.post('/register', data);
     return response.data;
   },
 
   logout: async (): Promise<void> => {
     try {
-      await api.post('/api/logout');
+      await api.post('/logout');
     } catch (error) {
       // Continue with local logout even if API call fails
     }
@@ -151,23 +151,23 @@ export const authService = {
   },
 
   forgotPassword: async (email: string): Promise<void> => {
-    await api.post('/api/forgot-password', { email });
+    await api.post('/forgot-password', { email });
   },
 
   resetPassword: async (token: string, password: string, password_confirmation: string): Promise<void> => {
-    await api.post('/api/reset-password', { token, password, password_confirmation });
+    await api.post('/reset-password', { token, password, password_confirmation });
   },
 
   verifyEmail: async (email: string, code: string): Promise<void> => {
     console.log('API verifyEmail appelée:', { email, code });
-    const response = await api.post('/api/verify-email', { email, code });
+    const response = await api.post('/verify-email', { email, code });
     console.log('Réponse verifyEmail:', response.data);
     return response.data;
   },
 
   resendVerificationCode: async (email: string): Promise<void> => {
     console.log('Envoi du code de vérification pour:', email);
-    const response = await api.post('/api/resend-verification-code', { email });
+    const response = await api.post('/resend-verification-code', { email });
     console.log('Réponse du serveur:', response.data);
     return response.data;
   },
