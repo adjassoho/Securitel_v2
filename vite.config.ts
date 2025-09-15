@@ -14,7 +14,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'https://api.securitels.com/api/docs',
+        target: 'https://api.securitels.com/api',
         changeOrigin: true,
         secure: true,
       }

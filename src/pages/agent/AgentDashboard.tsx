@@ -294,8 +294,8 @@ const AgentDashboard = () => {
             <p className="text-sm text-gray-600">
               Partagez ce lien pour gagner des commissions sur les enregistrements de vos parrainés
             </p>
+            </div>
           </div>
-        </div>
         </div>
 
         {/* Actions rapides */}
