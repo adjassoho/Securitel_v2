@@ -180,83 +180,86 @@ const HistoryPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-2 sm:p-4 lg:p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header avec glass morphism */}
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl mb-8">
+        {/* Header avec glass morphism - Responsive */}
+        <div className="bg-white/60 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border border-white/20 shadow-2xl mb-4 sm:mb-6 lg:mb-8">
           <div className="text-center">
-            <div className="relative mb-6">
-              <div className="bg-white/10 backdrop-blur-lg rounded-full p-6 border border-white/20 mx-auto w-fit">
-                <Clock className="h-16 w-16 text-blue-600 mx-auto" />
+            <div className="relative mb-4 sm:mb-6">
+              <div className="bg-white/10 backdrop-blur-lg rounded-full p-4 sm:p-6 border border-white/20 mx-auto w-fit">
+                <Clock className="h-12 w-12 sm:h-16 sm:w-16 text-blue-600 mx-auto" />
               </div>
             </div>
             
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Historique des activités
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-2">
               Consultez l'historique complet de toutes vos actions sur la plateforme SecuriTel
             </p>
           </div>
         </div>
 
-        {/* Barre de recherche et filtres */}
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl mb-8">
-          <div className="flex flex-col lg:flex-row gap-6">
+        {/* Barre de recherche et filtres - Responsive */}
+        <div className="bg-white/60 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 shadow-2xl mb-4 sm:mb-6 lg:mb-8">
+          <div className="flex flex-col gap-4 sm:gap-6">
             {/* Barre de recherche */}
             <div className="flex-1">
               <form onSubmit={handleSearch} className="relative">
                 <div className="relative">
-                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                   <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Rechercher dans l'historique..."
-                    className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900"
+                    className="w-full pl-10 sm:pl-12 pr-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900 text-sm sm:text-base"
                   />
                 </div>
               </form>
             </div>
 
-            {/* Boutons d'action */}
-            <div className="flex gap-3">
+            {/* Boutons d'action - Responsive */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`inline-flex items-center px-6 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 ${
+                className={`inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105 text-sm sm:text-base ${
                   showFilters
                     ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                     : 'bg-white/90 backdrop-blur-sm text-gray-700 border-2 border-gray-300 hover:border-gray-400'
                 }`}
               >
-                <Filter className="h-5 w-5 mr-2" />
-                Filtres
+                <Filter className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                <span className="hidden sm:inline">Filtres</span>
+                <span className="sm:hidden">Filtrer</span>
               </button>
               
               <button
                 onClick={exportHistory}
                 disabled={!filteredItems || !Array.isArray(filteredItems) || filteredItems.length === 0}
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
-                <Download className="h-5 w-5 mr-2" />
-                Exporter
+                <Download className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                <span className="hidden sm:inline">Exporter</span>
+                <span className="sm:hidden">Export</span>
               </button>
               
               <button
                 onClick={() => refetch()}
                 disabled={isLoading}
-                className="inline-flex items-center px-6 py-3 bg-white/90 backdrop-blur-sm text-gray-700 border-2 border-gray-300 rounded-xl font-medium transition-all duration-300 hover:border-gray-400 hover:scale-105 disabled:opacity-50"
+                className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-white/90 backdrop-blur-sm text-gray-700 border-2 border-gray-300 rounded-xl font-medium transition-all duration-300 hover:border-gray-400 hover:scale-105 disabled:opacity-50 text-sm sm:text-base"
               >
-                <RefreshCw className={`h-5 w-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                Actualiser
+                <RefreshCw className={`h-4 w-4 sm:h-5 sm:w-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Actualiser</span>
+                <span className="sm:hidden">Refresh</span>
               </button>
             </div>
           </div>
 
-          {/* Filtres avancés */}
+          {/* Filtres avancés - Responsive */}
           {showFilters && (
-            <div className="mt-6 p-6 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="mt-4 sm:mt-6 p-4 sm:p-6 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Date de début
@@ -265,7 +268,7 @@ const HistoryPage = () => {
                     type="date"
                     value={filters.from || ''}
                     onChange={(e) => handleFilterChange('from', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900 text-sm"
                   />
                 </div>
                 
@@ -277,18 +280,18 @@ const HistoryPage = () => {
                     type="date"
                     value={filters.to || ''}
                     onChange={(e) => handleFilterChange('to', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900 text-sm"
                   />
                 </div>
                 
-                <div>
+                <div className="sm:col-span-2 lg:col-span-1">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Type d'action
                   </label>
                   <select
                     value={filters.type || ''}
                     onChange={(e) => handleFilterChange('type', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 border-2 border-gray-300 rounded-lg shadow-sm bg-white/90 backdrop-blur-sm transition-all duration-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:outline-none hover:border-gray-400 text-gray-900 text-sm"
                   >
                     <option value="">Tous les types</option>
                     <option value="registration">Enregistrement</option>
@@ -303,7 +306,7 @@ const HistoryPage = () => {
               <div className="mt-4 flex justify-end">
                 <button
                   onClick={clearFilters}
-                  className="px-6 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200"
+                  className="px-4 sm:px-6 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200 text-sm sm:text-base"
                 >
                   Effacer les filtres
                 </button>
@@ -312,22 +315,22 @@ const HistoryPage = () => {
           )}
         </div>
 
-        {/* Liste des activités */}
-        <div className="bg-white/60 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl overflow-hidden">
+        {/* Liste des activités - Responsive */}
+        <div className="bg-white/60 backdrop-blur-xl rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl overflow-hidden">
           {isLoading ? (
-            <div className="flex items-center justify-center p-12">
+            <div className="flex items-center justify-center p-8 sm:p-12">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                <p className="text-gray-600">Chargement de l'historique...</p>
+                <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600 text-sm sm:text-base">Chargement de l'historique...</p>
               </div>
             </div>
           ) : !filteredItems || !Array.isArray(filteredItems) || filteredItems.length === 0 ? (
-            <div className="text-center p-12">
-              <Activity className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <div className="text-center p-8 sm:p-12">
+              <Activity className="h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
                 Aucune activité trouvée
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-sm sm:text-base px-4">
                 {filters.search || filters.from || filters.to || filters.type
                   ? 'Aucune activité ne correspond à vos critères de recherche'
                   : 'Vous n\'avez pas encore d\'activité enregistrée'}
@@ -335,7 +338,7 @@ const HistoryPage = () => {
               {(filters.search || filters.from || filters.to || filters.type) && (
                 <button
                   onClick={clearFilters}
-                  className="mt-4 inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium transition-all duration-300 hover:scale-105"
+                  className="mt-4 inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-medium transition-all duration-300 hover:scale-105 text-sm sm:text-base"
                 >
                   Effacer les filtres
                 </button>
@@ -351,49 +354,51 @@ const HistoryPage = () => {
                 return (
                   <div
                     key={item.id}
-                    className="p-6 hover:bg-white/40 transition-all duration-300 group"
+                    className="p-4 sm:p-6 hover:bg-white/40 transition-all duration-300 group"
                   >
-                    <div className="flex items-start space-x-4">
+                    <div className="flex items-start space-x-3 sm:space-x-4">
                       {/* Icône d'action */}
-                      <div className={`flex-shrink-0 p-3 rounded-2xl bg-gradient-to-r ${config?.color || 'from-gray-500 to-gray-600'} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                        <IconComponent className="h-6 w-6 text-white" />
+                      <div className={`flex-shrink-0 p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-r ${config?.color || 'from-gray-500 to-gray-600'} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <IconComponent className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                       </div>
                       
                       {/* Contenu principal */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
                           <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${config?.bgColor || 'bg-gray-100'} ${config?.textColor || 'text-gray-700'}`}>
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                              <span className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${config?.bgColor || 'bg-gray-100'} ${config?.textColor || 'text-gray-700'}`}>
                                 {config?.label || item.action_type}
                               </span>
                               {item.phone_imei && (
-                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                                   <Smartphone className="h-3 w-3 mr-1" />
-                                  IMEI: {item.phone_imei}
+                                  <span className="hidden sm:inline">IMEI: </span>
+                                  <span className="sm:hidden">IMEI: </span>
+                                  <span className="truncate max-w-[100px] sm:max-w-none">{item.phone_imei}</span>
                                 </span>
                               )}
                             </div>
                             
-                            <h3 className="text-lg font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-200">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
                               {item.description}
                             </h3>
                             
-                            <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                               <div className="flex items-center">
-                                <CalendarIcon className="h-4 w-4 mr-1" />
+                                <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                                 {date}
                               </div>
                               <div className="flex items-center">
-                                <Clock className="h-4 w-4 mr-1" />
+                                <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                                 {time}
                               </div>
                             </div>
                           </div>
                           
                           {/* Badge de statut */}
-                          <div className="flex-shrink-0">
-                            <CheckCircle className="h-5 w-5 text-green-500" />
+                          <div className="flex-shrink-0 mt-2 sm:mt-0">
+                            <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                           </div>
                         </div>
                       </div>
@@ -405,21 +410,21 @@ const HistoryPage = () => {
           )}
         </div>
         
-        {/* Statistiques en bas */}
+        {/* Statistiques en bas - Responsive */}
         {filteredItems && Array.isArray(filteredItems) && filteredItems.length > 0 && (
-          <div className="mt-8 bg-white/60 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-2xl">
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div className="mt-4 sm:mt-6 lg:mt-8 bg-white/60 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-6 border border-white/20 shadow-2xl">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
               {Object.entries(actionTypeConfig).map(([type, config]) => {
                 const count = filteredItems.filter(item => item.action_type === type).length;
                 const IconComponent = config.icon;
                 
                 return (
-                  <div key={type} className="text-center p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-white/30 hover:scale-105 transition-all duration-300">
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-r ${config.color} flex items-center justify-center mx-auto mb-2`}>
-                      <IconComponent className="h-6 w-6 text-white" />
+                  <div key={type} className="text-center p-3 sm:p-4 bg-white/50 backdrop-blur-sm rounded-xl sm:rounded-2xl border border-white/30 hover:scale-105 transition-all duration-300">
+                    <div className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-r ${config.color} flex items-center justify-center mx-auto mb-2`}>
+                      <IconComponent className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
                     </div>
-                    <div className="text-2xl font-bold text-gray-900">{count}</div>
-                    <div className="text-sm text-gray-600">{config.label}</div>
+                    <div className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">{count}</div>
+                    <div className="text-xs sm:text-sm text-gray-600 line-clamp-1">{config.label}</div>
                   </div>
                 );
               })}
