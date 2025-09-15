@@ -260,16 +260,19 @@ export const reportService = {
 export const historyService = {
   getHistory: async (filters?: { from?: string; to?: string; type?: string; search?: string }): Promise<HistoryItem[]> => {
     try {
-      // Essayer d'abord l'endpoint activities
-      const response = await api.get('/activities', { params: filters });
+      // Utiliser l'endpoint correct pour l'historique des actions
+      const response = await api.get('/historique-actions', { params: filters });
       return response.data;
-    } catch (error) {
-      console.log('Endpoint /activities non disponible, tentative avec /user/activities');
+    } catch (error: any) {
+      console.log('❌ /historique-actions échoué:', error.response?.status, error.message);
+      console.log('Tentative avec /user/historique-actions...');
       try {
-        const response = await api.get('/user/activities', { params: filters });
+        // Essayer l'endpoint spécifique à l'utilisateur connecté
+        const response = await api.get('/user/historique-actions', { params: filters });
         return response.data;
-      } catch (secondError) {
-        console.log('Endpoint /user/activities non disponible, utilisation de données mock');
+      } catch (secondError: any) {
+        console.log('❌ /user/historique-actions échoué:', secondError.response?.status, secondError.message);
+        console.log('Utilisation de données mock');
         // Retourner des données mock en cas d'échec
         return [
           {
@@ -285,6 +288,13 @@ export const historyService = {
             description: 'Vérification IMEI effectuée',
             phone_imei: '123456789012345',
             created_at: new Date(Date.now() - 86400000).toISOString()
+          },
+          {
+            id: '3',
+            action_type: 'status_change',
+            description: 'Changement de statut du téléphone',
+            phone_imei: '987654321098765',
+            created_at: new Date(Date.now() - 172800000).toISOString()
           }
         ];
       }
