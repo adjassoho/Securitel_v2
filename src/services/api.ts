@@ -49,7 +49,7 @@ import type {
   TechnicianProfile,
 } from '@/types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api/docs';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -161,7 +161,10 @@ export const authService = {
   },
 
   resendVerificationCode: async (email: string): Promise<void> => {
-    await api.post('/resend-verification-code', { email });
+    console.log('Envoi du code de vérification pour:', email);
+    const response = await api.post('/resend-verification-code', { email });
+    console.log('Réponse du serveur:', response.data);
+    return response.data;
   },
 };
 

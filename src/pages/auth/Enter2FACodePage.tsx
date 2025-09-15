@@ -54,11 +54,13 @@ const Enter2FACodePage = () => {
     
     setResending(true);
     try {
+      console.log('Tentative de renvoi du code pour:', email);
       await authService.resendVerificationCode(email);
       toast.success('Nouveau code envoyé!');
       setTimer(60);
-    } catch (error) {
-      toast.error('Erreur lors de l\'envoi du code');
+    } catch (error: any) {
+      console.error('Erreur lors du renvoi du code:', error);
+      toast.error(error.response?.data?.message || 'Erreur lors de l\'envoi du code');
     } finally {
       setResending(false);
     }
