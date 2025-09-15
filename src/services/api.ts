@@ -21,16 +21,16 @@ import type {
   WithdrawalRequest,
   Withdrawal,
   User,
-  AdminStats,
-  AdminUser,
-  AdminPhone,
-  AdminReport,
-  AdminAgent,
-  Commission,
-  SupportTicket,
-  AdminReportData,
-  SystemSettings,
-  AdminAlert,
+  // AdminStats,
+  // AdminUser,
+  // AdminPhone,
+  // AdminReport,
+  // AdminAgent,
+  // Commission,
+  // SupportTicket,
+  // AdminReportData,
+  // SystemSettings,
+  // AdminAlert, // Supprimé temporairement
   PoliceStats,
   PoliceSearchLog,
   PolicePhoneSearch,
@@ -49,7 +49,7 @@ import type {
   TechnicianProfile,
 } from '@/types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api/docs';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -269,7 +269,7 @@ export const userService = {
   },
 
   changePassword: async (data: PasswordChangeRequest) => {
-    const response = await api.post('/change-password', data);
+    const response = await api.put('/user/password', data);
     return response.data;
   },
 
@@ -283,7 +283,7 @@ export const userService = {
   },
 
   updateNotifications: async (notifications: { email: boolean }) => {
-    const response = await api.post('/notifications', notifications);
+    const response = await api.put('/user/notifications', notifications);
     return response.data;
   },
 
@@ -331,7 +331,7 @@ export const agentService = {
   },
 
   createClientAccount: async (data: FormData): Promise<{ user: User; password: string }> => {
-    const response = await api.post('/agent/create-client', data, {
+    const response = await api.post('/agent/clients', data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -340,7 +340,7 @@ export const agentService = {
   },
 
   registerClientPhone: async (clientId: string, data: FormData): Promise<Phone> => {
-    const response = await api.post(`/agent/register-phone/${clientId}`, data, {
+    const response = await api.post(`/agent/clients/${clientId}/phones`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -370,7 +370,7 @@ export const agentService = {
 
   // Vérification IMEI avant achat
   verifyIMEI: async (imei: string): Promise<IMEIVerificationResult> => {
-    const response = await api.post('/agent/verify-imei', { imei });
+    const response = await api.get(`/phones/verify/${imei}`);
     return response.data;
   },
 
@@ -413,12 +413,12 @@ export const agentService = {
     return response.data;
   },
 
-  contactSupport: async (data: { subject: string; message: string }): Promise<SupportTicket> => {
+  contactSupport: async (data: { subject: string; message: string }): Promise<any> => {
     const response = await api.post('/agent/support', data);
     return response.data;
   },
 
-  getSupportTickets: async (): Promise<SupportTicket[]> => {
+  getSupportTickets: async (): Promise<any[]> => {
     const response = await api.get('/agent/support-tickets');
     return response.data;
   },
@@ -480,7 +480,7 @@ export const agentService = {
 
   // Création de client avancée
   createClient: async (data: FormData): Promise<any> => {
-    const response = await api.post('/agent/clients/create', data, {
+    const response = await api.post('/agent/clients', data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -523,258 +523,15 @@ export const agentService = {
   },
 };
 
-// Services pour l'admin
-export const adminService = {
-  // Dashboard et statistiques
-  getStats: async (): Promise<AdminStats> => {
-    const response = await api.get('/admin/stats');
-    return response.data;
-  },
-
-  // Gestion des utilisateurs
-  getUsers: async (filters?: {
-    role?: string;
-    status?: string;
-    city?: string;
-    search?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<{ users: AdminUser[]; total: number; page: number; total_pages: number }> => {
-    const response = await api.get('/admin/users', { params: filters });
-    return response.data;
-  },
-
-  getUserById: async (id: string): Promise<AdminUser> => {
-    const response = await api.get(`/admin/users/${id}`);
-    return response.data;
-  },
-
-  updateUser: async (id: string, data: Partial<AdminUser>): Promise<AdminUser> => {
-    const response = await api.put(`/admin/users/${id}`, data);
-    return response.data;
-  },
-
-  suspendUser: async (id: string, reason: string): Promise<void> => {
-    await api.post(`/admin/users/${id}/suspend`, { reason });
-  },
-
-  activateUser: async (id: string): Promise<void> => {
-    await api.post(`/admin/users/${id}/activate`);
-  },
-
-  // Gestion des téléphones
-  getPhones: async (filters?: {
-    status?: string;
-    owner_id?: string;
-    imei?: string;
-    search?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<{ phones: AdminPhone[]; total: number; page: number; total_pages: number }> => {
-    const response = await api.get('/admin/phones', { params: filters });
-    return response.data;
-  },
-
-  getPhoneById: async (id: string): Promise<AdminPhone> => {
-    const response = await api.get(`/admin/phones/${id}`);
-    return response.data;
-  },
-
-  updatePhoneStatus: async (id: string, status: string, reason?: string): Promise<AdminPhone> => {
-    const response = await api.put(`/admin/phones/${id}/status`, { status, reason });
-    return response.data;
-  },
-
-  addToBlacklist: async (imei: string, reason: string): Promise<void> => {
-    await api.post('/admin/phones/blacklist', { imei, reason });
-  },
-
-  removeFromBlacklist: async (imei: string): Promise<void> => {
-    await api.delete(`/admin/phones/blacklist/${imei}`);
-  },
-
-  importPhones: async (file: File): Promise<{ success: number; errors: any[] }> => {
-    const formData = new FormData();
-    formData.append('file', file);
-    const response = await api.post('/admin/phones/import', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
-  },
-
-  // Gestion des signalements
-  getReports: async (filters?: {
-    type?: string;
-    status?: string;
-    priority?: string;
-    assigned_agent?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<{ reports: AdminReport[]; total: number; page: number; total_pages: number }> => {
-    const response = await api.get('/admin/reports', { params: filters });
-    return response.data;
-  },
-
-  getReportById: async (id: string): Promise<AdminReport> => {
-    const response = await api.get(`/admin/reports/${id}`);
-    return response.data;
-  },
-
-  updateReportStatus: async (id: string, status: string, notes?: string): Promise<AdminReport> => {
-    const response = await api.put(`/admin/reports/${id}/status`, { status, notes });
-    return response.data;
-  },
-
-  assignReport: async (id: string, agent_id: string): Promise<AdminReport> => {
-    const response = await api.post(`/admin/reports/${id}/assign`, { agent_id });
-    return response.data;
-  },
-
-  // Gestion des agents
-  getAgents: async (filters?: {
-    status?: string;
-    search?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<{ agents: AdminAgent[]; total: number; page: number; total_pages: number }> => {
-    const response = await api.get('/admin/agents', { params: filters });
-    return response.data;
-  },
-
-  getAgentById: async (id: string): Promise<AdminAgent> => {
-    const response = await api.get(`/admin/agents/${id}`);
-    return response.data;
-  },
-
-  approveAgent: async (id: string): Promise<AdminAgent> => {
-    const response = await api.post(`/admin/agents/${id}/approve`);
-    return response.data;
-  },
-
-  rejectAgent: async (id: string, reason: string): Promise<void> => {
-    await api.post(`/admin/agents/${id}/reject`, { reason });
-  },
-
-  suspendAgent: async (id: string, reason: string): Promise<void> => {
-    await api.post(`/admin/agents/${id}/suspend`, { reason });
-  },
-
-  // Gestion des commissions
-  getCommissions: async (filters?: {
-    agent_id?: string;
-    status?: string;
-    from?: string;
-    to?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<{ commissions: Commission[]; total: number; page: number; total_pages: number }> => {
-    const response = await api.get('/admin/commissions', { params: filters });
-    return response.data;
-  },
-
-  processCommission: async (id: string): Promise<Commission> => {
-    const response = await api.post(`/admin/commissions/${id}/process`);
-    return response.data;
-  },
-
-  // Support client
-  getTickets: async (filters?: {
-    status?: string;
-    priority?: string;
-    category?: string;
-    assigned_to?: string;
-    page?: number;
-    limit?: number;
-  }): Promise<{ tickets: SupportTicket[]; total: number; page: number; total_pages: number }> => {
-    const response = await api.get('/admin/support/tickets', { params: filters });
-    return response.data;
-  },
-
-  getTicketById: async (id: string): Promise<SupportTicket> => {
-    const response = await api.get(`/admin/support/tickets/${id}`);
-    return response.data;
-  },
-
-  updateTicketStatus: async (id: string, status: string): Promise<SupportTicket> => {
-    const response = await api.put(`/admin/support/tickets/${id}/status`, { status });
-    return response.data;
-  },
-
-  assignTicket: async (id: string, admin_id: string): Promise<SupportTicket> => {
-    const response = await api.post(`/admin/support/tickets/${id}/assign`, { admin_id });
-    return response.data;
-  },
-
-  addTicketMessage: async (id: string, content: string, attachments?: File[]): Promise<void> => {
-    const formData = new FormData();
-    formData.append('content', content);
-    if (attachments) {
-      attachments.forEach(file => formData.append('attachments', file));
-    }
-    await api.post(`/admin/support/tickets/${id}/messages`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-  },
-
-  // Rapports
-  generateReport: async (type: 'daily' | 'weekly' | 'monthly' | 'custom', filters?: {
-    start_date?: string;
-    end_date?: string;
-  }): Promise<AdminReportData> => {
-    const response = await api.post('/admin/reports/generate', { type, filters });
-    return response.data;
-  },
-
-  exportReport: async (reportId: string, format: 'pdf' | 'excel'): Promise<Blob> => {
-    const response = await api.get(`/admin/reports/${reportId}/export`, {
-      params: { format },
-      responseType: 'blob',
-    });
-    return response.data;
-  },
-
-  // Paramètres système
-  getSystemSettings: async (): Promise<SystemSettings> => {
-    const response = await api.get('/admin/settings');
-    return response.data;
-  },
-
-  updateSystemSettings: async (settings: Partial<SystemSettings>): Promise<SystemSettings> => {
-    const response = await api.put('/admin/settings', settings);
-    return response.data;
-  },
-
-  // Alertes
-  getAlerts: async (): Promise<AdminAlert[]> => {
-    const response = await api.get('/admin/alerts');
-    return response.data;
-  },
-
-  markAlertAsResolved: async (id: string): Promise<void> => {
-    await api.post(`/admin/alerts/${id}/resolve`);
-  },
-
-  // Police
-  createPoliceAccess: async (data: {
-    name: string;
-    email: string;
-    phone: string;
-    department: string;
-    badge_number: string;
-  }): Promise<{ user: AdminUser; password: string }> => {
-    const response = await api.post('/admin/police/create-access', data);
-    return response.data;
-  },
-
-  getPoliceAccess: async (): Promise<AdminUser[]> => {
-    const response = await api.get('/admin/police/access');
-    return response.data;
-  },
-
-  revokePoliceAccess: async (id: string): Promise<void> => {
-    await api.delete(`/admin/police/access/${id}`);
-  },
-};
+// Services pour l'admin - Supprimés temporairement
+// export const adminService = {
+//   // Dashboard et statistiques
+//   getStats: async (): Promise<AdminStats> => {
+//     const response = await api.get('/admin/stats');
+//     return response.data;
+//   },
+//   // ... (tous les autres services admin commentés)
+// };
 
 // Services pour la Police
 export const policeService = {

@@ -7,7 +7,7 @@ import ScrollToTopOnRouteChange from '@/components/ui/ScrollToTopOnRouteChange';
 // Layouts
 import PublicLayout from '@/components/layouts/PublicLayout';
 import DashboardLayout from '@/components/layouts/DashboardLayout';
-import AdminLayout from '@/components/layouts/AdminLayout';
+// import AdminLayout from '@/components/layouts/AdminLayout'; // Supprimé temporairement
 import PoliceLayout from '@/components/layouts/PoliceLayout';
 
 // Pages publiques
@@ -67,13 +67,13 @@ import TechnicianRegistrationsPage from '@/pages/technician/TechnicianRegistrati
 import TechnicianAccountingPage from '@/pages/technician/TechnicianAccountingPage';
 import TechnicianSettingsPage from '@/pages/technician/TechnicianSettingsPage';
 
-// Pages admin
-import AdminDashboard from '@/pages/admin/AdminDashboard';
-import UsersPage from '@/pages/admin/UsersPage';
-import PhonesPage from '@/pages/admin/PhonesPage';
-import AdminReportsPage from '@/pages/admin/ReportsPage';
-import AgentsPage from '@/pages/admin/AgentsPage';
-import AdminStatsPage from '@/pages/admin/StatsPage';
+// Pages admin - Supprimées temporairement
+// import AdminDashboard from '@/pages/admin/AdminDashboard';
+// import UsersPage from '@/pages/admin/UsersPage';
+// import PhonesPage from '@/pages/admin/PhonesPage';
+// import AdminReportsPage from '@/pages/admin/ReportsPage';
+// import AgentsPage from '@/pages/admin/AgentsPage';
+// import AdminStatsPage from '@/pages/admin/StatsPage';
 
 // Pages police
 import PoliceDashboard from '@/pages/police/PoliceDashboard';
@@ -106,7 +106,7 @@ const AgentRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
   
-  if (user?.role !== 'agent' && user?.role !== 'admin') {
+  if (user?.role !== 'agent') { // && user?.role !== 'admin' supprimé temporairement
     return <Navigate to="/dashboard" replace />;
   }
   
@@ -121,27 +121,27 @@ const TechnicianRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
   
-  if (user?.role !== 'technician' && user?.role !== 'admin') {
+  if (user?.role !== 'technician') { // && user?.role !== 'admin' supprimé temporairement
     return <Navigate to="/dashboard" replace />;
   }
   
   return <>{children}</>;
 };
 
-// Composant de protection des routes admin
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, user } = useAuthStore();
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (user?.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
-  }
-  
-  return <>{children}</>;
-};
+// Composant de protection des routes admin - Supprimé temporairement
+// const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+//   const { isAuthenticated, user } = useAuthStore();
+//   
+//   if (!isAuthenticated) {
+//     return <Navigate to="/login" replace />;
+//   }
+//   
+//   if (user?.role !== 'admin') {
+//     return <Navigate to="/dashboard" replace />;
+//   }
+//   
+//   return <>{children}</>;
+// };
 
 // Composant de protection des routes police
 const PoliceRoute = ({ children }: { children: React.ReactNode }) => {
@@ -242,8 +242,8 @@ function App() {
             {/* TODO: Ajouter les autres routes agent */}
           </Route>
 
-          {/* Routes admin */}
-          <Route
+          {/* Routes admin - Supprimées temporairement */}
+          {/* <Route
             element={
               <AdminRoute>
                 <AdminLayout />
@@ -253,21 +253,12 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             
-            {/* Gestion des utilisateurs */}
             <Route path="/admin/users" element={<UsersPage />} />
-            
-            {/* Gestion des téléphones */}
             <Route path="/admin/phones" element={<PhonesPage />} />
-            
-            {/* Gestion des signalements */}
             <Route path="/admin/reports" element={<AdminReportsPage />} />
-            
-            {/* Gestion des agents */}
             <Route path="/admin/agents" element={<AgentsPage />} />
-            
-            {/* Statistiques et rapports */}
             <Route path="/admin/stats" element={<AdminStatsPage />} />
-          </Route>
+          </Route> */}
 
           {/* Routes police */}
           <Route

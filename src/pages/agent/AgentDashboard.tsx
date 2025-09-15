@@ -149,7 +149,7 @@ const AgentDashboard = () => {
           <RefreshCw className="h-4 w-4 mr-2" />
           Actualiser
         </button>
-      </div>
+        </div>
 
       {/* Alertes importantes */}
       {unreadAlerts.length > 0 && (
@@ -172,9 +172,9 @@ const AgentDashboard = () => {
                 </button>
               </div>
             ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Statistiques principales */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -218,14 +218,14 @@ const AgentDashboard = () => {
           <div className="flex items-center">
             <div className="p-3 bg-yellow-100 rounded-lg">
               <Clock className="h-6 w-6 text-yellow-600" />
-            </div>
+                  </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">En Attente</p>
               <p className="text-2xl font-bold text-gray-900">{stats.pending_registrations}</p>
-            </div>
-          </div>
+                  </div>
+                </div>
+              </div>
         </div>
-      </div>
 
       {/* Revenus et parrainage */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -256,17 +256,17 @@ const AgentDashboard = () => {
                   <p className="text-xl font-bold text-gray-900">
                     {stats.available_balance?.toLocaleString('fr-FR') || 0} FCFA
                   </p>
-                </div>
-              </div>
             </div>
-            <Link
+              </div>
+              </div>
+              <Link
               to="/agent/accounting"
               className="block w-full bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-            >
+              >
               Gérer mes revenus
-            </Link>
+              </Link>
+            </div>
           </div>
-        </div>
 
         {/* Lien de parrainage */}
         <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl border border-blue-200 p-6">
@@ -296,16 +296,16 @@ const AgentDashboard = () => {
             </p>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Actions rapides */}
+        {/* Actions rapides */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Actions Rapides</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {quickActions.map((action, index) => (
-            <Link
-              key={index}
-              to={action.link}
+                <Link
+                  key={index}
+                  to={action.link}
               className="group p-4 border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-md transition-all duration-200"
             >
               <div className="flex items-start space-x-3">
@@ -317,13 +317,13 @@ const AgentDashboard = () => {
                     {action.title}
                   </h3>
                   <p className="text-xs text-gray-500 mt-1">{action.description}</p>
-                </div>
+                    </div>
                 <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
-              </div>
-            </Link>
+                  </div>
+                </Link>
           ))}
+          </div>
         </div>
-      </div>
 
       {/* Statistiques de parrainage */}
       {referralStats && (
@@ -347,14 +347,14 @@ const AgentDashboard = () => {
             <div className="text-center">
               <div className="p-3 bg-purple-100 rounded-lg w-fit mx-auto mb-2">
                 <DollarSign className="h-6 w-6 text-purple-600" />
-              </div>
+          </div>
               <p className="text-2xl font-bold text-gray-900">
                 {referralStats.total_commission_earned?.toLocaleString('fr-FR') || 0} FCFA
               </p>
               <p className="text-sm text-gray-600">Commissions gagnées</p>
-            </div>
           </div>
         </div>
+      </div>
       )}
     </div>
   );

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link } from 'react-router-dom';
-import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield, Camera, Upload, Settings, BarChart3, Users, Smartphone, AlertTriangle, UserCheck, ArrowRight, UserPlus, Search, FileText, DollarSign, HelpCircle, CreditCard, Wrench, QrCode } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Edit3, Save, X, CheckCircle, AlertCircle, Calendar, Shield, Camera, Upload, BarChart3, Users, Smartphone, AlertTriangle, UserCheck, ArrowRight, UserPlus, Search, FileText, DollarSign, HelpCircle, CreditCard, Wrench, QrCode } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { userService } from '@/services/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -447,23 +447,18 @@ const ProfilePage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Admin / Super Admin */}
-              {(user?.role === 'admin' || user?.role === 'super_admin') && (
+              {/* Admin / Super Admin - Supprimé temporairement */}
+              {/* {(user?.role === 'admin' || user?.role === 'super_admin') && (
                 <>
-                  <Link
-                    to="/admin"
-                    className="group bg-gradient-to-br from-red-500/20 to-red-600/20 hover:from-red-500/30 hover:to-red-600/30 backdrop-blur-lg border border-red-400/30 hover:border-red-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-red-500/20"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 bg-red-500/20 rounded-xl">
-                        <Settings className="w-6 h-6 text-red-400" />
-                      </div>
-                      <ArrowRight className="w-5 h-5 text-red-400 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Administration</h3>
-                    <p className="text-sm text-red-100/80">Gérer les utilisateurs, téléphones et signalements</p>
-                  </Link>
+                  <Link to="/admin" className="...">Administration</Link>
+                  <Link to="/police" className="...">Interface Police</Link>
+                  <Link to="/admin/stats" className="...">Statistiques</Link>
+                </>
+              )} */}
 
+              {/* Police */}
+              {user?.role === 'police' && (
+                <>
                   <Link
                     to="/police"
                     className="group bg-gradient-to-br from-purple-500/20 to-purple-600/20 hover:from-purple-500/30 hover:to-purple-600/30 backdrop-blur-lg border border-purple-400/30 hover:border-purple-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20"
@@ -477,23 +472,14 @@ const ProfilePage = () => {
                     <h3 className="text-lg font-semibold text-white mb-2">Interface Police</h3>
                     <p className="text-sm text-purple-100/80">Recherche et gestion des enquêtes</p>
                   </Link>
+                </>
+              )}
 
+              {/* Agent */}
+              {user?.role === 'agent' && (
+                <>
                   <Link
-                    to="/admin/stats"
-                    className="group bg-gradient-to-br from-blue-500/20 to-blue-600/20 hover:from-blue-500/30 hover:to-blue-600/30 backdrop-blur-lg border border-blue-400/30 hover:border-blue-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 bg-blue-500/20 rounded-xl">
-                        <BarChart3 className="w-6 h-6 text-blue-400" />
-                      </div>
-                      <ArrowRight className="w-5 h-5 text-blue-400 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Statistiques</h3>
-                    <p className="text-sm text-blue-100/80">Rapports et analyses détaillées</p>
-                  </Link>
-
-                  <Link
-                    to="/agent"
+                    to="/agent/dashboard"
                     className="group bg-gradient-to-br from-orange-500/20 to-orange-600/20 hover:from-orange-500/30 hover:to-orange-600/30 backdrop-blur-lg border border-orange-400/30 hover:border-orange-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20"
                   >
                     <div className="flex items-center justify-between mb-4">
@@ -504,20 +490,6 @@ const ProfilePage = () => {
                     </div>
                     <h3 className="text-lg font-semibold text-white mb-2">Interface Agent</h3>
                     <p className="text-sm text-orange-100/80">Gestion des enregistrements et clients</p>
-                  </Link>
-
-                  <Link
-                    to="/technician/dashboard"
-                    className="group bg-gradient-to-br from-cyan-500/20 to-cyan-600/20 hover:from-cyan-500/30 hover:to-cyan-600/30 backdrop-blur-lg border border-cyan-400/30 hover:border-cyan-400/50 rounded-2xl p-6 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-cyan-500/20"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="p-3 bg-cyan-500/20 rounded-xl">
-                        <Wrench className="w-6 h-6 text-cyan-400" />
-                      </div>
-                      <ArrowRight className="w-5 h-5 text-cyan-400 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-white mb-2">Interface Technicien</h3>
-                    <p className="text-sm text-cyan-100/80">Gestion des techniciens GSM</p>
                   </Link>
                 </>
               )}

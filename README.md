@@ -21,7 +21,7 @@ npm install
 ### Configuration
 Créer un fichier `.env` à la racine du projet :
 ```env
-VITE_API_URL=https://api.securitels.com/api
+VITE_API_URL=https://api.securitels.com/api/docs
 ```
 
 ### Lancement en développement

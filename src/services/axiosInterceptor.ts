@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import toast from 'react-hot-toast';
 
 // Configuration de base d'axios
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://api.securitels.com/api/docs';
 
 // Intercepteur de requête pour ajouter automatiquement le token
 axios.interceptors.request.use(

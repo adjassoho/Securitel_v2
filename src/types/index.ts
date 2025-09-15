@@ -53,7 +53,7 @@ export interface User {
   phone: string;
   address?: string;
   whatsapp?: string;
-  role: 'user' | 'agent' | 'admin' | 'super_admin' | 'police' | 'technician';
+  role: 'user' | 'agent' | 'police' | 'technician'; // 'admin' | 'super_admin' supprimés temporairement
   created_at: string;
   updated_at: string;
 }
@@ -246,194 +246,194 @@ export interface DashboardStats {
   recent_activities: HistoryItem[];
 }
 
-// Types pour l'admin
-export interface AdminStats {
-  total_users: number;
-  total_phones: number;
-  active_reports: number;
-  users_by_city: { city: string; count: number }[];
-  active_technicians: number;
-  total_revenue: number;
-  reports_by_status: { status: string; count: number }[];
-  recent_activities: AdminActivity[];
-  alerts: AdminAlert[];
-}
+// Types pour l'admin - Supprimés temporairement
+// export interface AdminStats {
+//   total_users: number;
+//   total_phones: number;
+//   active_reports: number;
+//   users_by_city: { city: string; count: number }[];
+//   active_technicians: number;
+//   total_revenue: number;
+//   reports_by_status: { status: string; count: number }[];
+//   recent_activities: AdminActivity[];
+//   alerts: AdminAlert[];
+// }
 
-export interface AdminActivity {
-  id: string;
-  type: 'user_registration' | 'phone_registration' | 'report_created' | 'agent_application' | 'payment_processed';
-  description: string;
-  user_id?: string;
-  user_name?: string;
-  timestamp: string;
-  details?: any;
-}
+// export interface AdminActivity {
+//   id: string;
+//   type: 'user_registration' | 'phone_registration' | 'report_created' | 'agent_application' | 'payment_processed';
+//   description: string;
+//   user_id?: string;
+//   user_name?: string;
+//   timestamp: string;
+//   details?: any;
+// }
 
-export interface AdminAlert {
-  id: string;
-  type: 'fraud_suspicion' | 'high_reports' | 'system_anomaly' | 'security_breach';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  title: string;
-  description: string;
-  timestamp: string;
-  resolved: boolean;
-  action_required: boolean;
-}
+// export interface AdminAlert {
+//   id: string;
+//   type: 'fraud_suspicion' | 'high_reports' | 'system_anomaly' | 'security_breach';
+//   severity: 'low' | 'medium' | 'high' | 'critical';
+//   title: string;
+//   description: string;
+//   timestamp: string;
+//   resolved: boolean;
+//   action_required: boolean;
+// }
 
-export interface AdminUser extends User {
-  last_login?: string;
-  is_active: boolean;
-  registration_source: string;
-  total_phones: number;
-  total_reports: number;
-  city?: string;
-  department?: string;
-}
+// export interface AdminUser extends User {
+//   last_login?: string;
+//   is_active: boolean;
+//   registration_source: string;
+//   total_phones: number;
+//   total_reports: number;
+//   city?: string;
+//   department?: string;
+// }
 
-export interface AdminPhone extends Phone {
-  owner: AdminUser;
-  registration_date: string;
-  last_activity: string;
-  status_history: PhoneStatusHistory[];
-  reports_count: number;
-}
+// export interface AdminPhone extends Phone {
+//   owner: AdminUser;
+//   registration_date: string;
+//   last_activity: string;
+//   status_history: PhoneStatusHistory[];
+//   reports_count: number;
+// }
 
-export interface PhoneStatusHistory {
-  id: string;
-  status: string;
-  changed_by: string;
-  changed_at: string;
-  reason?: string;
-  note?: string;
-}
+// export interface PhoneStatusHistory {
+//   id: string;
+//   status: string;
+//   changed_by: string;
+//   changed_at: string;
+//   reason?: string;
+//   note?: string;
+// }
 
-export interface AdminReport {
-  id: string;
-  type: 'theft' | 'loss' | 'found' | 'suspicious';
-  status: 'pending' | 'validated' | 'transmitted_police' | 'resolved';
-  phone: AdminPhone;
-  reporter: AdminUser;
-  created_at: string;
-  updated_at: string;
-  assigned_agent?: AdminUser;
-  police_reference?: string;
-  resolution_notes?: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-}
+// export interface AdminReport {
+//   id: string;
+//   type: 'theft' | 'loss' | 'found' | 'suspicious';
+//   status: 'pending' | 'validated' | 'transmitted_police' | 'resolved';
+//   phone: AdminPhone;
+//   reporter: AdminUser;
+//   created_at: string;
+//   updated_at: string;
+//   assigned_agent?: AdminUser;
+//   police_reference?: string;
+//   resolution_notes?: string;
+//   priority: 'low' | 'medium' | 'high' | 'urgent';
+// }
 
-export interface AdminAgent extends User {
-  agent_id: string;
-  status: 'pending' | 'approved' | 'rejected' | 'suspended';
-  application_date: string;
-  approval_date?: string;
-  total_registrations: number;
-  total_commission: number;
-  performance_score: number;
-  documents: AgentDocument[];
-  last_activity: string;
-}
+// export interface AdminAgent extends User {
+//   agent_id: string;
+//   status: 'pending' | 'approved' | 'rejected' | 'suspended';
+//   application_date: string;
+//   approval_date?: string;
+//   total_registrations: number;
+//   total_commission: number;
+//   performance_score: number;
+//   documents: AgentDocument[];
+//   last_activity: string;
+// }
 
-export interface AgentDocument {
-  id: string;
-  type: 'id_card' | 'business_license' | 'proof_of_address' | 'other';
-  filename: string;
-  url: string;
-  uploaded_at: string;
-  verified: boolean;
-}
+// export interface AgentDocument {
+//   id: string;
+//   type: 'id_card' | 'business_license' | 'proof_of_address' | 'other';
+//   filename: string;
+//   url: string;
+//   uploaded_at: string;
+//   verified: boolean;
+// }
 
-export interface Commission {
-  id: string;
-  agent_id: string;
-  agent_name: string;
-  amount: number;
-  type: 'registration' | 'referral' | 'bonus';
-  status: 'pending' | 'paid' | 'cancelled';
-  created_at: string;
-  paid_at?: string;
-  reference: string;
-}
+// export interface Commission {
+//   id: string;
+//   agent_id: string;
+//   agent_name: string;
+//   amount: number;
+//   type: 'registration' | 'referral' | 'bonus';
+//   status: 'pending' | 'paid' | 'cancelled';
+//   created_at: string;
+//   paid_at?: string;
+//   reference: string;
+// }
 
-export interface SupportTicket {
-  id: string;
-  user: AdminUser;
-  subject: string;
-  description: string;
-  status: 'open' | 'in_progress' | 'resolved' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  category: 'technical' | 'billing' | 'account' | 'other';
-  created_at: string;
-  updated_at: string;
-  assigned_to?: string;
-  resolution_time?: number; // en minutes
-  satisfaction_score?: number;
-  messages: SupportMessage[];
-}
+// export interface SupportTicket {
+//   id: string;
+//   user: AdminUser;
+//   subject: string;
+//   description: string;
+//   status: 'open' | 'in_progress' | 'resolved' | 'closed';
+//   priority: 'low' | 'medium' | 'high' | 'urgent';
+//   category: 'technical' | 'billing' | 'account' | 'other';
+//   created_at: string;
+//   updated_at: string;
+//   assigned_to?: string;
+//   resolution_time?: number; // en minutes
+//   satisfaction_score?: number;
+//   messages: SupportMessage[];
+// }
 
-export interface SupportMessage {
-  id: string;
-  ticket_id: string;
-  sender: 'user' | 'admin' | 'system';
-  sender_name: string;
-  content: string;
-  timestamp: string;
-  attachments?: string[];
-}
+// export interface SupportMessage {
+//   id: string;
+//   ticket_id: string;
+//   sender: 'user' | 'admin' | 'system';
+//   sender_name: string;
+//   content: string;
+//   timestamp: string;
+//   attachments?: string[];
+// }
 
-export interface AdminReportData {
-  period: {
-    start: string;
-    end: string;
-  };
-  users: {
-    total: number;
-    new: number;
-    active: number;
-    by_role: { role: string; count: number }[];
-  };
-  phones: {
-    total: number;
-    registered: number;
-    stolen: number;
-    found: number;
-    by_status: { status: string; count: number }[];
-  };
-  reports: {
-    total: number;
-    resolved: number;
-    pending: number;
-    by_type: { type: string; count: number }[];
-  };
-  revenue: {
-    total: number;
-    commissions: number;
-    fees: number;
-    by_month: { month: string; amount: number }[];
-  };
-}
+// export interface AdminReportData {
+//   period: {
+//     start: string;
+//     end: string;
+//   };
+//   users: {
+//     total: number;
+//     new: number;
+//     active: number;
+//     by_role: { role: string; count: number }[];
+//   };
+//   phones: {
+//     total: number;
+//     registered: number;
+//     stolen: number;
+//     found: number;
+//     by_status: { status: string; count: number }[];
+//   };
+//   reports: {
+//     total: number;
+//     resolved: number;
+//     pending: number;
+//     by_type: { type: string; count: number }[];
+//   };
+//   revenue: {
+//     total: number;
+//     commissions: number;
+//     fees: number;
+//     by_month: { month: string; amount: number }[];
+//   };
+// }
 
-export interface SystemSettings {
-  fees: {
-    registration_fee: number;
-    verification_fee: number;
-    transfer_fee: number;
-  };
-  commissions: {
-    agent_registration: number;
-    agent_referral: number;
-    technician_commission: number;
-  };
-  notifications: {
-    email_enabled: boolean;
-    sms_enabled: boolean;
-    push_enabled: boolean;
-  };
-  security: {
-    session_timeout: number;
-    max_login_attempts: number;
-    require_2fa: boolean;
-  };
-}
+// export interface SystemSettings {
+//   fees: {
+//     registration_fee: number;
+//     verification_fee: number;
+//     transfer_fee: number;
+//   };
+//   commissions: {
+//     agent_registration: number;
+//     agent_referral: number;
+//     technician_commission: number;
+//   };
+//   notifications: {
+//     email_enabled: boolean;
+//     sms_enabled: boolean;
+//     push_enabled: boolean;
+//   };
+//   security: {
+//     session_timeout: number;
+//     max_login_attempts: number;
+//     require_2fa: boolean;
+//   };
+// }
 
 // Types pour la Police
 export interface PoliceUser extends User {
@@ -524,7 +524,7 @@ export interface PolicePhoneResult {
       status: string;
       case_reference?: string;
     };
-    status_history: PhoneStatusHistory[];
+    status_history: any[]; // PhoneStatusHistory supprimé temporairement
   };
   search_log_id: string;
 }
