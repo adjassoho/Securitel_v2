@@ -65,19 +65,40 @@ const Enter2FACodePage = () => {
   };
 
   const formatCode = (value: string) => {
-    // Format as XXX-XXX
+    // Remove all non-digits first
     const cleaned = value.replace(/\D/g, '');
+    
+    // If we have 6 digits, format as XXX-XXX
+    if (cleaned.length === 6) {
+      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}`;
+    }
+    
+    // If we have less than 6 digits, format as we type
     const match = cleaned.match(/^(\d{0,3})(\d{0,3})$/);
     if (match) {
       return match[2] ? `${match[1]}-${match[2]}` : match[1];
     }
-    return value;
+    
+    return cleaned;
   };
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatCode(e.target.value);
     if (formatted.replace(/-/g, '').length <= 6) {
       setCode(formatted);
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData('text');
+    const cleaned = pastedData.replace(/\D/g, '');
+    
+    if (cleaned.length === 6) {
+      const formatted = `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}`;
+      setCode(formatted);
+    } else if (cleaned.length <= 6) {
+      setCode(cleaned);
     }
   };
 
@@ -115,6 +136,7 @@ const Enter2FACodePage = () => {
                   required
                   value={code}
                   onChange={handleCodeChange}
+                  onPaste={handlePaste}
                   className="appearance-none block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-center text-lg font-semibold tracking-widest"
                   placeholder="XXX-XXX"
                   maxLength={7}
