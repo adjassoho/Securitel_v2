@@ -260,7 +260,7 @@ export const reportService = {
 export const historyService = {
   getHistory: async (filters?: { from?: string; to?: string; type?: string; search?: string }): Promise<HistoryItem[]> => {
     try {
-      // Utiliser l'endpoint correct pour l'historique des actions
+      // Utiliser l'endpoint principal pour l'historique des actions
       const response = await api.get('/historique-actions', { params: filters });
       return response.data;
     } catch (error: any) {
@@ -272,31 +272,9 @@ export const historyService = {
         return response.data;
       } catch (secondError: any) {
         console.log('❌ /user/historique-actions échoué:', secondError.response?.status, secondError.message);
-        console.log('Utilisation de données mock');
-        // Retourner des données mock en cas d'échec
-        return [
-          {
-            id: '1',
-            action_type: 'registration',
-            description: 'Enregistrement d\'un téléphone',
-            phone_imei: '123456789012345',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: '2',
-            action_type: 'verification',
-            description: 'Vérification IMEI effectuée',
-            phone_imei: '123456789012345',
-            created_at: new Date(Date.now() - 86400000).toISOString()
-          },
-          {
-            id: '3',
-            action_type: 'status_change',
-            description: 'Changement de statut du téléphone',
-            phone_imei: '987654321098765',
-            created_at: new Date(Date.now() - 172800000).toISOString()
-          }
-        ];
+        console.log('Aucune donnée d\'historique disponible');
+        // Retourner un tableau vide si aucun endpoint ne fonctionne
+        return [];
       }
     }
   },
