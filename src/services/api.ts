@@ -176,8 +176,17 @@ export const authService = {
 // Services pour les téléphones
 export const phoneService = {
   getMyPhones: async (): Promise<Phone[]> => {
-    const response = await api.get('/telephones/me');
-    return response.data;
+    try {
+      const response = await api.get('/telephones/me');
+      return response.data;
+    } catch (error: any) {
+      console.log('❌ Erreur lors de la récupération des téléphones:', error.message);
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        console.log('⚠️ Timeout de connexion - l\'API est lente ou inaccessible');
+      }
+      // Retourner un tableau vide en cas d'erreur
+      return [];
+    }
   },
 
   registerPhone: async (data: RegisterPhoneRequest): Promise<Phone> => {
@@ -341,13 +350,23 @@ export const userService = {
 // Services pour le tableau de bord
 export const dashboardService = {
   getStats: async (): Promise<DashboardStats> => {
-    // Utiliser l'endpoint de comptage des téléphones comme statistique
-    const response = await api.get('/telephones/count');
-    return {
-      total_phones: response.data.count || 0,
-      total_actions: 0,
-      recent_activities: []
-    };
+    try {
+      // Utiliser l'endpoint de comptage des téléphones comme statistique
+      const response = await api.get('/telephones/count');
+      return {
+        total_phones: response.data.count || 0,
+        total_actions: 0,
+        recent_activities: []
+      };
+    } catch (error: any) {
+      console.log('❌ Erreur lors de la récupération des statistiques:', error.message);
+      // Retourner des statistiques par défaut en cas d'erreur
+      return {
+        total_phones: 0,
+        total_actions: 0,
+        recent_activities: []
+      };
+    }
   },
 };
 
